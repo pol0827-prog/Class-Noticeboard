@@ -9,7 +9,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-grad
 #hd{position:sticky;top:0;z-index:5;background:var(--wood);color:#fff6df;padding:8px 12px;display:flex;gap:8px;align-items:center}#hd b{flex:1;font-size:17px}
 button,input,textarea,select{font:inherit}.hero{aspect-ratio:1408/768;max-width:760px;margin:0 auto;background:url(bg.jpg) center/cover;border-radius:0 0 26px 26px;border-bottom:6px solid var(--wood)}
 .w{max-width:760px;margin:0 auto;padding:6px 14px 96px}.c{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;margin:12px 0}h2,h3{margin:0 0 6px}.s{color:var(--sub);font-size:13px}
-.b{background:var(--acc);border:2px solid var(--wood);border-radius:14px;padding:9px 14px;color:#3b2a1a;box-shadow:0 3px 0 var(--wood);cursor:pointer;width:100%;margin:6px 0}.b.g{background:var(--card);color:var(--ink);width:auto;padding:4px 10px;box-shadow:none}
+.b{background:var(--acc);border:2px solid var(--wood);border-radius:14px;padding:99px 14px;color:#3b2a1a;box-shadow:0 3px 0 var(--wood);cursor:pointer;width:100%;margin:6px 0}.b.g{background:var(--card);color:var(--ink);width:auto;padding:4px 10px;box-shadow:none}
 #hd .g{background:none;color:inherit;border:1px solid #fff6df88;border-radius:99px;padding:3px 10px;cursor:pointer}
 input,textarea,select{width:100%;margin:5px 0;padding:10px;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:12px;font-size:16px}
 .ch{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.ch button{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:4px 12px}.ch .on{background:var(--acc);border-color:var(--wood);color:#3b2a1a}
@@ -34,8 +34,22 @@ const FS=[['sch','학교명'],['yr','학년도'],['gr','학년'],['cl','반'],['
 const REL=['어머니','아버지','조부모','기타 보호자'];
 let S={tab:'home',role:'student',cfg:{},posts:[],msgs:[],reads:{},users:[],open:null,RA:''},un=[],done=new Set();
 const toast=m=>{const t=$('#t');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400)};
-onAuthStateChanged(auth,async u=>{un.forEach(f=>f());un=[];S.u=u;S.prof=null;S.admin=false;if(!u)return draw();
- try{const[a,p,c]=await Promise.all([getDoc(D('admins/'+u.uid)),getDoc(D('users/'+u.uid)),getDoc(D('config/main'))]);S.admin=a.exists();S.prof=p.exists()?p.data():null;S.cfg=c.data()||{};if(S.admin||S.prof)listen()}catch(e){toast('데이터를 불러오지 못했어요. 규칙·설정을 확인해 주세요.')}draw()});
+
+onAuthStateChanged(auth,async u=>{
+  un.forEach(f=>f());un=[];S.u=u;S.prof=null;S.admin=false;if(!u)return draw();
+  try{
+    const[p,c]=await Promise.all([getDoc(D('users/'+u.uid)),getDoc(D('config/main'))]);
+    // admins 컬렉션 조회 대신 구글 계정 이메일로 교사(관리자) 여부 자동 판별
+    S.admin = (u.email === 'pol0827@goedu.kr');
+    S.prof=p.exists()?p.data():null;
+    S.cfg=c.data()||{};
+    if(S.admin||S.prof)listen();
+  }catch(e){
+    toast('데이터를 불러오지 못했어요. 규칙·설정을 확인해 주세요.');
+  }
+  draw();
+});
+
 function listen(){const u=S.u.uid;un.push(onSnapshot(D('config/main'),d=>{S.cfg=d.data()||{};draw()}));
 un.push(onSnapshot(query(C('posts'),orderBy('ts','desc')),s=>{S.posts=s.docs.map(d=>({id:d.id,...d.data()}));draw()}));
 un.push(onSnapshot(S.admin?C('messages'):query(C('messages'),where('owner','==',u)),s=>{S.msgs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.ts-b.ts);draw()}));
