@@ -143,7 +143,7 @@ function put(a,o){for(const k in o){if(k[0]=='@'){a.querySelectorAll('input[type
 const clr=(...ids)=>ids.forEach(i=>{const e=G(i);if(e)e.value=''});
 
 // ───────── 명렬·계정 ─────────
-function roster(){const g={},m=HR()?(S.roster&&S.roster.m)||{}:{};Object.entries(m).forEach(([s,n])=>g[s]={s,rn:n,acc:[]});S.users.filter(inCls).forEach(u=>{(g[u.s]=g[u.s]||{s:u.s,rn:'',acc:[]}).acc.push(u)});
+function roster(){const g={},m=HR()?(S.roster&&S.roster.m)||{}:((S.roster&&S.roster.sm)||{})[CK]||{};Object.entries(m).forEach(([s,n])=>g[s]={s,rn:n,acc:[]});S.users.filter(inCls).forEach(u=>{(g[u.s]=g[u.s]||{s:u.s,rn:'',acc:[]}).acc.push(u)});
  return Object.values(g).sort((a,b)=>a.s>b.s?1:-1).map(x=>{const st=x.acc.find(u=>u.r=='student');return {...x,lbl:(x.rn||(st||x.acc[0]||{}).n||'')+(x.acc.length?'':' (가입 전)'),un:x.acc.reduce((a,u)=>a+msgs().filter(m=>m.owner==u.id&&m.from=='u'&&!m.r).length,0)}})}
 const uLbl=u=>`${esc(u.n)} ${u.r=='parent'?'학부모'+(u.rel?'('+esc(u.rel)+')':''):'학생'}`;
 const rOpts=(sel,all)=>(all?`<option value="">${all}</option>`:'')+roster().map(r=>`<option value="${esc(r.s)}" ${sel==r.s?'selected':''}>${esc(r.s)} ${esc(r.lbl)}</option>`).join('');
@@ -491,7 +491,10 @@ V.adm=()=>{const c={...S.cfg,dom:S.pub.dom||S.cfg.dom||''},m=(S.roster&&S.roster
  <h4 style="margin-top:14px">🏫 반 나누기</h4><small>학생이 어느 반인지는 학번 앞자리로 정해져요. 예) 학번 30515 → 앞자리 305 = 3학년 5반</small>
  <small>담임반 학번 앞자리</small><input id=f_hrp inputmode=numeric placeholder="예: 305" value="${esc(S.pub.hr||hrGuess())}">
  <small>수업반 학번 앞자리 (한 줄에 하나, 뒤에 이름을 붙여도 돼요. 예: "301" 또는 "301 문학A") — 수업반은 학생만 가입하고 학부모와는 연결되지 않아요. 담임반과 같은 반을 넣으면 그 반 학생은 담임반과 수업반을 따로 봐요.</small><textarea id=f_subj rows=4 placeholder="301\n302\n305">${esc(SUBJ().map(k=>k+((S.pub.subjN||{})[k]?' '+S.pub.subjN[k]:'')).join('\n'))}</textarea>
- <small>학급 명렬표 (한 줄에 "학번 이름") — 넣으면 명렬표와 같은 학번·이름만 가입할 수 있어요. 비워 두면 누구나 가입해요.</small><textarea id=f_ros rows=6 placeholder="30101 홍길동">${esc(Object.entries(m).sort().map(([s,n])=>s+' '+n).join('\n'))}</textarea><small>이름은 가운데 글자를 0으로 가려 저장돼요.</small><button class="btn blk" onclick="saveS(this)">설정 저장</button></div>${gyEd()}
+ <h4 style="margin-top:14px">📋 명렬표</h4><small>한 줄에 "학번 이름". 넣은 반은 명렬표와 같은 학번·이름만 가입할 수 있어요. 비워 둔 반은 학번 앞자리만 맞으면 가입돼요. 이름은 가운데 글자를 0으로 가려 저장돼요. 엑셀에서 학번·이름 두 칸을 복사해 붙여 넣어도 돼요.</small>
+ <small>🏠 담임반 명렬표</small><textarea id=f_ros rows=6 placeholder="30501 홍길동">${esc(Object.entries(m).sort().map(([s,n])=>s+' '+n).join('\n'))}</textarea>
+ ${SUBJ().map(k=>`<small>📘 ${esc(cName(k))} 명렬표 (학번이 ${esc(k)}로 시작)</small><textarea id="f_sros_${esc(k)}" rows=4 placeholder="${esc(k)}01 홍길동">${esc(Object.entries(((S.roster&&S.roster.sm)||{})[k]||{}).sort().map(([s,n])=>s+' '+n).join('\n'))}</textarea>`).join('')}
+ <small>수업반을 새로 넣었다면 먼저 설정 저장을 누르면 그 반 명렬표 칸이 생겨요.</small><button class="btn blk" onclick="saveS(this)">설정 저장</button></div>${gyEd()}
  <div class=card><h4>🖼️ 담임 사진</h4><input id=pl type=url placeholder="사진 링크 주소 https://" value="${esc(/^https?:/.test(S.cfg.photo||'')?S.cfg.photo:'')}"><button class="btn sm" onclick="setPh()">적용</button><small>링크를 붙여 넣고 적용하거나, 아래에서 사진을 바로 올려요(자동으로 작게 줄여요). 링크를 비우고 적용하면 기본 이미지로 돌아가요.</small><input type=file accept="image/*" onchange="pic(this)"></div>
  <div class=card><h4>🤖 AI 연결 점검</h4><small>제미나이 키와 모델이 살아 있는지 확인해요(아주 짧은 호출 몇 번).</small><button class="btn sm" onclick="aiCheck(this)">점검하기</button><p id=aic class=note></p></div>
  <div class=card><h4>👩‍🏫 교사 계정</h4><p class=note style="word-break:break-all">${esc(S.u.email)}</p><small>담임 계정은 앱에서 바꿀 수 없어요. 바꾸려면 파이어베이스 콘솔에서 config/owner 문서를 지운 뒤 새 계정으로 "교사로 지정"을 누르세요.</small></div>`};
@@ -500,7 +503,8 @@ async function saveS(b){const v={};[...FS,...FT].forEach(([k])=>v[k]=G('f_'+k).v
  const gk=(String(v.gr).replace(/\D/g,'')&&String(v.cl).replace(/\D/g,''))?String(v.gr).replace(/\D/g,'')+String(v.cl).replace(/\D/g,'').padStart(2,'0'):'';
  const hr=(G('f_hrp').value.replace(/\D/g,'')||gk),subj=[],subjN={};if(!/^\d{2,4}$/.test(hr))return toast('담임반 학번 앞자리를 숫자로 넣어 주세요 (예: 305)');
  for(const l of G('f_subj').value.split('\n').map(x=>x.trim()).filter(Boolean)){const [k,...nn]=l.split(/\s+/);if(!/^\d+$/.test(k)||k.length!=hr.length)return toast(`수업반 "${l}"의 앞자리는 담임반처럼 숫자 ${hr.length}자리여야 해요`);if(!subj.includes(k))subj.push(k);if(nn.length)subjN[k]=nn.join(' ').slice(0,20)}
- await lock(b,()=>FB.batch([['set','config/main',v,true],['set','config/pub',{dom:v.dom,sch:v.sch,hr,subj,subjN}],['set','config/roster',{m}]]).then(()=>{G('f_ros').value=Object.entries(m).sort().map(([s,n])=>s+' '+n).join('\n');toast('설정을 저장했어요')},fail('저장하지 못했어요')))}
+ const sm={},old=(S.roster&&S.roster.sm)||{};let bad=0;for(const k of subj){const e=G('f_sros_'+k);if(!e){if(old[k])sm[k]=old[k];continue}const o={};e.value.split('\n').map(l=>l.trim().split(/[\s,\t]+/)).filter(a=>/^\d{4,6}$/.test(a[0])&&a[1]).forEach(a=>{if(a[0].startsWith(k))o[a[0]]=mask(a.slice(1).join(''));else bad++});sm[k]=o}
+ await lock(b,()=>FB.batch([['set','config/main',v,true],['set','config/pub',{dom:v.dom,sch:v.sch,hr,subj,subjN}],['set','config/roster',{m,sm}]]).then(()=>{G('f_ros').value=Object.entries(m).sort().map(([s,n])=>s+' '+n).join('\n');subj.forEach(k=>{const e=G('f_sros_'+k);if(e)e.value=Object.entries(sm[k]||{}).sort().map(([s,n])=>s+' '+n).join('\n')});toast(bad?`설정을 저장했어요 · 반 앞자리와 맞지 않는 학번 ${bad}줄은 뺐어요`:'설정을 저장했어요')},fail('저장하지 못했어요')))}
 const hrGuess=()=>{const g=String(S.cfg.gr||'').replace(/\D/g,''),k=String(S.cfg.cl||'').replace(/\D/g,'');return g&&k?g+k.padStart(2,'0'):''};
 function setPh(){const u=safeU(G('pl').value);FB.set('config/main',{photo:u},true).then(()=>toast(u?'사진을 바꿨어요':'기본 이미지로 돌아갔어요'),fail('저장하지 못했어요'))}
 function pic(f){const x=f.files[0];if(x)shrink(x,360,.8).then(d=>FB.set('config/main',{photo:d},true)).then(()=>toast('사진을 바꿨어요'),fail('사진을 바꾸지 못했어요'))}
