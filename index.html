@@ -67,12 +67,12 @@ const CT0=['1교시','2교시','3교시','4교시','점심시간','5교시','6�
 const LDK=['회장','부회장','공지사항 안내 리더'],LDN={'회장':'회장이','부회장':'부회장이','공지사항 안내 리더':'공지사항 안내 리더가'};
 const ATK=['결석','지각','조퇴','결과'];
 const FS=[['sch','학교명','text'],['yr','학년도','text'],['gr','학년','text'],['cl','반','text'],['dom','학생 구글 계정 형식 (@ 뒤 도메인, 예: school.hs.kr)','text'],['tn','담임 이름','text'],['tel1','담임 교무실 직통전화','tel'],['tel2','행정실 전화','tel'],['tel3','담임 핸드폰 안심번호','tel'],['ap1','누적 출결 시작일','date'],['ap2','누적 출결 종료일','date']];
-const FT=[['intro','인사말'],['motto','급훈'],['staff','학급 교사 정보 (교과·담당 선생님)'],['note','전화 시 유의사항'],['us','이것만은 기억하고 지켜줘요 · 학생용'],['up','이것만은 기억하고 지켜줘요 · 학부모용']];
+const FT=[['intro','담임반 인사말 (담임반 학생·학부모에게 보여요)'],['sintro','수업반 인사말 (수업반 학생에게 보여요)'],['motto','급훈 (담임반)'],['staff','담당 과목 (예: 국어, 현대문학 감상) — 선생님 이름 옆에 "○반 담임 · ○○ 담당"으로 보여요'],['note','전화 시 유의사항'],['us','이것만은 기억하고 지켜줘요 · 학생용'],['up','이것만은 기억하고 지켜줘요 · 학부모용']];
 const QS=[['시작이 반이다','속담 · 일단 시작하면 절반은 한 거예요'],['티끌 모아 태산','속담 · 작은 노력도 쌓이면 큰 힘이 돼요'],['우공이산(愚公移山)','사자성어 · 꾸준히 하면 산도 옮길 수 있어요'],['천 리 길도 한 걸음부터','속담 · 멀어 보여도 첫걸음이 시작이에요'],['실패는 성공의 어머니','속담 · 실패에서 배우면 다음이 쉬워져요'],['절차탁마(切磋琢磨)','사자성어 · 갈고닦으며 함께 성장해요'],['배우고 때때로 익히면 또한 기쁘지 아니한가','공자 · 복습이 공부를 내 것으로 만들어요'],['오늘 할 수 있는 일을 내일로 미루지 마라','벤저민 프랭클린 · 지금 하는 한 가지가 시험 때 힘이 돼요'],['고생 끝에 낙이 온다','속담 · 힘든 시험 기간도 지나가요'],['칠전팔기(七顚八起)','사자성어 · 일곱 번 넘어져도 여덟 번 일어나요'],['가는 말이 고와야 오는 말이 곱다','속담 · 친구에게 건네는 말이 관계를 만들어요'],['백지장도 맞들면 낫다','속담 · 모둠 활동은 함께할 때 가벼워져요']];
 const QP=[['세 살 버릇 여든까지 간다','속담 · 일상의 작은 습관을 함께 다져 주세요'],['급할수록 돌아가라','속담 · 입시 시기에는 조급함보다 대화가 먼저예요'],['말 한마디에 천 냥 빚도 갚는다','속담 · 따뜻한 한마디가 아이에게 큰 힘이 돼요'],['교학상장(敎學相長)','사자성어 · 가르치고 배우며 부모도 아이도 함께 자라요'],['호미로 막을 것을 가래로 막는다','속담 · 작은 고민은 일찍 나눌수록 가벼워요'],['가랑비에 옷 젖는 줄 모른다','속담 · 매일의 작은 관심이 쌓여요'],['우보천리(牛步千里)','사자성어 · 느려도 꾸준히 가면 멀리 가요'],['콩 심은 데 콩 나고 팥 심은 데 팥 난다','속담 · 들인 정성만큼 거두어요'],['돌다리도 두들겨 보고 건너라','속담 · 진로는 충분히 알아보고 정해요'],['아이 하나를 키우려면 온 마을이 필요하다','아프리카 속담 · 학교와 가정이 함께해요']];
 const AIN='<p class=ai>✨ AI는 구글 제미나이 무료 사용분이에요. 보낸 글이 구글 서비스 개선에 쓰일 수 있으니 이름·학번·성적은 넣지 마세요. 결과는 꼭 확인하고 고쳐서 쓰세요.</p>';
 
-let S={u:null,ready:false,owner:null,admin:false,prof:null,vm:'teacher',role:'student',cfg:{},pub:{},cons:{},cc:{},pk:{},fk:{},phk:{},tpl:null,photos:[],roster:{m:{}},posts:[],msgs:[],reads:{},users:[],dl:[],dr:[],stu:{},notes:{},votes:[],apps:[],files:[],pf:[],pfAll:[],gifts:[],allGifts:[]};
+let S={u:null,ready:false,owner:null,admin:false,prof:null,vm:'teacher',role:'student',cfg:{},pub:{},cons:{},cc:{},pk:{},fk:{},phk:{},tpl:null,photos:[],subs:[],roster:{m:{}},posts:[],msgs:[],reads:{},users:[],dl:[],dr:[],stu:{},notes:{},votes:[],apps:[],files:[],pf:[],pfAll:[],gifts:[],allGifts:[]};
 let view='home',H=['home'],hi=0,un=[],mt=0,cd=0,SEL=[],sdS='',EA='',RA='',GI='',IF={},attS='',done=new Set(),CK='hr';
 
 // ───────── 반(담임반 'hr' · 수업반 = 학번 앞자리) ─────────
@@ -113,6 +113,7 @@ function listen(){stop();const t=S.admin,id=uid(),s=S.prof&&S.prof.s,W=(p,cb)=>u
  W('config/main',d=>{S.cfg=d||{};rd()});W('config/pub',d=>{const o=JSON.stringify(myCls());S.pub=d||{};if(!t&&JSON.stringify(myCls())!=o)return setTimeout(listen,0);rd()});
  W('reads/'+id,d=>{S.reads=d||{};rd()});
  L('messages',t?{}:{where:['owner','==',id]},l=>{S.msgs=l.sort((a,b)=>a.ts-b.ts);rd()});
+ L('sub',t?{}:{where:['u','==',id]},l=>{S.subs=l.sort(byTs);rd()});
  L('votes',{},l=>{S.votes=l;rd()});
  if(hr){W('config/consult',d=>{S.cons=d||{};rd()});
   L('dlist',{},l=>{S.dl=l.sort((a,b)=>a.ts-b.ts);rd()});
@@ -215,7 +216,7 @@ const TILES=()=>T()?(HR()?[['notice','📌','알림장 편집'],['mine','🗓️
 const newIn=k=>{const o=CK;CK=k;let n=0;try{n=TILES().reduce((a,x)=>a+bcnt(x[0]),0)}finally{CK=o}return n};
 
 // ───────── 새 글 숫자 ─────────
-function bcnt(v){if(T())return v=='msg'||v=='stu'?unread():v=='con'&&HR()?S.apps.filter(a=>!a.pick).length:0;if(PV())return 0;
+function bcnt(v){if(T())return v=='lib'?subs().filter(x=>x.ts>Date.now()-864e5).length:v=='msg'||v=='stu'?unread():v=='con'&&HR()?S.apps.filter(a=>!a.pick).length:0;if(PV())return 0;
  if(v=='notice')return nItems().filter(x=>isNew(x.id)).length;
  if(v=='mine')return files().filter(f=>f.k=='m'&&isNew('F'+f.id)).length+pfs().filter(f=>isNew('F'+f.id)).length;
  if(v=='lib')return files().filter(f=>f.k=='l'&&isNew('F'+f.id)).length;
@@ -233,8 +234,10 @@ function brd(){const L=[],n=ntcP(),c=S.cons.csp,my=myApp();
 const V={};
 V.home=()=>{const t=T(),c=S.cfg,g=t?`${esc(c.tn||'담임')} 선생님`:P()?`${esc(nm())} 학부모님`:`${esc(nm())} 학생`,ph=safeImg(c.photo),h=HR(),tl=TILES();
  const tel=[['교무실','tel1'],['담임 안심번호','tel3'],['행정실','tel2']].filter(([l,k])=>c[k]).map(([l,k])=>`<a class="btn ghost sm" href="tel:${esc(String(c[k]).replace(/[^\d+]/g,''))}"><small style="display:block;font-size:11px">📞 ${l}</small>${esc(c[k])}</a>`).join('');
- const rule=[h?esc(P()?c.up:c.us):'',c.note?'📞 전화 시 유의사항\n'+esc(c.note):'',h&&c.staff?'📚 학급 교사 정보\n'+esc(c.staff):''].filter(Boolean).join('\n\n');
- return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div style="flex:1;min-width:0"><h3>${g}</h3><small>${esc(c.sch||'학교명 미설정')} ${h?esc(clsLine(c)):esc(cName(CK))}</small><p><b>${h?'담임':'수업'} ${esc(c.tn||'')} 선생님</b></p>${h&&c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${h&&c.intro?`<p class=pw>${esc(c.intro)}</p>`:''}</div>${tel?`<div class=ctc>${tel}</div>`:''}</div>`+brd()
+ const rule=[h?esc(P()?c.up:c.us):'',c.note?'📞 전화 시 유의사항\n'+esc(c.note):''].filter(Boolean).join('\n\n');
+ const cl=clsLine(c).split(' · ')[0],st=String(c.staff||'').trim(),role=[cl?cl+' 담임':'',st?st+(/(담당|교사)$/.test(st)?'':' 담당'):''].filter(Boolean).join(' · ');
+ const yr=String(c.yr||'').replace(/학년도$/,''),intro=h?c.intro:c.sintro;
+ return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div style="flex:1;min-width:0">${t?`<h3>${g}</h3><small>${esc(role)}</small><small>${esc(c.sch||'학교명 미설정')}${yr?' · '+esc(yr)+'학년도':''}</small>`:`<h3>${g}</h3><small>${esc(c.sch||'학교명 미설정')} ${h?esc(clsLine(c)):esc(cName(CK))}</small><p><b>${esc(c.tn||'')} 선생님</b> <small style="display:inline">${esc(role)}</small></p>`}${h&&c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${intro?`<p class=pw>${esc(intro)}</p>`:''}</div>${tel?`<div class=ctc>${tel}</div>`:''}</div>`+brd()
  +`<details class="card hw"><summary>📖 이것만은 기억하고 지켜줘요</summary><div class=pw>${rule||'선생님이 아직 입력하지 않았어요.'}</div></details>`
  +`<div class=grid style="margin-top:12px">${tl.map(x=>{const n=bcnt(x[0]);return `<button class=tile onclick="go('${x[0]}')"><i>${x[1]}</i>${x[2]}${n?`<span class=nb>${n}</span>`:''}</button>`}).join('')}</div>`};
 
@@ -300,22 +303,41 @@ const findF=(id,s)=>(s?(S.admin?S.pfAll:S.pf):S.files).find(f=>f.id==id);
 async function openF(id,s){const f=findF(id,s);if(!f)return;mk('F'+id);if(f.u){window.open(f.u,'_blank','noopener');return}
  const w=window.open('','_blank');try{const d=await FB.get(s?`pf/${s}/d/${id}`:`fdata/${id}`);if(!d||!d.data)throw 0;const u=URL.createObjectURL(await (await fetch(d.data)).blob());if(w)w.location=u;else location.href=u}catch(e){if(w)w.close();toast('파일을 열지 못했어요')}}
 function delF(id,s){FB.batch(s?[['del',`pf/${s}/f/${id}`],['del',`pf/${s}/d/${id}`]]:[['del','files/'+id],['del','fdata/'+id]]).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
-async function up(inp,k){const x=inp.files[0];if(!x)return;if(x.size>700*1024){inp.value='';return toast('700KB 이하 가벼운 파일만 올릴 수 있어요. 큰 파일은 링크로 등록해 주세요')}
+async function up(inp,k){const x=inp.files[0];if(!x)return;const isImg=/^image\/(jpeg|png|webp|gif|heic|heif)/.test(x.type);if(!isImg&&x.size>700*1024){inp.value='';return toast('PDF 등 사진이 아닌 파일은 700KB 이하만 올릴 수 있어요. 큰 파일은 링크로 등록해 주세요')}
  const base=x.name.replace(/\.[^.]+$/,''),n=(G(k=='m'?'mt':'lt').value.trim())||base,to=k=='m'?G('ml').value:'',id=FB.id();
- try{toast('올리는 중이에요…');const data=await readURL(x),meta={n,c:CK,t:x.type||'file',nm:x.name,u:'',ts:Date.now()};
+ try{toast('올리는 중이에요…');const data=isImg?await fitImg(x):await readURL(x),meta={n,c:CK,t:isImg?'image/jpeg':(x.type||'file'),nm:x.name,u:'',ts:Date.now()};
   if(to)await FB.batch([['set',`pf/${to}/d/${id}`,{data,c:CK}],['set',`pf/${to}/f/${id}`,{...meta,s:to}]]);else await FB.batch([['set','fdata/'+id,{data,c:CK}],['set','files/'+id,{...meta,k}]]);
   inp.value='';clr(k=='m'?'mt':'lt');toast(to?`${to} 학생에게만 올렸어요`:'올렸어요')}catch(e){inp.value='';fail('올리지 못했어요')(e)}}
 function addLk(k){const n=G(k=='m'?'mt':'lt').value.trim(),u=safeU(G(k=='m'?'mu':'lu').value),to=k=='m'?G('ml').value:'',id=FB.id();if(!n||!u)return toast('제목과 올바른 링크 주소를 모두 넣어 주세요');
  const meta={n,c:CK,u,t:'link',nm:n,ts:Date.now()};(to?FB.set(`pf/${to}/f/${id}`,{...meta,s:to}):FB.set('files/'+id,{...meta,k})).then(()=>{clr(k=='m'?'mt':'lt',k=='m'?'mu':'lu');toast('링크를 등록했어요')},fail('등록하지 못했어요'))}
 V.mine=()=>{const t=T(),pub=files().filter(f=>f.k=='m'),priv=pfs();
- return (t?`<div class=card><h4>📎 학생 자료 올리기·링크 등록</h4><input id=mt placeholder="자료 제목 (예: 10월 모의고사 성적표)"><input id=mu type=url placeholder="자료 링크 주소 https://"><small>받을 학생 (개인 자료는 한 명만 고르세요)</small><select id=ml>${rOpts('','전체 학생')}</select><button class="btn sm" onclick="addLk('m')">링크로 등록</button><small>또는 가벼운 파일(이미지·PDF, 700KB 이하)을 바로 올려요. 위의 제목·받을 학생이 적용돼요.</small><input type=file accept="image/*,application/pdf" onchange="up(this,'m')"><small>큰 파일은 구글 드라이브 등에 올린 뒤 공유 링크로 등록하세요. 개인 성적표·시간표는 드라이브에서 해당 학생(또는 학부모) 구글 계정에만 공유한 뒤 링크를 등록해 주세요.</small></div>`:'')
+ return (t?`<div class=card><h4>📎 학생 자료 올리기·링크 등록</h4><input id=mt placeholder="자료 제목 (예: 10월 모의고사 성적표)"><input id=mu type=url placeholder="자료 링크 주소 https://"><small>받을 학생 (개인 자료는 한 명만 고르세요)</small><select id=ml>${rOpts('','전체 학생')}</select><button class="btn sm" onclick="addLk('m')">링크로 등록</button><small>또는 파일을 바로 올려요(사진은 크기 상관없이 앱이 줄여서 올리고, PDF는 700KB 이하). 위의 제목·받을 학생이 적용돼요.</small><input type=file accept="image/*,application/pdf" onchange="up(this,'m')"><small>큰 파일은 구글 드라이브 등에 올린 뒤 공유 링크로 등록하세요. 개인 성적표·시간표는 드라이브에서 해당 학생(또는 학부모) 구글 계정에만 공유한 뒤 링크를 등록해 주세요.</small></div>`:'')
  +`<div class=card><h4>📎 ${t?'전체 학생에게 올린 자료':'선생님이 올린 자료'}</h4>${pub.map(f=>fr(f,0)).join('')||'<p class=note>아직 올라온 자료가 없어요</p>'}</div><div class=card><h4>🔒 ${t?'학생별 개인 자료':P()?'자녀에게만 온 자료':'나에게만 온 자료'}</h4>${priv.map(f=>fr(f,1)).join('')||'<p class=note>아직 없어요</p>'}</div><p class=note>🔒 개인 자료는 ${t?(HR()?'받는 학생과 그 학부모만':'받는 학생만'):P()?'자녀와 보호자만':HR()?'나와 우리 보호자만':'나만'} 볼 수 있어요</p>`};
 V.lib=()=>{const t=T(),ln=[['🧾','나이스 바로가기','https://www.neis.go.kr'],...(S.cfg.apps||[]).map(a=>['📱',a.n,a.u])];
- return (t?`<div class=card><h4>📎 양식·자료 올리기·링크 등록</h4><input id=lt placeholder="제목 (예: 현장체험학습 동의서)"><input id=lu type=url placeholder="링크 주소 https://"><button class="btn sm" onclick="addLk('l')">링크로 등록</button><small>또는 가벼운 파일(이미지·PDF, 700KB 이하)을 바로 올려요.</small><input type=file accept="image/*,application/pdf" onchange="up(this,'l')"><small>큰 파일은 드라이브·학교 홈페이지 등의 공유 링크로 등록하세요. 공용 양식만 "링크가 있는 모든 사용자"로 공유하세요.</small></div>`:'')
+ return (t?`<div class=card><h4>📎 양식·자료 올리기·링크 등록</h4><input id=lt placeholder="제목 (예: 현장체험학습 동의서)"><input id=lu type=url placeholder="링크 주소 https://"><button class="btn sm" onclick="addLk('l')">링크로 등록</button><small>또는 파일을 바로 올려요(사진은 크기 상관없이 앱이 줄여서 올리고, PDF는 700KB 이하).</small><input type=file accept="image/*,application/pdf" onchange="up(this,'l')"><small>큰 파일은 드라이브·학교 홈페이지 등의 공유 링크로 등록하세요. 공용 양식만 "링크가 있는 모든 사용자"로 공유하세요.</small></div>`:'')
  +`<div class=card><h4>📄 양식·자료</h4>${files().filter(f=>f.k=='l').map(f=>fr(f,0)).join('')||'<p class=note>선생님이 양식을 올리면 여기에 나타나요.</p>'}</div><div class=grid2>${ln.map(l=>`<a class="btn ghost lk" href="${esc(safeU(l[2]))}" target=_blank rel=noopener><i>${l[0]}</i>${esc(l[1])}</a>`).join('')}</div>`
- +(t?`<div class=card><h4>📱 학교 앱 바로가기 편집</h4>${(S.cfg.apps||[]).map((a,i)=>`<div class=row><span>${esc(a.n)}</span><button class="btn ghost sm" onclick="delApp(${i})">삭제</button></div>`).join('')}<input id=an placeholder="앱 이름"><input id=au type=url placeholder="웹 주소 https://"><button class="btn sm" onclick="addApp()">추가</button></div>`:'')};
+ +(t?`<div class=card><h4>📱 학교 앱 바로가기 편집</h4>${(S.cfg.apps||[]).map((a,i)=>`<div class=row><span>${esc(a.n)}</span><button class="btn ghost sm" onclick="delApp(${i})">삭제</button></div>`).join('')}<input id=an placeholder="앱 이름"><input id=au type=url placeholder="웹 주소 https://"><button class="btn sm" onclick="addApp()">추가</button></div>`:'')+(T()?subT():PV()||P()?'':subS())};
 function addApp(){const n=G('an').value.trim(),u=safeU(G('au').value);if(!n||!u)return toast('이름과 주소를 모두 넣어 주세요');FB.set('config/main',{apps:[...(S.cfg.apps||[]),{n,u}]},true).then(()=>{clr('an','au');toast('추가했어요')},fail('저장하지 못했어요'))}
 function delApp(i){const a=(S.cfg.apps||[]).slice();a.splice(i,1);FB.set('config/main',{apps:a},true).catch(fail('저장하지 못했어요'))}
+
+// ───────── 과제 제출(학생 → 선생님) ─────────
+// 사진: 휴대폰 사진 그대로(원본 80MB까지) 고르면 앱이 알아서 → 긴 쪽 2000픽셀 이하 JPG로 줄여 900KB 이하로 저장(파이어스토어 문서 한도 1MB)
+const SUB_MAXIN=80*1024*1024,SUB_PX=2000,SUB_MAX=900000;
+const subs=()=>S.subs.filter(inK);
+const SUBRULE=`사진: 휴대폰으로 찍은 사진을 그대로 고르면 돼요. 직접 줄이거나 압축할 필요 없이 앱이 긴 쪽 ${SUB_PX}픽셀 이하, 약 0.9MB 이하 JPG로 알아서 줄여서 올려요. 링크: https:// 로 시작하는 주소(구글 드라이브 등은 "링크가 있는 사용자 보기"로 공유).`;
+async function fitImg(f){for(const [px,q] of [[SUB_PX,.85],[SUB_PX,.75],[1700,.72],[1400,.7],[1200,.65],[1000,.6],[800,.5],[640,.45]]){const d=await shrink(f,px,q);if(d.length<=SUB_MAX)return d}throw new Error('too big')}
+const subRow=(x,t)=>`<div class=row><span style="display:flex;gap:8px;align-items:center;min-width:0">${x.th?`<img src="${safeImg(x.th)}" alt="" style="width:52px;height:52px;object-fit:cover;border-radius:8px;cursor:pointer" onclick="openSub('${x.id}')">`:'<span style="font-size:26px">🔗</span>'}<span style="min-width:0">${t?`<b>${esc(x.s)} ${esc(x.n)}</b> · `:''}${esc(x.t||'과제')}<small>${md(x.ts)}${x.link?` · <a href="${esc(safeU(x.link))}" target=_blank rel=noopener>링크 열기</a>`:''}</small></span></span><span>${x.th?`<button class="btn ghost sm" onclick="openSub('${x.id}')">보기</button> `:''}<button class="btn ghost sm" onclick="delSub('${x.id}')">${t?'삭제':'제출 취소'}</button></span></div>`;
+const subS=()=>{const L=subs();return `<div class=card><h4>📤 과제 제출 <small style="display:inline">(선생님만 볼 수 있어요)</small></h4><input id=sbt placeholder="과제 이름 (예: 시 감상문 1차)"><input id=sbl type=url placeholder="링크 주소 https:// (사진 대신 링크로 낼 때)"><small>사진으로 낼 때는 아래에서 고르세요</small><input type=file id=sbf accept="image/*"><button class="btn blk" onclick="subUp(this)">제출하기</button><p class=ai>📏 ${SUBRULE}</p></div><div class=card><h4>📁 내가 낸 과제 (${L.length})</h4>${L.map(x=>subRow(x,0)).join('')||'<p class=note>아직 낸 과제가 없어요</p>'}</div>`};
+const subT=()=>{const L=subs();return `<div class=card><h4>📥 학생 과제 제출함 <small style="display:inline">${esc(cName(CK))} · ${L.length}건</small></h4>${L.map(x=>subRow(x,1)).join('')||'<p class=note>아직 제출된 과제가 없어요</p>'}<p class=ai>📏 학생 안내 기준 — ${SUBRULE}</p></div>`};
+async function subUp(b){if(pv())return;const t=G('sbt').value.trim(),link=G('sbl').value.trim()?safeU(G('sbl').value):'',f=G('sbf').files[0],pr=S.prof;
+ if(!t)return toast('과제 이름을 적어 주세요');if(!f&&!link)return toast('사진을 고르거나 링크를 넣어 주세요');if(G('sbl').value.trim()&&!link)return toast('링크 주소가 올바르지 않아요');
+ if(f){if(f.type&&!/^image\//.test(f.type))return toast('사진 파일만 낼 수 있어요');if(f.size>SUB_MAXIN)return toast('사진이 너무 커요(80MB 넘음). 다른 사진을 골라 주세요')}
+ await lock(b,async()=>{try{toast('제출하는 중이에요…');const id=FB.id(),base={c:CK,u:uid(),s:pr.s,n:pr.n,t,link,ts:Date.now()},ops=[];
+  if(f){const data=await fitImg(f),th=await shrink(f,240,.7);base.th=th;ops.push(['set','subd/'+id,{c:CK,u:uid(),data}])}
+  ops.push(['set','sub/'+id,base]);await FB.batch(ops);clr('sbt','sbl');const fi=G('sbf');if(fi)fi.value='';toast('과제를 제출했어요')}catch(e){console.warn(e);toast(e&&e.message=='too big'?'사진을 충분히 줄이지 못했어요. 다른 사진으로 해 주세요':e&&e.type=='error'?'이 사진 형식은 열 수 없어요. 휴대폰 카메라 사진(JPG)으로 다시 골라 주세요':'제출하지 못했어요'+(e&&e.code?' ('+e.code+')':''))}})}
+async function openSub(id){const x=S.subs.find(y=>y.id==id),M=G('modal');if(!x)return;M.innerHTML=`<div class=modal onclick="G('modal').innerHTML=''"><div class=card style="text-align:center"><p>불러오는 중…</p></div></div>`;
+ try{const d=await FB.get('subd/'+id);M.innerHTML=`<div class=modal onclick="G('modal').innerHTML=''"><div class=card style="text-align:center;max-width:900px;padding:8px"><img src="${safeImg(d.data)}" style="max-width:100%;max-height:75vh;border-radius:10px" alt=""><p>${S.admin?esc(x.s+' '+x.n)+' · ':''}${esc(x.t||'')} <small style="display:inline">${md(x.ts)}</small></p><a class="btn sm" href="${safeImg(d.data)}" download="과제_${esc(x.s)}_${id}.jpg" onclick="event.stopPropagation()">⬇️ 내려받기</a> <button class="btn ghost sm">닫기</button></div></div>`}catch(e){M.innerHTML='';toast('사진을 불러오지 못했어요')}}
+function delSub(id){const x=S.subs.find(y=>y.id==id);if(!x)return;FB.batch([['del','sub/'+id],...(x.th?[['del','subd/'+id]]:[])]).then(()=>toast(S.admin?'삭제했어요':'제출을 취소했어요'),fail('지우지 못했어요'))}
 
 // ───────── 출결 ─────────
 const ATC=['질병','미인정','기타','인정'];
@@ -515,7 +537,7 @@ async function showPh(id){mk('P'+id);const p=S.photos.find(x=>x.id==id),M=G('mod
 function delPh(id){FB.batch([['del','photos/'+id],['del','pdata/'+id]]).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
 
 // ───────── 시작 ─────────
-async function onUser(u){stop();S={...S,u,prof:null,admin:false,owner:null,ready:!u,cfg:{},pub:{},cons:{},cc:{},pk:{},fk:{},phk:{},tpl:null,photos:[],roster:{m:{}},posts:[],msgs:[],reads:{},users:[],dl:[],dr:[],stu:{},notes:{},votes:[],apps:[],files:[],pf:[],pfAll:[],gifts:[],allGifts:[]};draw();if(!u)return;
+async function onUser(u){stop();S={...S,u,prof:null,admin:false,owner:null,ready:!u,cfg:{},pub:{},cons:{},cc:{},pk:{},fk:{},phk:{},tpl:null,photos:[],subs:[],roster:{m:{}},posts:[],msgs:[],reads:{},users:[],dl:[],dr:[],stu:{},notes:{},votes:[],apps:[],files:[],pf:[],pfAll:[],gifts:[],allGifts:[]};draw();if(!u)return;
  try{const [o,p,pb]=await Promise.all([FB.get('config/owner'),FB.get('users/'+u.uid),FB.get('config/pub')]);S.owner=o;S.admin=!!o&&o.uid==u.uid;S.prof=p;S.pub=pb||{}}catch(e){console.warn(e);toast('자료를 불러오지 못했어요. 보안 규칙을 게시했는지 확인해 주세요')}
  S.ready=true;if(S.admin||S.prof){listen();view='home';H=['home'];hi=0;if(S.admin&&!S.pub.dom){view='adm';H=['home','adm'];hi=1;setTimeout(()=>toast('먼저 학교·반·학생 계정 형식을 설정해 주세요'),400)}}draw();scrollTo(0,0)}
 function start(){if(!FB.ready)return draw();if(FB.redirect)FB.redirect().catch(e=>toast('로그인하지 못했어요: '+(e.code||e.message)));FB.onAuth(onUser)}
