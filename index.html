@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>재이미나는 학급의 스마트한 알림장</title>
+<title>재이미나는 우리반 스마트한 알림장</title>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <style>
 :root{--bgimg:url("bg.jpg");--ink:#3b2a1a;--sub:#7a6450;--card:#fffaf0;--line:#ecd9b0;--veil:rgba(255,243,210,.84);--page:#fde9b8;--wood:#a8672f;--board:#2f5a46;--chalk:#f6f3e8;--acc:#f2a33a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -13,7 +13,7 @@ h3,h4,.btn,.chip,.tile,.slot,.big{font-family:'Jua','Apple SD Gothic Neo','Malgu
 h3{margin:0 0 6px;font-size:19px}h4{margin:4px 0;font-size:17px}p{margin:4px 0}small,.note{color:var(--sub);font-size:12.5px}small{display:block}
 #hd{position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
 .bar{display:flex;align-items:center;gap:8px;background:var(--wood);color:#fff6df;padding:8px 12px;border-bottom:3px solid #7a4a20}
-.bar b{flex:1;font:19px 'Jua',sans-serif}.bar button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:4px 6px}.bar #who{font-size:12px}
+.bar b{flex:1;font:19px/1.2 'Jua',sans-serif}@media(max-width:480px){.bar b{font-size:15px}.bar #who{font-size:11px}}.bar button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:4px 6px}.bar #who{font-size:12px}
 .lo{border:1px solid #fff6df88!important;border-radius:99px;font-size:13px!important}
 #al button{display:block;width:100%;background:#d2493c;color:#fff;border:0;padding:8px 12px;font:15px 'Jua',sans-serif;cursor:pointer}
 .hero{aspect-ratio:1408/768;max-width:760px;margin:0 auto;background:var(--bgimg) center/cover;border-radius:0 0 26px 26px;border-bottom:6px solid var(--wood)}
@@ -54,7 +54,7 @@ input,textarea,select{width:100%;margin:5px 0;padding:10px;font:16px inherit;fon
 .prb{display:flex;justify-content:flex-end;margin:4px 0 -4px}.ponly{display:none}
 @media print{@page{size:A4;margin:12mm}#hd,#nav,.hero,button,#toast,.chips,.prb,#al,input[type=file]{display:none!important}body{background:#fff}body::before{display:none}.card,.board{box-shadow:none;break-inside:avoid}.ponly{display:block;margin-bottom:8px}.wrap{padding-bottom:0}#sig{padding:6px 0 0}details>summary{list-style:none}}
 </style></head><body>
-<header id="hd"><div class="bar"><b id="ttl">스마트 알림장</b><span id="who"></span><button id="pr" class="lo" onclick="doPrint()" aria-label="이 화면 인쇄">🖨️ 인쇄</button><button id="lo" class="lo" onclick="logout()">로그아웃</button></div><div id="al"></div></header>
+<header id="hd"><div class="bar"><b id="ttl">재이미나는 우리반 스마트한 알림장</b><span id="who"></span><button id="pr" class="lo" onclick="doPrint()" aria-label="이 화면 인쇄">🖨️ 인쇄</button><button id="lo" class="lo" onclick="logout()">로그아웃</button></div><div id="al"></div></header>
 <div id="app"></div><footer id="sig">made by 2026.10.JJI</footer><div id="modal"></div><div id="toast"></div>
 <nav id="nav" style="display:none"><button onclick="bk()">◀<br>뒤로</button><button onclick="fw()">▶<br>앞으로</button><button onclick="go('home')">🏠<br>홈</button><button onclick="go('msg')">✉️<br>메시지<span class="bd" id="bd" style="display:none"></span></button></nav>
 
@@ -193,17 +193,17 @@ async function reg(b){const er=m=>G('err').textContent=m,p=S.role=='parent',s=G(
  await lock(b,async()=>{try{await FB.batch(ops);S.prof=prof;listen();countVisit();view='home';H=['home'];hi=0;draw();toast('가입했어요. 환영해요!')}catch(e){console.warn(e);er(p?'가입하지 못했어요. 학번과 자녀 이름이 선생님의 명렬표와 같은지 확인해 주세요.':'가입하지 못했어요. 이미 등록된 학번인지, 학번·이름이 선생님의 명렬표와 같은지 확인해 주세요.')}})}
 
 // ───────── 화면 그리기 ─────────
-const TT={home:'스마트 알림장',notice:'알림장',mine:'내 자료',lead:'대표 관리',att:'누적 출결·디딤돌',pho:'학급 사진',lib:'자료실',con:'상담 예약',msg:'메시지',gift:'선생님이 보내는 선물',stu:'학생·학부모 관리',sd:'학생별 자료',intake:'기초자료·상담 정리',adm:'교사 설정'},TONLY=['stu','sd','intake','adm','lead'];
+const TT={home:'재이미나는 우리반 스마트한 알림장',notice:'알림장',mine:'내 자료',lead:'대표 관리',att:'누적 출결·디딤돌',pho:'학급 사진',lib:'자료실',con:'상담 예약',msg:'메시지',gift:'선생님이 보내는 선물',stu:'학생·학부모 관리',sd:'학생별 자료',intake:'기초자료·상담 정리',adm:'교사 설정'},TONLY=['stu','sd','intake','adm','lead'];
 function draw(keep){const a=G('app'),saved=keep?grab(a):null,y=scrollY,fid=document.activeElement&&document.activeElement.id,L=!S.u||!S.ready||!(S.admin||S.prof);
  G('nav').style.display=L?'none':'flex';G('lo').style.display=S.u?'':'none';G('pr').style.display=L?'none':'';
- if(L){a.innerHTML=gate();G('ttl').textContent='스마트 알림장';G('who').textContent='';G('al').innerHTML=''}
+ if(L){a.innerHTML=gate();G('ttl').textContent='재이미나는 우리반 스마트한 알림장';G('who').textContent='';G('al').innerHTML=''}
  else{const C=myCls();if(C.length&&!C.includes(CK))CK=C[0];if(TONLY.includes(view)&&!T()||HRONLY.includes(view)&&!HR())view='home';
   const cs=C.length>1?`<div class="chips wr">${C.map(k=>{const n=S.admin?0:newIn(k);return `<button class="chip ${k==CK?'on':''}" onclick="setCK('${k}')">${k=='hr'?'🏠 ':'📘 '}${esc(cName(k))}${n?` <b style="color:#d2493c">●${n}</b>`:''}</button>`}).join('')}</div>`:'';
   const M=HR()?[['teacher','교사 모드'],['student','학생 화면'],['parent','학부모 화면']]:[['teacher','교사 모드'],['student','학생 화면']];
   const sw=cs+(S.admin?chips(M.map(x=>x[1]),(c,i)=>M[i][0]==S.vm,(c,i)=>`setVm('${M[i][0]}')`):'');
   let h='';try{h=!C.length?`<div class=card><h3>😥 반 목록에 없는 학번이에요</h3><p>가입한 학번(${esc(S.prof.s)})이 선생님의 담임반·수업반 어디에도 없어요. 선생님께 학번을 고쳐 달라고 하거나 계정을 초기화해 달라고 말씀해 주세요.</p></div>`:(V[view]||V.home)()}catch(e){console.error(e);h='<div class=card>화면을 그리지 못했어요. 새로고침해 주세요.</div>'}
-  a.innerHTML=(view=='home'?HERO:'')+`<main class=wrap>${sw}<div class=prb><button class="btn ghost sm" onclick="doPrint()">🖨️ 이 화면 인쇄</button></div><div class=ponly><h3>${esc(S.cfg.sch||'스마트 알림장')} ${esc(cName(CK))} · ${esc(view=='mine'&&P()?'자녀 자료':TT[view]||'스마트 알림장')}</h3><small>${new Date().toLocaleDateString('ko-KR')} 인쇄</small></div>${h}</main>`;
-  G('ttl').textContent=view=='stu'&&!HR()?'학생 관리':view=='mine'?(T()?'학생 자료':P()?'자녀 자료':'내 자료'):TT[view]||'스마트 알림장';
+  a.innerHTML=(view=='home'?HERO:'')+`<main class=wrap>${sw}<div class=prb><button class="btn ghost sm" onclick="doPrint()">🖨️ 이 화면 인쇄</button></div><div class=ponly><h3>${esc(S.cfg.sch||'재이미나는 우리반 스마트한 알림장')} ${esc(cName(CK))} · ${esc(view=='mine'&&P()?'자녀 자료':TT[view]||'재이미나는 우리반 스마트한 알림장')}</h3><small>${new Date().toLocaleDateString('ko-KR')} 인쇄</small></div>${h}</main>`;
+  G('ttl').textContent=view=='stu'&&!HR()?'학생 관리':view=='mine'?(T()?'학생 자료':P()?'자녀 자료':'내 자료'):TT[view]||'재이미나는 우리반 스마트한 알림장';
   G('who').textContent=(schS()?schS()+' ':'')+(S.admin?`${S.cfg.tn||'담임'} · 교사${PV()?` (${RL[S.vm]} 화면)`:''}`:`${S.prof.n} · ${RL[S.prof.r]}`);
   const n=unread(),fN=S.prof&&S.prof.r=='student'&&!S.admin?posts().filter(p=>p.k=='fn'&&isNew(p.id)).length:0;
   G('al').innerHTML=(n&&view!='msg'&&view!='sd'?`<button onclick="go('msg')">📨 ${S.admin?'학생·학부모가 보낸':'선생님이 보낸'} 새 메시지 ${n}건 · 눌러서 읽어 보세요</button>`:'')+(fN&&view!='notice'?`<button style="background:#3b7dd8" onclick="go('notice')">📣 학급 친구들에게서 온 알림 ${fN}건 · 눌러서 보세요</button>`:'');
