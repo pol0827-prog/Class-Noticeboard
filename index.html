@@ -79,6 +79,7 @@ const T=()=>S.admin&&S.vm=='teacher',PV=()=>S.admin&&S.vm!='teacher',P=()=>PV()?
 const myS=()=>PV()?'':(S.prof&&S.prof.s||''),uid=()=>S.u&&S.u.uid,nm=()=>PV()?'홍0동':S.prof.n;
 const pv=()=>S.admin&&(toast('교사·미리보기 화면에서는 쓸 수 없어요'),true);
 const isNew=id=>!S.admin&&!S.reads[id];
+const clsLine=c=>{const g=String(c.gr||'').replace(/학년$/,''),k=String(c.cl||'').replace(/반$/,''),y=String(c.yr||'').replace(/학년도$/,'');return [g?g+'학년':'',k?k+'반':''].filter(Boolean).join(' ')+(y?' · '+y+'학년도':'')};
 const okU=u=>/^https?:\/\//i.test(u)?u:'https://'+u;
 const safeU=x=>{if(!x)return '';try{const u=new URL(okU(String(x).trim()));if(!/^https?:$/.test(u.protocol))return '';return u.href.replace(/['"()<>]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase())}catch(e){return ''}};
 const safeImg=x=>/^data:image\/(png|jpe?g|gif|webp);base64,[A-Za-z0-9+/=]+$/.test(x||'')?x:safeU(x);
@@ -205,7 +206,7 @@ function brd(){const L=[],n=ntcP(),c=S.cons.csp,my=myApp();
 const V={};
 V.home=()=>{const t=T(),c=S.cfg,g=t?`${esc(c.tn||'담임')} 선생님`:P()?`${esc(nm())} 학부모님`:`${esc(nm())} 학생`,ph=safeImg(c.photo);
  const tl=t?[['notice','📌','알림장 편집'],['mine','🗓️','학생 자료 편집'],['att','✅','출결 편집'],['lib','📚','자료실 편집'],['con','💬','상담 일정'],['msg','✉️','메시지'],['gift','🎁','선물 보내기'],['intake','📥','기초자료·상담 정리'],['stu','🗂️','학생 관리'],['adm','⚙️','설정']]:[['notice','📌','알림장'],['mine','🗓️',P()?'자녀 자료':'내 자료'],['att','✅','누적 출결'],['lib','📚','자료실'],['con','💬','상담 예약'],['msg','✉️','메시지'],['gift','🎁','선생님 선물']];
- return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div><h3>${g}</h3><small>${esc(c.sch||'학교명 미설정')} ${esc(c.gr||'')}학년 ${esc(c.cl||'')}반 · ${esc(c.yr||'')}학년도</small><p><b>담임 ${esc(c.tn||'')} 선생님</b></p>${c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${c.intro?`<p class=pw>${esc(c.intro)}</p>`:''}</div></div>`+brd()
+ return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div><h3>${g}</h3><small>${esc(c.sch||'학교명 미설정')} ${esc(clsLine(c))}</small><p><b>담임 ${esc(c.tn||'')} 선생님</b></p>${c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${c.intro?`<p class=pw>${esc(c.intro)}</p>`:''}</div></div>`+brd()
  +`<div class=two><details class="card hw"><summary>📖 이것만은 기억하고 지켜줘요</summary><div class=pw>${esc(P()?c.up:c.us)||'선생님이 아직 입력하지 않았어요.'}</div></details><details class="card hw"><summary>📞 연락처</summary>${[['교무실 직통','tel1'],['행정실','tel2'],['담임 안심번호','tel3']].map(([l,k])=>`<div class=row><small>${l}</small>${c[k]?`<a class="btn sm" href="tel:${esc(String(c[k]).replace(/[^\d+]/g,''))}">${esc(c[k])}</a>`:'<small>등록 전</small>'}</div>`).join('')}${c.staff?`<div class=row><small class=pw>📚 ${esc(c.staff)}</small></div>`:''}${c.note?`<div class="warn pw">📌 전화 시 유의사항\n${esc(c.note)}</div>`:''}</details></div>`
  +`<div class=grid style="margin-top:12px">${tl.map(x=>{const n=bcnt(x[0]);return `<button class=tile onclick="go('${x[0]}')"><i>${x[1]}</i>${x[2]}${n?`<span class=nb>${n}</span>`:''}</button>`}).join('')}</div>`};
 
