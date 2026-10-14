@@ -237,9 +237,9 @@ const V={};
 V.home=()=>{const t=T(),c=S.cfg,g=t?`${esc(c.tn||'담임')} 선생님`:P()?`${esc(nm())} 학부모님`:`${esc(nm())} 학생`,ph=safeImg(c.photo),h=HR(),tl=TILES();
  const tel=[['교무실','tel1'],['담임 안심번호','tel3'],['행정실','tel2']].filter(([l,k])=>c[k]).map(([l,k])=>`<a class="btn ghost sm" href="tel:${esc(String(c[k]).replace(/[^\d+]/g,''))}"><small style="display:block;font-size:11px">📞 ${l}</small>${esc(c[k])}</a>`).join('');
  const rule=[h?esc(P()?c.up:c.us):'',c.note?'📞 전화 시 유의사항\n'+esc(c.note):''].filter(Boolean).join('\n\n');
- const cl=clsLine(c).split(' · ')[0],st=String(c.staff||'').trim(),role=[cl?cl+' 담임':'',st?st+(/(담당|교사)$/.test(st)?'':' 담당'):''].filter(Boolean).join(' · ');
- const yr=String(c.yr||'').replace(/학년도$/,''),intro=h?c.intro:c.sintro;
- return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div style="flex:1;min-width:0">${t?`<h3>${g}</h3><small>${esc(role)}</small><small>${esc(c.sch||'학교명 미설정')}${yr?' · '+esc(yr)+'학년도':''}</small>`:`<h3>${g}</h3><small>${esc(c.sch||'학교명 미설정')} ${h?esc(clsLine(c)):esc(cName(CK))}</small><p><b>${esc(c.tn||'')} 선생님</b> <small style="display:inline">${esc(role)}</small></p>`}${h&&c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${intro?`<p class=pw>${esc(intro)}</p>`:''}</div>${tel?`<div class=ctc>${tel}</div>`:''}</div>`+brd()
+ const yr=String(c.yr||'').replace(/학년도$/,''),cl=clsLine(c).split(' · ')[0],st=String(c.staff||'').trim(),role=[cl?(yr?yr+'학년도 ':'')+cl+' 담임':'',st?st+(/(담당|교사)$/.test(st)?'':' 담당'):''].filter(Boolean).join(' · ');
+ const intro=h?c.intro:c.sintro;
+ return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div style="flex:1;min-width:0">${t?`<h3>${g}</h3><small>${esc(role)}</small><small>${esc(c.sch||'학교명 미설정')}</small>`:`<h3>${g}</h3><small>${esc(c.sch||'학교명 미설정')} ${h?esc(cl):esc(cName(CK))}</small><p><b>${esc(c.tn||'')} 선생님</b> <small style="display:inline">${esc(role)}</small></p>`}${h&&c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${intro?`<p class=pw>${esc(intro)}</p>`:''}</div>${tel?`<div class=ctc>${tel}</div>`:''}</div>`+brd()
  +`<details class="card hw"><summary>📖 이것만은 기억하고 지켜줘요</summary><div class=pw>${rule||'선생님이 아직 입력하지 않았어요.'}</div></details>`
  +`<div class=grid style="margin-top:12px">${tl.map(x=>{const n=bcnt(x[0]);return `<button class=tile onclick="go('${x[0]}')"><i>${x[1]}</i>${x[2]}${n?`<span class=nb>${n}</span>`:''}</button>`}).join('')}</div>`};
 
