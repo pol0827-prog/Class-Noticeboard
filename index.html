@@ -93,6 +93,7 @@ const myS=()=>PV()?'':(S.prof&&S.prof.s||''),uid=()=>S.u&&S.u.uid,nm=()=>PV()?'�
 const pv=()=>S.admin&&(toast('교사·미리보기 화면에서는 쓸 수 없어요'),true);
 const isNew=id=>!S.admin&&!S.reads[id];
 const clsLine=c=>{const g=String(c.gr||'').replace(/학년$/,''),k=String(c.cl||'').replace(/반$/,''),y=String(c.yr||'').replace(/학년도$/,'');return [g?g+'학년':'',k?k+'반':''].filter(Boolean).join(' ')+(y?' · '+y+'학년도':'')};
+const schS=()=>String(S.cfg.sch||'').trim().replace(/고등학교$/,'고').replace(/중학교$/,'중').replace(/초등학교$/,'초');
 const okU=u=>/^https?:\/\//i.test(u)?u:'https://'+u;
 const safeU=x=>{if(!x)return '';try{const u=new URL(okU(String(x).trim()));if(!/^https?:$/.test(u.protocol))return '';return u.href.replace(/['"()<>]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase())}catch(e){return ''}};
 const safeImg=x=>/^data:image\/(png|jpe?g|gif|webp);base64,[A-Za-z0-9+/=]+$/.test(x||'')?x:safeU(x);
@@ -201,7 +202,7 @@ function draw(keep){const a=G('app'),saved=keep?grab(a):null,y=scrollY,fid=docum
   let h='';try{h=!C.length?`<div class=card><h3>😥 반 목록에 없는 학번이에요</h3><p>가입한 학번(${esc(S.prof.s)})이 선생님의 담임반·수업반 어디에도 없어요. 선생님께 학번을 고쳐 달라고 하거나 계정을 초기화해 달라고 말씀해 주세요.</p></div>`:(V[view]||V.home)()}catch(e){console.error(e);h='<div class=card>화면을 그리지 못했어요. 새로고침해 주세요.</div>'}
   a.innerHTML=(view=='home'?HERO:'')+`<main class=wrap>${sw}<div class=prb><button class="btn ghost sm" onclick="doPrint()">🖨️ 이 화면 인쇄</button></div><div class=ponly><h3>${esc(S.cfg.sch||'스마트 알림장')} ${esc(cName(CK))} · ${esc(view=='mine'&&P()?'자녀 자료':TT[view]||'스마트 알림장')}</h3><small>${new Date().toLocaleDateString('ko-KR')} 인쇄</small></div>${h}</main>`;
   G('ttl').textContent=view=='mine'&&P()?'자녀 자료':TT[view]||'스마트 알림장';
-  G('who').textContent=S.admin?`${S.cfg.tn||'담임'} · 교사${PV()?` (${RL[S.vm]} 화면)`:''}`:`${S.prof.n} · ${RL[S.prof.r]}`;
+  G('who').textContent=(schS()?schS()+' ':'')+(S.admin?`${S.cfg.tn||'담임'} · 교사${PV()?` (${RL[S.vm]} 화면)`:''}`:`${S.prof.n} · ${RL[S.prof.r]}`);
   const n=unread(),fN=S.prof&&S.prof.r=='student'&&!S.admin?posts().filter(p=>p.k=='fn'&&isNew(p.id)).length:0;
   G('al').innerHTML=(n&&view!='msg'&&view!='sd'?`<button onclick="go('msg')">📨 ${S.admin?'학생·학부모가 보낸':'선생님이 보낸'} 새 메시지 ${n}건 · 눌러서 읽어 보세요</button>`:'')+(fN&&view!='notice'?`<button style="background:#3b7dd8" onclick="go('notice')">📣 학급 친구들에게서 온 알림 ${fN}건 · 눌러서 보세요</button>`:'');
   G('bd').textContent=n||'';G('bd').style.display=n?'':'none';
@@ -239,7 +240,7 @@ V.home=()=>{const t=T(),c=S.cfg,g=t?`${esc(c.tn||'담임')} 선생님`:P()?`${es
  const rule=[h?esc(P()?c.up:c.us):'',c.note?'📞 전화 시 유의사항\n'+esc(c.note):''].filter(Boolean).join('\n\n');
  const yr=String(c.yr||'').replace(/학년도$/,''),cl=clsLine(c).split(' · ')[0],st=String(c.staff||'').trim(),role=[cl?(yr?yr+'학년도 ':'')+cl+' 담임':'',st?st+(/(담당|교사)$/.test(st)?'':' 담당'):''].filter(Boolean).join(' · ');
  const intro=h?c.intro:c.sintro;
- return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div style="flex:1;min-width:0">${t?`<h3>${g}</h3><small>${esc(role)}</small><small>${esc(c.sch||'학교명 미설정')}</small>`:`<h3>${g}</h3><small>${esc(c.sch||'학교명 미설정')} ${h?esc(cl):esc(cName(CK))}</small><p><b>${esc(c.tn||'')} 선생님</b> <small style="display:inline">${esc(role)}</small></p>`}${h&&c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${intro?`<p class=pw>${esc(intro)}</p>`:''}</div>${tel?`<div class=ctc>${tel}</div>`:''}</div>`+brd()
+ return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div style="flex:1;min-width:0">${t?`<h3>${g}</h3><small>${esc(role)}</small>`:`<h3>${g}</h3><small>${h?esc(cl):esc(cName(CK))}</small><p><b>${esc(c.tn||'')} 선생님</b> <small style="display:inline">${esc(role)}</small></p>`}${h&&c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${intro?`<p class=pw>${esc(intro)}</p>`:''}</div>${tel?`<div class=ctc>${tel}</div>`:''}</div>`+brd()
  +`<details class="card hw"><summary>📖 이것만은 기억하고 지켜줘요</summary><div class=pw>${rule||'선생님이 아직 입력하지 않았어요.'}</div></details>`
  +`<div class=grid style="margin-top:12px">${tl.map(x=>{const n=bcnt(x[0]);return `<button class=tile onclick="go('${x[0]}')"><i>${x[1]}</i>${x[2]}${n?`<span class=nb>${n}</span>`:''}</button>`}).join('')}</div>`};
 
