@@ -45,6 +45,8 @@ input,textarea,select{width:100%;margin:5px 0;padding:10px;font:16px inherit;fon
 .nw{display:block;width:100%;text-align:left;border:2px dashed var(--wood);background:var(--card);color:var(--ink);font:inherit;border-radius:14px;padding:12px;margin:10px 0;cursor:pointer}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}.two .card{margin:0;padding:10px}.two summary{font:15px 'Jua',sans-serif;cursor:pointer}
 .ai{font-size:11.5px;color:var(--sub);margin-top:4px}
+.tc{flex-wrap:nowrap;align-items:flex-start}@media(max-width:480px){.tc .av{width:56px;height:56px;background-size:438px auto;background-position:-258px -118px}.tc h3{font-size:17px}}.ctc{flex:none;max-width:42%;margin-left:auto;display:flex;flex-direction:column;gap:6px;align-items:stretch;text-align:center}.ctc .btn{padding:3px 10px;font-size:13px;line-height:1.3}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.pg figure{position:relative;margin:0}.pg img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;cursor:pointer;display:block}.pg figcaption{font-size:11.5px;color:var(--sub);margin-top:2px}.pg .nb{z-index:1}
 :focus-visible{outline:3px solid #4a90d9;outline-offset:2px}
 @media(max-width:360px){.two{grid-template-columns:1fr}.grid{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:800px){.hero{margin-top:14px;border-radius:26px}.tile{font-size:15px;padding:16px 2px}}
@@ -70,8 +72,18 @@ const QS=[['시작이 반이다','속담 · 일단 시작하면 절반은 한 �
 const QP=[['세 살 버릇 여든까지 간다','속담 · 일상의 작은 습관을 함께 다져 주세요'],['급할수록 돌아가라','속담 · 입시 시기에는 조급함보다 대화가 먼저예요'],['말 한마디에 천 냥 빚도 갚는다','속담 · 따뜻한 한마디가 아이에게 큰 힘이 돼요'],['교학상장(敎學相長)','사자성어 · 가르치고 배우며 부모도 아이도 함께 자라요'],['호미로 막을 것을 가래로 막는다','속담 · 작은 고민은 일찍 나눌수록 가벼워요'],['가랑비에 옷 젖는 줄 모른다','속담 · 매일의 작은 관심이 쌓여요'],['우보천리(牛步千里)','사자성어 · 느려도 꾸준히 가면 멀리 가요'],['콩 심은 데 콩 나고 팥 심은 데 팥 난다','속담 · 들인 정성만큼 거두어요'],['돌다리도 두들겨 보고 건너라','속담 · 진로는 충분히 알아보고 정해요'],['아이 하나를 키우려면 온 마을이 필요하다','아프리카 속담 · 학교와 가정이 함께해요']];
 const AIN='<p class=ai>✨ AI는 구글 제미나이 무료 사용분이에요. 보낸 글이 구글 서비스 개선에 쓰일 수 있으니 이름·학번·성적은 넣지 마세요. 결과는 꼭 확인하고 고쳐서 쓰세요.</p>';
 
-let S={u:null,ready:false,owner:null,admin:false,prof:null,vm:'teacher',role:'student',cfg:{},pub:{},cons:{},sv:null,roster:{m:{}},posts:[],msgs:[],reads:{},users:[],dl:[],dr:[],stu:{},notes:{},votes:[],apps:[],files:[],pf:[],pfAll:[],gifts:[],allGifts:[]};
-let view='home',H=['home'],hi=0,un=[],mt=0,cd=0,SEL=[],sdS='',EA='',RA='',GI='',IF={},attS='',done=new Set();
+let S={u:null,ready:false,owner:null,admin:false,prof:null,vm:'teacher',role:'student',cfg:{},pub:{},cons:{},cc:{},pk:{},fk:{},phk:{},tpl:null,photos:[],roster:{m:{}},posts:[],msgs:[],reads:{},users:[],dl:[],dr:[],stu:{},notes:{},votes:[],apps:[],files:[],pf:[],pfAll:[],gifts:[],allGifts:[]};
+let view='home',H=['home'],hi=0,un=[],mt=0,cd=0,SEL=[],sdS='',EA='',RA='',GI='',IF={},attS='',done=new Set(),CK='hr';
+
+// ───────── 반(담임반 'hr' · 수업반 = 학번 앞자리) ─────────
+const PL=()=>String(S.pub.hr||'').length,SUBJ=()=>S.pub.subj||[];
+const pOf=s=>PL()?String(s||'').slice(0,PL()):'';
+const cName=k=>k=='hr'?'담임반':((S.pub.subjN||{})[k]||(k.length==3?`${k[0]}학년 ${+k.slice(1)}반`:k+'반'))+' 수업';
+const clsOfS=(s,r)=>{const p=pOf(s),L=[];if(!S.pub.hr||p==S.pub.hr)L.push('hr');if(r!='parent'&&SUBJ().includes(p))L.push(p);return L};
+const myCls=()=>S.admin?['hr',...SUBJ()]:S.prof?clsOfS(S.prof.s,S.prof.r):[];
+const HR=()=>CK=='hr',inK=x=>(x.c||'hr')==CK,cc=()=>S.cc[CK]||{};
+const posts=()=>S.posts.filter(inK),msgs=()=>S.msgs.filter(inK),files=()=>S.files.filter(inK),pfs=()=>(S.admin?S.pfAll:S.pf).filter(inK),gifts=()=>(S.admin?S.allGifts:S.gifts).filter(inK);
+const inCls=u=>clsOfS(u.s,u.r).includes(CK);
 
 // ───────── 공통 도구 ─────────
 function toast(m){const t=G('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2600)}
@@ -97,15 +109,20 @@ const lock=async(btn,fn)=>{if(btn){if(btn.disabled)return;btn.disabled=true}try{
 function stop(){un.forEach(f=>{try{f()}catch(e){}});un=[]}
 const lerr=e=>{console.warn(e);if(!lerr.on){lerr.on=1;toast('불러오지 못한 자료가 있어요. 보안 규칙을 게시했는지 확인해 주세요');setTimeout(()=>lerr.on=0,8000)}};
 function listen(){stop();const t=S.admin,id=uid(),s=S.prof&&S.prof.s,W=(p,cb)=>un.push(FB.wDoc(p,cb,lerr)),L=(p,o,cb)=>un.push(FB.wCol(p,o,cb,lerr));
- W('config/main',d=>{S.cfg=d||{};rd()});W('config/pub',d=>{S.pub=d||{};rd()});W('config/consult',d=>{S.cons=d||{};rd()});W('config/survey',d=>{S.sv=d;rd()});
+ const C=myCls(),hr=t||C.includes('hr'),byTs=(a,b)=>b.ts-a.ts;if(!t){S.pk={};S.fk={};S.phk={};if(!C.includes(CK))CK=C[0]||'hr'}
+ W('config/main',d=>{S.cfg=d||{};rd()});W('config/pub',d=>{const o=JSON.stringify(myCls());S.pub=d||{};if(!t&&JSON.stringify(myCls())!=o)return setTimeout(listen,0);rd()});
  W('reads/'+id,d=>{S.reads=d||{};rd()});
- L('posts',{},l=>{S.posts=l.sort((a,b)=>b.ts-a.ts);rd()});
  L('messages',t?{}:{where:['owner','==',id]},l=>{S.msgs=l.sort((a,b)=>a.ts-b.ts);rd()});
- L('dlist',{},l=>{S.dl=l.sort((a,b)=>a.ts-b.ts);rd()});
- L('dresp',t?{}:{where:['u','==',id]},l=>{S.dr=l;rd()});
  L('votes',{},l=>{S.votes=l;rd()});
- L('apps',t?{}:{where:['u','==',id]},l=>{S.apps=l.sort((a,b)=>b.ts-a.ts);rd()});
- L('files',{},l=>{S.files=l.sort((a,b)=>b.ts-a.ts);rd()});
+ if(hr){W('config/consult',d=>{S.cons=d||{};rd()});
+  L('dlist',{},l=>{S.dl=l.sort((a,b)=>a.ts-b.ts);rd()});
+  L('dresp',t?{}:{where:['u','==',id]},l=>{S.dr=l;rd()});
+  L('apps',t?{}:{where:['u','==',id]},l=>{S.apps=l.sort(byTs);rd()})}
+ if(t){L('ccfg',{},l=>{S.cc=Object.fromEntries(l.map(x=>[x.id,x]));rd()});W('config/tpl',d=>{S.tpl=d;rd()});L('photos',{},l=>{S.photos=l.sort(byTs);rd()});L('posts',{},l=>{S.posts=l.sort(byTs);rd()});L('files',{},l=>{S.files=l.sort(byTs);rd()})}
+ else C.forEach(k=>{W('ccfg/'+k,d=>{S.cc[k]=d||{};rd()});
+  L('posts',{where:['c','==',k]},l=>{S.pk[k]=l;S.posts=Object.values(S.pk).flat().sort(byTs);rd()});
+  L('files',{where:['c','==',k]},l=>{S.fk[k]=l;S.files=Object.values(S.fk).flat().sort(byTs);rd()});
+  L('photos',{where:['c','==',k]},l=>{S.phk[k]=l;S.photos=Object.values(S.phk).flat().sort(byTs);rd()})});
  if(t){W('config/roster',d=>{S.roster=d||{m:{}};rd()});
   L('users',{},l=>{S.users=l;rd()});
   L('stu',{},l=>{S.stu=Object.fromEntries(l.map(x=>[x.id,x]));rd()});
@@ -124,23 +141,23 @@ function put(a,o){for(const k in o){if(k[0]=='@'){a.querySelectorAll('input[type
 const clr=(...ids)=>ids.forEach(i=>{const e=G(i);if(e)e.value=''});
 
 // ───────── 명렬·계정 ─────────
-function roster(){const g={},m=(S.roster&&S.roster.m)||{};Object.entries(m).forEach(([s,n])=>g[s]={s,rn:n,acc:[]});S.users.forEach(u=>{(g[u.s]=g[u.s]||{s:u.s,rn:'',acc:[]}).acc.push(u)});
- return Object.values(g).sort((a,b)=>a.s>b.s?1:-1).map(x=>{const st=x.acc.find(u=>u.r=='student');return {...x,lbl:(x.rn||(st||x.acc[0]||{}).n||'')+(x.acc.length?'':' (가입 전)'),un:x.acc.reduce((a,u)=>a+S.msgs.filter(m=>m.owner==u.id&&m.from=='u'&&!m.r).length,0)}})}
+function roster(){const g={},m=HR()?(S.roster&&S.roster.m)||{}:{};Object.entries(m).forEach(([s,n])=>g[s]={s,rn:n,acc:[]});S.users.filter(inCls).forEach(u=>{(g[u.s]=g[u.s]||{s:u.s,rn:'',acc:[]}).acc.push(u)});
+ return Object.values(g).sort((a,b)=>a.s>b.s?1:-1).map(x=>{const st=x.acc.find(u=>u.r=='student');return {...x,lbl:(x.rn||(st||x.acc[0]||{}).n||'')+(x.acc.length?'':' (가입 전)'),un:x.acc.reduce((a,u)=>a+msgs().filter(m=>m.owner==u.id&&m.from=='u'&&!m.r).length,0)}})}
 const uLbl=u=>`${esc(u.n)} ${u.r=='parent'?'학부모'+(u.rel?'('+esc(u.rel)+')':''):'학생'}`;
 const rOpts=(sel,all)=>(all?`<option value="">${all}</option>`:'')+roster().map(r=>`<option value="${esc(r.s)}" ${sel==r.s?'selected':''}>${esc(r.s)} ${esc(r.lbl)}</option>`).join('');
-const unread=()=>S.admin?(T()?S.msgs.filter(m=>m.from=='u'&&!m.r).length:0):S.msgs.filter(m=>m.from=='t'&&!m.r).length;
-const ntcP=()=>S.posts.find(p=>p.k=='ntc');
-const myApp=()=>PV()?null:S.apps.find(a=>a.u==uid());
+const unread=()=>S.admin?(T()?msgs().filter(m=>m.from=='u'&&!m.r).length:0):msgs().filter(m=>m.from=='t'&&!m.r).length;
+const ntcP=()=>posts().find(p=>p.k=='ntc');
+const myApp=()=>PV()||!HR()?null:S.apps.find(a=>a.u==uid());
 const csKey=c=>JSON.stringify(c?[c.a,c.b,c.p,c.au,c.mt]:null);
-const lead=()=>S.prof&&S.prof.r=='student'&&!PV()?LDK.find(k=>S.cfg.ld&&S.cfg.ld[k]&&S.cfg.ld[k]==S.prof.s):null;
-const prep=()=>S.prof&&S.prof.r=='parent'&&!PV()&&(S.cfg.prs||[]).includes(S.prof.s);
+const lead=()=>{const ld=cc().ld||{};return S.prof&&S.prof.r=='student'&&!PV()?LDK.find(k=>ld[k]&&ld[k]==S.prof.s):null};
+const prep=()=>HR()&&S.prof&&S.prof.r=='parent'&&!PV()&&(S.cfg.prs||[]).includes(S.prof.s);
 
 // ───────── 읽음 표시 ─────────
 function mk(id){if(S.admin)return;S.reads[id]=1;FB.set('reads/'+uid(),{[id]:true},true).catch(()=>{});rd()}
 function mkMany(ids){if(S.admin)return;const n=ids.filter(i=>i&&!S.reads[i]);if(!n.length)return;const o={};n.forEach(i=>{o[i]=true;S.reads[i]=1});FB.set('reads/'+uid(),o,true).catch(()=>{})}
 const rc=(id,t,b)=>isNew(id)?`<button class="nw" onclick="mk('${id}')">🆕 ${t} <small style="display:inline">눌러서 확인</small></button>`:b;
-function markMsgs(){let L=[];if(view=='msg'&&!S.admin&&mt==0)L=S.msgs.filter(m=>m.from=='t'&&!m.r);
- if(view=='sd'&&T()){const g=roster().find(x=>x.s==sdS);if(g){const ids=g.acc.map(u=>u.id);L=S.msgs.filter(m=>m.from=='u'&&!m.r&&ids.includes(m.owner))}}
+function markMsgs(){let L=[];if(view=='msg'&&!S.admin&&mt==0)L=msgs().filter(m=>m.from=='t'&&!m.r);
+ if(view=='sd'&&T()){const g=roster().find(x=>x.s==sdS);if(g){const ids=g.acc.map(u=>u.id);L=msgs().filter(m=>m.from=='u'&&!m.r&&ids.includes(m.owner))}}
  L.forEach(m=>{if(done.has(m.id))return;done.add(m.id);FB.upd('messages/'+m.id,{r:true,rt:Date.now()}).catch(()=>{})})}
 
 // ───────── 첫 화면(로그인·가입) ─────────
@@ -165,71 +182,82 @@ async function claim(b){await lock(b,async()=>{try{await FB.set('config/owner',{
 async function reg(b){const er=m=>G('err').textContent=m,p=S.role=='parent',s=G('rs').value.trim(),n0=G('rn').value.trim(),rel=p?G('rr').value:'',dom=(S.pub.dom||'').toLowerCase(),email=(S.u.email||'').toLowerCase();
  if(!/^\d{4,6}$/.test(s))return er(p?'자녀 학번을 숫자로 입력해 주세요.':'학번을 숫자로 입력해 주세요.');if(n0.length<2)return er('이름을 2글자 이상 입력해 주세요.');if(p&&!rel)return er('학생과의 관계를 골라 주세요.');if(!G('agree').checked)return er('안내를 읽고 동의에 체크해 주세요.');
  if(!p){if(!dom)return er('선생님이 아직 학생 계정 형식을 설정하지 않았어요. 잠시 뒤에 다시 해 주세요.');if(!email.endsWith('@'+dom))return er('학생은 학교에서 발급한 구글 계정(@'+dom+')으로만 가입할 수 있어요. "다른 구글 계정으로 접속"을 눌러 주세요.')}
- const prof={email:S.u.rawEmail||S.u.email,n:mask(n0),s,r:p?'parent':'student',rel,at:Date.now()},ops=[['set','users/'+uid(),prof]];if(!p)ops.unshift(['set','studentIds/'+s,{uid:uid()}]);
+ if(!S.pub.hr)return er('선생님이 아직 반 설정을 하지 않았어요. 잠시 뒤에 다시 해 주세요.');const ks=clsOfS(s,p?'parent':'student');
+ if(!ks.length)return er(p?'학부모 가입은 담임반('+S.pub.hr+'…) 학생의 보호자만 할 수 있어요. 자녀 학번을 확인해 주세요.':'선생님 반 목록에 없는 학번이에요. 학번을 다시 확인해 주세요.');
+ const prof={email:S.u.rawEmail||S.u.email,n:mask(n0),s,p:pOf(s),r:p?'parent':'student',rel,at:Date.now()},ops=[['set','users/'+uid(),prof]];if(!p)ops.unshift(['set','studentIds/'+s,{uid:uid()}]);
  await lock(b,async()=>{try{await FB.batch(ops);S.prof=prof;listen();view='home';H=['home'];hi=0;draw();toast('가입했어요. 환영해요!')}catch(e){console.warn(e);er(p?'가입하지 못했어요. 학번과 자녀 이름이 선생님의 명렬표와 같은지 확인해 주세요.':'가입하지 못했어요. 이미 등록된 학번인지, 학번·이름이 선생님의 명렬표와 같은지 확인해 주세요.')}})}
 
 // ───────── 화면 그리기 ─────────
-const TT={home:'스마트 알림장',notice:'알림장',mine:'내 자료',att:'누적 출결 현황',lib:'자료실',con:'상담 예약',msg:'메시지',gift:'선생님이 보내는 선물',stu:'학생 관리',sd:'학생별 자료',intake:'기초자료·상담 정리',adm:'교사 설정'},TONLY=['stu','sd','intake','adm'];
+const TT={home:'스마트 알림장',notice:'알림장',mine:'내 자료',att:'누적 출결·디딤돌',pho:'학급 사진',lib:'자료실',con:'상담 예약',msg:'메시지',gift:'선생님이 보내는 선물',stu:'학생 관리',sd:'학생별 자료',intake:'기초자료·상담 정리',adm:'교사 설정'},TONLY=['stu','sd','intake','adm'];
 function draw(keep){const a=G('app'),saved=keep?grab(a):null,y=scrollY,fid=document.activeElement&&document.activeElement.id,L=!S.u||!S.ready||!(S.admin||S.prof);
  G('nav').style.display=L?'none':'flex';G('lo').style.display=S.u?'':'none';G('pr').style.display=L?'none':'';
  if(L){a.innerHTML=gate();G('ttl').textContent='스마트 알림장';G('who').textContent='';G('al').innerHTML=''}
- else{if(TONLY.includes(view)&&!T())view='home';
-  const sw=S.admin?chips(['교사 모드','학생 화면','학부모 화면'],(c,i)=>['teacher','student','parent'][i]==S.vm,(c,i)=>`setVm('${['teacher','student','parent'][i]}')`):'';
-  let h='';try{h=(V[view]||V.home)()}catch(e){console.error(e);h='<div class=card>화면을 그리지 못했어요. 새로고침해 주세요.</div>'}
+ else{const C=myCls();if(C.length&&!C.includes(CK))CK=C[0];if(TONLY.includes(view)&&!T()||HRONLY.includes(view)&&!HR())view='home';
+  const cs=C.length>1?`<div class="chips wr">${C.map(k=>{const n=S.admin?0:newIn(k);return `<button class="chip ${k==CK?'on':''}" onclick="setCK('${k}')">${k=='hr'?'🏠 ':'📘 '}${esc(cName(k))}${n?` <b style="color:#d2493c">●${n}</b>`:''}</button>`}).join('')}</div>`:'';
+  const M=HR()?[['teacher','교사 모드'],['student','학생 화면'],['parent','학부모 화면']]:[['teacher','교사 모드'],['student','학생 화면']];
+  const sw=cs+(S.admin?chips(M.map(x=>x[1]),(c,i)=>M[i][0]==S.vm,(c,i)=>`setVm('${M[i][0]}')`):'');
+  let h='';try{h=!C.length?`<div class=card><h3>😥 반 목록에 없는 학번이에요</h3><p>가입한 학번(${esc(S.prof.s)})이 선생님의 담임반·수업반 어디에도 없어요. 선생님께 학번을 고쳐 달라고 하거나 계정을 초기화해 달라고 말씀해 주세요.</p></div>`:(V[view]||V.home)()}catch(e){console.error(e);h='<div class=card>화면을 그리지 못했어요. 새로고침해 주세요.</div>'}
   a.innerHTML=(view=='home'?HERO:'')+`<main class=wrap>${sw}${h}</main>`;
   G('ttl').textContent=view=='mine'&&P()?'자녀 자료':TT[view]||'스마트 알림장';
   G('who').textContent=S.admin?`${S.cfg.tn||'담임'} · 교사${PV()?` (${RL[S.vm]} 화면)`:''}`:`${S.prof.n} · ${RL[S.prof.r]}`;
-  const n=unread(),fN=S.prof&&S.prof.r=='student'&&!S.admin?S.posts.filter(p=>p.k=='fn'&&isNew(p.id)).length:0;
+  const n=unread(),fN=S.prof&&S.prof.r=='student'&&!S.admin?posts().filter(p=>p.k=='fn'&&isNew(p.id)).length:0;
   G('al').innerHTML=(n&&view!='msg'&&view!='sd'?`<button onclick="go('msg')">📨 ${S.admin?'학생·학부모가 보낸':'선생님이 보낸'} 새 메시지 ${n}건 · 눌러서 읽어 보세요</button>`:'')+(fN&&view!='notice'?`<button style="background:#3b7dd8" onclick="go('notice')">📣 학급 친구들에게서 온 알림 ${fN}건 · 눌러서 보세요</button>`:'');
   G('bd').textContent=n||'';G('bd').style.display=n?'':'none';
   markMsgs();seen()}
  if(saved){put(a,saved);scrollTo(0,y);const f=fid&&G(fid);if(f&&f!==document.activeElement)try{f.focus({preventScroll:true})}catch(e){}}}
-function seen(){if(S.admin)return;if(view=='con'){const c=S.cons.csp,my=myApp();mkMany([c&&c.on?'cs'+csKey(c):'',my&&my.pick?'cp'+my.pick:''])}}
+function seen(){if(S.admin)return;if(view=='pho')setTimeout(()=>mkMany(phs().map(p=>'P'+p.id)),3000);if(view=='con'){const c=S.cons.csp,my=myApp();mkMany([c&&c.on?'cs'+csKey(c):'',my&&my.pick?'cp'+my.pick:''])}}
 const go=v=>{H=H.slice(0,hi+1);H.push(v);hi++;view=v;draw();scrollTo(0,0)},bk=()=>{if(hi>0){view=H[--hi];draw();scrollTo(0,0)}},fw=()=>{if(hi<H.length-1){view=H[++hi];draw();scrollTo(0,0)}};
 function setVm(k){S.vm=k;SEL=[];go('home')}
+function setCK(k){CK=k;SEL=[];sdS='';attS='';if(k!='hr'&&S.vm=='parent')S.vm='student';H=['home'];hi=0;view='home';draw();scrollTo(0,0)}
+const HRONLY=['att','con','intake'];
+const TILES=()=>T()?(HR()?[['notice','📌','알림장 편집'],['mine','🗓️','학생 자료 편집'],['att','✅','출결·디딤돌'],['lib','📚','자료실 편집'],['con','💬','상담 일정'],['msg','✉️','메시지'],['gift','🎁','선물 보내기'],['pho','📷','학급 사진'],['intake','📥','기초자료·상담 정리'],['stu','🗂️','학생 관리'],['adm','⚙️','설정']]:[['notice','📌','알림장 편집'],['mine','🗓️','학생 자료 편집'],['lib','📚','자료실 편집'],['msg','✉️','메시지'],['gift','🎁','선물 보내기'],['pho','📷','수업 사진'],['stu','🗂️','학생 관리'],['adm','⚙️','설정']])
+ :(HR()?[['notice','📌','알림장'],['mine','🗓️',P()?'자녀 자료':'내 자료'],['att','✅','누적 출결·디딤돌'],['lib','📚','자료실'],['con','💬','상담 예약'],['msg','✉️','메시지'],['gift','🎁','선생님 선물'],['pho','📷','학급 사진']]:[['notice','📌','알림장'],['mine','🗓️','내 자료'],['lib','📚','자료실'],['msg','✉️','메시지'],['gift','🎁','선생님 선물'],['pho','📷','수업 사진']]);
+const newIn=k=>{const o=CK;CK=k;let n=0;try{n=TILES().reduce((a,x)=>a+bcnt(x[0]),0)}finally{CK=o}return n};
 
 // ───────── 새 글 숫자 ─────────
-function bcnt(v){if(T())return v=='msg'||v=='stu'?unread():v=='con'?S.apps.filter(a=>!a.pick).length:0;if(PV())return 0;
+function bcnt(v){if(T())return v=='msg'||v=='stu'?unread():v=='con'&&HR()?S.apps.filter(a=>!a.pick).length:0;if(PV())return 0;
  if(v=='notice')return nItems().filter(x=>isNew(x.id)).length;
- if(v=='mine')return S.files.filter(f=>f.k=='m'&&isNew('F'+f.id)).length+S.pf.filter(f=>isNew('F'+f.id)).length;
- if(v=='lib')return S.files.filter(f=>f.k=='l'&&isNew('F'+f.id)).length;
- if(v=='gift')return S.gifts.filter(g=>isNew('G'+g.id)).length;
- if(v=='con'){const c=S.cons.csp,my=myApp();return (c&&c.on&&!my&&isNew('cs'+csKey(c))?1:0)+(my&&my.pick&&isNew('cp'+my.pick)?1:0)}
+ if(v=='mine')return files().filter(f=>f.k=='m'&&isNew('F'+f.id)).length+pfs().filter(f=>isNew('F'+f.id)).length;
+ if(v=='lib')return files().filter(f=>f.k=='l'&&isNew('F'+f.id)).length;
+ if(v=='gift')return gifts().filter(g=>isNew('G'+g.id)).length;
+ if(v=='pho')return phs().filter(p=>isNew('P'+p.id)).length;
+ if(v=='con'&&HR()){const c=S.cons.csp,my=myApp();return (c&&c.on&&!my&&isNew('cs'+csKey(c))?1:0)+(my&&my.pick&&isNew('cp'+my.pick)?1:0)}
  if(v=='msg')return unread();return 0}
 
 // ───────── 홈 ─────────
 const qb=()=>{const p=P(),L=p?QP:QS,d=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/864e5),q=L[d%L.length],a=q[1].split(' · '),t=/속담/.test(a[0])?'속담':a[0]=='사자성어'?'사자성어':'명언 · '+a[0];return `<div class=qt><small>오늘의 한마디 (${t})${p?' · 학부모님께':''}</small><h4>“${q[0]}”</h4><small>${a[1]||''}</small></div>`};
 function brd(){const L=[],n=ntcP(),c=S.cons.csp,my=myApp();
- if(T()){const u=unread(),na=S.apps.filter(a=>!a.pick).length;if(u)L.push(`✉️ 읽지 않은 메시지 ${u}건`);if(na)L.push(`💬 시간 지정을 기다리는 상담 신청 ${na}건`);if(!S.pub.dom)L.push('⚙️ 설정에서 학생 구글 계정 형식을 먼저 저장해 주세요');}
- if(n)L.push('📢 공지사항: '+esc(n.t.split('\n')[0]));if(c&&c.on&&!T())L.push('💬 상담 신청이 열렸어요');if(my&&my.pick)L.push('✅ 상담 확정 · '+esc(my.pick));if(S.sv&&S.sv.on==1&&!T())L.push('🗳️ 설문조사에 참여해 주세요');if(S.dl.length&&!T())L.push('📝 서류 제출 여부를 확인해 주세요');
+ if(T()){const u=unread(),na=HR()?S.apps.filter(a=>!a.pick).length:0;if(u)L.push(`✉️ 읽지 않은 메시지 ${u}건`);if(na)L.push(`💬 시간 지정을 기다리는 상담 신청 ${na}건`);if(!S.pub.dom||!S.pub.hr)L.push('⚙️ 설정에서 학생 구글 계정 형식과 반(학번 앞자리)을 저장해 주세요');}
+ const sv=cc().sv;if(n)L.push('📢 공지사항: '+esc(n.t.split('\n')[0]));if(HR()&&c&&c.on&&!T())L.push('💬 상담 신청이 열렸어요');if(my&&my.pick)L.push('✅ 상담 확정 · '+esc(my.pick));if(sv&&sv.on==1&&!T())L.push('🗳️ 설문조사에 참여해 주세요');if(HR()&&S.dl.length&&!T())L.push('📝 서류 제출 여부를 확인해 주세요');
  if(!L.length)L.push('새 알림이 없어요');return `<div class=board><h3>📋 오늘의 알림</h3><ul>${L.map(x=>`<li>${x}</li>`).join('')}</ul></div>`}
 const V={};
-V.home=()=>{const t=T(),c=S.cfg,g=t?`${esc(c.tn||'담임')} 선생님`:P()?`${esc(nm())} 학부모님`:`${esc(nm())} 학생`,ph=safeImg(c.photo);
- const tl=t?[['notice','📌','알림장 편집'],['mine','🗓️','학생 자료 편집'],['att','✅','출결 편집'],['lib','📚','자료실 편집'],['con','💬','상담 일정'],['msg','✉️','메시지'],['gift','🎁','선물 보내기'],['intake','📥','기초자료·상담 정리'],['stu','🗂️','학생 관리'],['adm','⚙️','설정']]:[['notice','📌','알림장'],['mine','🗓️',P()?'자녀 자료':'내 자료'],['att','✅','누적 출결'],['lib','📚','자료실'],['con','💬','상담 예약'],['msg','✉️','메시지'],['gift','🎁','선생님 선물']];
- return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div><h3>${g}</h3><small>${esc(c.sch||'학교명 미설정')} ${esc(clsLine(c))}</small><p><b>담임 ${esc(c.tn||'')} 선생님</b></p>${c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${c.intro?`<p class=pw>${esc(c.intro)}</p>`:''}</div></div>`+brd()
- +`<div class=two><details class="card hw"><summary>📖 이것만은 기억하고 지켜줘요</summary><div class=pw>${esc(P()?c.up:c.us)||'선생님이 아직 입력하지 않았어요.'}</div></details><details class="card hw"><summary>📞 연락처</summary>${[['교무실 직통','tel1'],['행정실','tel2'],['담임 안심번호','tel3']].map(([l,k])=>`<div class=row><small>${l}</small>${c[k]?`<a class="btn sm" href="tel:${esc(String(c[k]).replace(/[^\d+]/g,''))}">${esc(c[k])}</a>`:'<small>등록 전</small>'}</div>`).join('')}${c.staff?`<div class=row><small class=pw>📚 ${esc(c.staff)}</small></div>`:''}${c.note?`<div class="warn pw">📌 전화 시 유의사항\n${esc(c.note)}</div>`:''}</details></div>`
+V.home=()=>{const t=T(),c=S.cfg,g=t?`${esc(c.tn||'담임')} 선생님`:P()?`${esc(nm())} 학부모님`:`${esc(nm())} 학생`,ph=safeImg(c.photo),h=HR(),tl=TILES();
+ const tel=[['교무실','tel1'],['담임 안심번호','tel3'],['행정실','tel2']].filter(([l,k])=>c[k]).map(([l,k])=>`<a class="btn ghost sm" href="tel:${esc(String(c[k]).replace(/[^\d+]/g,''))}"><small style="display:block;font-size:11px">📞 ${l}</small>${esc(c[k])}</a>`).join('');
+ const rule=[h?esc(P()?c.up:c.us):'',c.note?'📞 전화 시 유의사항\n'+esc(c.note):'',h&&c.staff?'📚 학급 교사 정보\n'+esc(c.staff):''].filter(Boolean).join('\n\n');
+ return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div style="flex:1;min-width:0"><h3>${g}</h3><small>${esc(c.sch||'학교명 미설정')} ${h?esc(clsLine(c)):esc(cName(CK))}</small><p><b>${h?'담임':'수업'} ${esc(c.tn||'')} 선생님</b></p>${h&&c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${h&&c.intro?`<p class=pw>${esc(c.intro)}</p>`:''}</div>${tel?`<div class=ctc>${tel}</div>`:''}</div>`+brd()
+ +`<details class="card hw"><summary>📖 이것만은 기억하고 지켜줘요</summary><div class=pw>${rule||'선생님이 아직 입력하지 않았어요.'}</div></details>`
  +`<div class=grid style="margin-top:12px">${tl.map(x=>{const n=bcnt(x[0]);return `<button class=tile onclick="go('${x[0]}')"><i>${x[1]}</i>${x[2]}${n?`<span class=nb>${n}</span>`:''}</button>`}).join('')}</div>`};
 
 // ───────── 알림장 ─────────
 function nItems(){const L=[],n=ntcP(),p=P();
  if(n)L.push({id:n.id,t:'📢 공지사항',b:`<div class="card ntc"><h3>📢 공지사항 <small style="display:inline">${md(n.ts)}</small></h3>${fmt(n.t)}</div>`});
- const ds=DBs();if(ds)L.push({id:'docs_'+S.dl.map(d=>d.id.slice(0,5)).join(''),t:'📝 서류 제출 여부 확인',b:ds});
- const sb=SBs();if(sb)L.push({id:'sv_'+S.sv.sid,t:'🗳️ 설문조사',b:sb});
- S.posts.filter(x=>x.k=='post'||(x.k=='fn'&&!p)||(x.k=='pn'&&p)).forEach(x=>{const h=x.k=='post'?'📌 '+esc(x.t):x.k=='fn'?`📣 ${LDN[x.w]||'임원이'} 우리에게`:'📣 학부모 대표가 학부모님들께';L.push({id:x.id,t:h,b:`<div class=card><small>${md(x.ts)}</small><h4>${h}</h4><p class=pw>${esc(x.k=='post'?x.b:x.x)}</p></div>`})});
+ const ds=HR()?DBs():'';if(ds)L.push({id:'docs_'+S.dl.map(d=>d.id.slice(0,5)).join(''),t:'📝 서류 제출 여부 확인',b:ds});
+ const sb=SBs();if(sb)L.push({id:'sv_'+cc().sv.sid,t:'🗳️ 설문조사',b:sb});
+ posts().filter(x=>x.k=='post'||(x.k=='fn'&&!p)||(x.k=='pn'&&p&&HR())).forEach(x=>{const h=x.k=='post'?'📌 '+esc(x.t):x.k=='fn'?`📣 ${LDN[x.w]||'임원이'} 우리에게`:'📣 학부모 대표가 학부모님들께';L.push({id:x.id,t:h,b:`<div class=card><small>${md(x.ts)}</small><h4>${h}</h4><p class=pw>${esc(x.k=='post'?x.b:x.x)}</p></div>`})});
  return L}
-V.notice=()=>{if(T())return qb()+ntcEd()+postEd()+DBt()+SBt()+FNt()+PRt();
+V.notice=()=>{if(T())return qb()+ntcEd()+postEd()+(HR()?DBt():'')+SBt()+FNt()+(HR()?PRt():'');
  const l=lead(),f=l?`<div class=card><h3>📣 학급 친구들에게 알림 <small style="display:inline">(${l})</small></h3><textarea id=fx rows=3 placeholder="친구들에게 전할 내용"></textarea><button class="btn blk" onclick="postF(this,'${l}')">알림 올리기</button></div>`:'';
  const pr=prep()?`<div class=card><h3>📣 학부모님들께 알림 <small style="display:inline">(학부모 대표)</small></h3><textarea id=px rows=3 placeholder="학부모님들께 전할 내용"></textarea><button class="btn blk" onclick="postP(this)">알림 올리기</button></div>`:'';
  return qb()+f+pr+(nItems().map(x=>rc(x.id,x.t,x.b)).join('')||'<div class=card style="text-align:center">아직 새 소식이 없어요</div>')};
 const ntcEd=()=>{const n=ntcP();return (n?`<div class="card ntc"><h3>📢 지금 올라간 공지사항 <small style="display:inline">${md(n.ts)}</small></h3>${fmt(n.t)}</div>`:'')+`<div class=card><h4>✏️ 공지사항 쓰기</h4><textarea id=nti rows=5 placeholder="전할 내용을 편하게 줄글로 적어 주세요">${esc(n?n.t:'')}</textarea><div class=send><button class="btn ghost sm" onclick="kjAI(this)">✨ 개조식으로 정리</button><button class="btn sm" onclick="postN(this)">올리기</button>${n?'<button class="btn ghost sm" onclick="delN()">내리기</button>':''}</div><small>정리한 뒤 고쳐서 올리세요. 올리면 학생·학부모 알림장 맨 위에 보여요. 공지사항은 늘 하나만 걸려요.</small>${AIN}</div>`};
-const postEd=()=>`<div class=card><h4>📌 알림 글 올리기·편집</h4><input id=nh placeholder="제목"><textarea id=nb rows=3 placeholder="내용"></textarea><button class="btn sm" onclick="addNT(this)">올리기</button>${S.posts.filter(p=>p.k=='post').map(p=>`<div class=row><span>${md(p.ts)} · ${esc(p.t)}</span><button class="btn ghost sm" onclick="delPost('${p.id}')">삭제</button></div>`).join('')}</div>`;
+const postEd=()=>`<div class=card><h4>📌 알림 글 올리기·편집</h4><input id=nh placeholder="제목"><textarea id=nb rows=3 placeholder="내용"></textarea><button class="btn sm" onclick="addNT(this)">올리기</button>${posts().filter(p=>p.k=='post').map(p=>`<div class=row><span>${md(p.ts)} · ${esc(p.t)}</span><button class="btn ghost sm" onclick="delPost('${p.id}')">삭제</button></div>`).join('')}</div>`;
 async function kjAI(b){const ta=G('nti'),t=ta.value.trim();if(!t)return toast('공지 내용을 먼저 적어 주세요');await lock(b,async()=>{toast('정리하는 중이에요…');let o='';try{o=(await aiCall('text',`다음은 고등학교 담임교사가 줄글로 쓴 학급 공지입니다. 학생과 학부모가 한눈에 읽도록 개조식으로 정리하세요. 첫 줄은 공지 제목, 이후 항목은 줄마다 "- "로 시작하고 "~함", "~바람", "~제출"처럼 간결한 종결로 쓰세요. 날짜·시간·장소·준비물·제출처는 항목을 나누세요. 원문에 없는 정보는 추가하지 말고 공지 본문만 출력하세요.\n\n${t}`)).trim()}catch(e){console.warn(e)}ta.value=o||kj(t);toast(o?'확인하고 고친 뒤 올려 주세요':'AI 없이 문장 단위로 정리했어요')})}
-async function postN(b){let t=G('nti').value.trim();if(!t)return toast('내용을 적어 주세요');if(!/^[-•]\s/m.test(t))t=kj(t);const ops=S.posts.filter(p=>p.k=='ntc').map(p=>['del','posts/'+p.id]);ops.push(['set','posts/'+FB.id(),{k:'ntc',t,ts:Date.now()}]);await lock(b,()=>FB.batch(ops).then(()=>toast('공지사항을 올렸어요'),fail('올리지 못했어요')))}
-function delN(){FB.batch(S.posts.filter(p=>p.k=='ntc').map(p=>['del','posts/'+p.id])).then(()=>{clr('nti');toast('공지사항을 내렸어요')},fail('내리지 못했어요'))}
-async function addNT(b){const h=G('nh').value.trim();if(!h)return toast('제목을 적어 주세요');await lock(b,()=>FB.add('posts',{k:'post',t:h,b:G('nb').value.trim(),ts:Date.now()}).then(()=>{clr('nh','nb');toast('올렸어요 · 학생·학부모 메뉴에 새 글 숫자가 떠요')},fail('올리지 못했어요')))}
+async function postN(b){let t=G('nti').value.trim();if(!t)return toast('내용을 적어 주세요');if(!/^[-•]\s/m.test(t))t=kj(t);const ops=posts().filter(p=>p.k=='ntc').map(p=>['del','posts/'+p.id]);ops.push(['set','posts/'+FB.id(),{k:'ntc',c:CK,t,ts:Date.now()}]);await lock(b,()=>FB.batch(ops).then(()=>toast('공지사항을 올렸어요'),fail('올리지 못했어요')))}
+function delN(){FB.batch(posts().filter(p=>p.k=='ntc').map(p=>['del','posts/'+p.id])).then(()=>{clr('nti');toast('공지사항을 내렸어요')},fail('내리지 못했어요'))}
+async function addNT(b){const h=G('nh').value.trim();if(!h)return toast('제목을 적어 주세요');await lock(b,()=>FB.add('posts',{k:'post',c:CK,t:h,b:G('nb').value.trim(),ts:Date.now()}).then(()=>{clr('nh','nb');toast('올렸어요 · 학생·학부모 메뉴에 새 글 숫자가 떠요')},fail('올리지 못했어요')))}
 function delPost(id){FB.del('posts/'+id).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
-async function postF(b,w){const x=G('fx').value.trim();if(!x)return toast('내용을 적어 주세요');await lock(b,()=>FB.add('posts',{k:'fn',w,x,by:uid(),ts:Date.now()}).then(id=>{mk(id);clr('fx');toast('모든 학생에게 알림을 보냈어요')},fail('보내지 못했어요')))}
-async function postP(b){const x=G('px').value.trim();if(!x)return toast('내용을 적어 주세요');await lock(b,()=>FB.add('posts',{k:'pn',x,by:uid(),ts:Date.now()}).then(id=>{mk(id);clr('px');toast('모든 학부모님께 알림을 보냈어요')},fail('보내지 못했어요')))}
+async function postF(b,w){const x=G('fx').value.trim();if(!x)return toast('내용을 적어 주세요');await lock(b,()=>FB.add('posts',{k:'fn',c:CK,w,x,by:uid(),ts:Date.now()}).then(id=>{mk(id);clr('fx');toast('모든 학생에게 알림을 보냈어요')},fail('보내지 못했어요')))}
+async function postP(b){const x=G('px').value.trim();if(!x)return toast('내용을 적어 주세요');await lock(b,()=>FB.add('posts',{k:'pn',c:'hr',x,by:uid(),ts:Date.now()}).then(id=>{mk(id);clr('px');toast('모든 학부모님께 알림을 보냈어요')},fail('보내지 못했어요')))}
 
 // 서류
 const myDr=id=>{if(PV())return null;const r=S.dr.find(x=>x.d==id&&x.u==uid());return r?r.i:null};
@@ -242,27 +270,27 @@ const DBt=()=>{const R=roster();return `<div class=card><h4>📝 서류 요청·
 async function addDoc(b,t,k,due=''){if(!t)return toast('서류 이름을 적어 주세요');await lock(b,()=>FB.add('dlist',{t,k,due,ts:Date.now()}).then(()=>{clr('dt','dd');toast('서류를 추가했어요')},fail('추가하지 못했어요')))}
 function delDoc(id){FB.batch([['del','dlist/'+id],...S.dr.filter(r=>r.d==id).map(r=>['del','dresp/'+r.id])]).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
 function tgM(d,s,b){const cur=(((S.stu[s]||{}).mm)||{})[d]||0,nv=cur^b,on=!!(nv&b),doc=S.dl.find(x=>x.id==d),ops=[['set','stu/'+s,{mm:{[d]:nv}},true]];
- if(on)S.users.filter(u=>u.s==s).forEach(u=>ops.push(['set','messages/'+FB.id(),{owner:u.id,from:'t',n:S.cfg.tn||'담임',x:`[${doc?doc.t:'질병 서류'}] ${b==1?'온라인 서류':'병원 종이 서류'} 미제출 상태예요. 확인 후 제출해 주세요.`,ts:Date.now(),r:false}]));
+ if(on)S.users.filter(u=>u.s==s).forEach(u=>ops.push(['set','messages/'+FB.id(),{owner:u.id,c:'hr',from:'t',n:S.cfg.tn||'담임',x:`[${doc?doc.t:'질병 서류'}] ${b==1?'온라인 서류':'병원 종이 서류'} 미제출 상태예요. 확인 후 제출해 주세요.`,ts:Date.now(),r:false}]));
  FB.batch(ops).then(()=>toast(on?'미제출로 표시하고 메시지를 보냈어요':'제출 완료로 바꿨어요'),fail('바꾸지 못했어요'))}
 
 // 설문
-const svV=()=>S.sv||{q:'',o:[],on:0,pub:1,sid:0};
+const svV=()=>cc().sv||{q:'',o:[],on:0,pub:1,sid:0};
 const svCnt=v=>{const L=S.votes.filter(x=>x.sid==v.sid);return (v.o||[]).map((_,i)=>L.filter(x=>x.i===i).length)};
 const bars=v=>{const c=svCnt(v),t=c.reduce((a,b)=>a+b,0)||1;return (v.o||[]).map((o,i)=>`<div class=bar2><i style="width:${Math.round(c[i]/t*100)}%"></i><span>${esc(o)}</span><b>${c[i]}명 · ${Math.round(c[i]/t*100)}%</b></div>`).join('')};
 const svStat=()=>{const v=svV(),um=Object.fromEntries(S.users.map(u=>[u.id,u])),by={student:new Set(),parent:new Set()};S.votes.filter(x=>x.sid==v.sid).forEach(x=>{const u=um[x.u];if(u&&by[u.r])by[u.r].add(u.s)});const rs=roster(),N=rs.length,miss=rs.filter(r=>!by.student.has(r.s)&&!by.parent.has(r.s));
- return `<small>참여 현황 (가정당 학생·학부모 각 1명 기준)</small><div class=row><span>🎒 학생</span><b>${by.student.size} / ${N}명</b></div><div class=row><span>👪 학부모</span><b>${by.parent.size} / ${N}명</b></div>${miss.length?`<details><summary><small style="display:inline">학생·학부모 모두 미참여 ${miss.length}가정 보기</small></summary>${miss.map(r=>`<div class=row><span>${esc(r.s)} ${esc(r.lbl)}</span></div>`).join('')}</details>`:'<small>✅ 모든 가정이 참여했어요</small>'}<small>결과</small>`};
+ return `<small>참여 현황 (가정당 학생·학부모 각 1명 기준)</small><div class=row><span>🎒 학생</span><b>${by.student.size} / ${N}명</b></div>${HR()?`<div class=row><span>👪 학부모</span><b>${by.parent.size} / ${N}명</b></div>`:''}${miss.length?`<details><summary><small style="display:inline">학생·학부모 모두 미참여 ${miss.length}가정 보기</small></summary>${miss.map(r=>`<div class=row><span>${esc(r.s)} ${esc(r.lbl)}</span></div>`).join('')}</details>`:'<small>✅ 모든 가정이 참여했어요</small>'}<small>결과</small>`};
 const SBt=()=>{const v=svV();return `<div class=card><h4>🗳️ 설문조사 만들기·편집 ${v.on==1?'<span class=un>진행 중</span>':v.on==2?'<span class=un style="background:#888">종료</span>':''}</h4><input id=svq placeholder="질문" value="${esc(v.q)}"><textarea id=svo rows=4 placeholder="선택지 (한 줄에 하나)">${esc((v.o||[]).join('\n'))}</textarea><label class=opt><input type=checkbox id=svp ${v.pub?'checked':''}>응답 후 학생·학부모에게 통계 공개</label><div class=send><button class="btn sm" onclick="svOn(1)">${v.on==1?'고친 내용 저장':'게시'}</button>${v.on==1?'<button class="btn ghost sm" onclick="svOn(2)">종료</button>':''}<button class="btn ghost sm" onclick="svNew()">새로 만들기</button></div>${v.sid?svStat()+bars(v):''}<small>게시하면 학생·학부모 알림장에 떠요. 종료하면 사라져요.</small></div>`};
 function svOn(x){const v=svV(),q=G('svq').value.trim(),o=G('svo').value.split('\n').map(s=>s.trim()).filter(Boolean),d={q,o,pub:G('svp').checked?1:0,on:x};if(x==1&&(!q||o.length<2))return toast('질문과 선택지 2개 이상이 필요해요');if(x==1&&v.on!=1)d.sid=Date.now();
- FB.set('config/survey',d,true).then(()=>toast(x==1?(v.on==1?'저장했어요':'설문을 게시했어요'):'설문을 종료했어요'),fail('저장하지 못했어요'))}
-function svNew(){FB.set('config/survey',{q:'',o:[],on:0,pub:1,sid:0}).then(()=>{clr('svq','svo');toast('새 설문을 만들 수 있어요')},fail('바꾸지 못했어요'))}
-function SBs(){const v=S.sv;if(!v||v.on!=1)return '';const mine=PV()?null:S.votes.find(x=>x.sid==v.sid&&x.u==uid());
+ FB.set('ccfg/'+CK,{sv:d},true).then(()=>toast(x==1?(v.on==1?'저장했어요':'설문을 게시했어요'):'설문을 종료했어요'),fail('저장하지 못했어요'))}
+function svNew(){FB.set('ccfg/'+CK,{sv:{q:'',o:[],on:0,pub:1,sid:0}},true).then(()=>{clr('svq','svo');toast('새 설문을 만들 수 있어요')},fail('바꾸지 못했어요'))}
+function SBs(){const v=cc().sv;if(!v||v.on!=1)return '';const mine=PV()?null:S.votes.find(x=>x.sid==v.sid&&x.u==uid());
  return `<div class=card><h3>🗳️ 설문조사</h3><h4>${esc(v.q)}</h4>`+(!mine?(v.o||[]).map((o,i)=>`<button class="btn ghost blk" onclick="vt(${i})">${esc(o)}</button>`).join(''):v.pub?bars(v):'<p>🙌 의견이 제출되었습니다</p>')+'</div>'}
-function vt(i){if(pv())return;const v=S.sv;FB.set('votes/'+v.sid+'_'+uid(),{sid:v.sid,u:uid(),i,ts:Date.now()}).then(()=>toast('제출했어요'),fail('제출하지 못했어요'))}
+function vt(i){if(pv())return;const v=cc().sv;FB.set('votes/'+v.sid+'_'+uid(),{sid:v.sid,c:CK,u:uid(),i,ts:Date.now()}).then(()=>toast('제출했어요'),fail('제출하지 못했어요'))}
 
 // 임원·학부모 대표
-const FNt=()=>{const R=roster().filter(r=>!r.acc.length||r.acc.some(u=>u.r=='student')),ld=S.cfg.ld||{};return `<div class=card><h4>📣 임원 알림 관리</h4><small>임원으로 지정된 학생은 알림장에서 학급 친구들에게 알림을 보낼 수 있어요(학부모에게는 안 보여요).</small>${LDK.map((k,i)=>{const s=ld[k],r=R.find(x=>x.s==s);return `<div style="border-top:1px dashed var(--line);padding:6px 0"><b>${k}</b>${s?`<div class=row><span>🎒 ${esc(s)} ${r?esc(r.lbl):''}</span><button class="btn ghost sm" onclick="setLd('${k}','')">해제</button></div>`:`<div class=send><select id=ldsel${i}>${rOpts('','학생 선택')}</select><button class="btn sm" onclick="G('ldsel${i}').value?setLd('${k}',G('ldsel${i}').value):toast('학생을 골라 주세요')">지정</button></div>`}</div>`}).join('')}<h4>보낸 알림</h4>${S.posts.filter(p=>p.k=='fn').map(p=>`<div class=row><span>${md(p.ts)} · ${LDN[p.w]||''} · ${esc(p.x.slice(0,18))}</span><button class="btn ghost sm" onclick="delPost('${p.id}')">삭제</button></div>`).join('')||'<p class=note>아직 없어요</p>'}</div>`};
-function setLd(k,s){if(s===undefined)return;const ld={...(S.cfg.ld||{}),[k]:s};FB.set('config/main',{ld,ldS:Object.values(ld).filter(Boolean)},true).then(()=>toast(s?k+'(으)로 지정했어요':'해제했어요'),fail('저장하지 못했어요'))}
-const PRt=()=>{const prs=S.cfg.prs||[];return `<div class=card><h4>👪 학부모 대표 알림 관리</h4><small>지정한 학부모 대표는 알림장에서 학부모님들께 알림을 보낼 수 있어요. (자녀 학번 기준)</small><div class=send><select id=prsel>${rOpts('','학생 선택')}</select><button class="btn sm" onclick="addPR()">지정</button></div>${prs.map(s=>`<div class=row><span>👪 ${esc(s)} 학생 학부모</span><button class="btn ghost sm" onclick="delPR('${esc(s)}')">해제</button></div>`).join('')||'<p class=note>아직 지정한 학부모 대표가 없어요</p>'}<h4>보낸 알림</h4>${S.posts.filter(p=>p.k=='pn').map(p=>`<div class=row><span>${md(p.ts)} · ${esc(p.x.slice(0,20))}</span><button class="btn ghost sm" onclick="delPost('${p.id}')">삭제</button></div>`).join('')||'<p class=note>아직 없어요</p>'}</div>`};
+const FNt=()=>{const R=roster().filter(r=>!r.acc.length||r.acc.some(u=>u.r=='student')),ld=cc().ld||{};return `<div class=card><h4>📣 임원 알림 관리</h4><small>임원으로 지정된 학생은 알림장에서 학급 친구들에게 알림을 보낼 수 있어요(학부모에게는 안 보여요).</small>${LDK.map((k,i)=>{const s=ld[k],r=R.find(x=>x.s==s);return `<div style="border-top:1px dashed var(--line);padding:6px 0"><b>${k}</b>${s?`<div class=row><span>🎒 ${esc(s)} ${r?esc(r.lbl):''}</span><button class="btn ghost sm" onclick="setLd('${k}','')">해제</button></div>`:`<div class=send><select id=ldsel${i}>${rOpts('','학생 선택')}</select><button class="btn sm" onclick="G('ldsel${i}').value?setLd('${k}',G('ldsel${i}').value):toast('학생을 골라 주세요')">지정</button></div>`}</div>`}).join('')}<h4>보낸 알림</h4>${posts().filter(p=>p.k=='fn').map(p=>`<div class=row><span>${md(p.ts)} · ${LDN[p.w]||''} · ${esc(p.x.slice(0,18))}</span><button class="btn ghost sm" onclick="delPost('${p.id}')">삭제</button></div>`).join('')||'<p class=note>아직 없어요</p>'}</div>`};
+function setLd(k,s){if(s===undefined)return;const ld={...(cc().ld||{}),[k]:s};FB.set('ccfg/'+CK,{ld,ldS:Object.values(ld).filter(Boolean)},true).then(()=>toast(s?k+'(으)로 지정했어요':'해제했어요'),fail('저장하지 못했어요'))}
+const PRt=()=>{const prs=S.cfg.prs||[];return `<div class=card><h4>👪 학부모 대표 알림 관리</h4><small>지정한 학부모 대표는 알림장에서 학부모님들께 알림을 보낼 수 있어요. (자녀 학번 기준)</small><div class=send><select id=prsel>${rOpts('','학생 선택')}</select><button class="btn sm" onclick="addPR()">지정</button></div>${prs.map(s=>`<div class=row><span>👪 ${esc(s)} 학생 학부모</span><button class="btn ghost sm" onclick="delPR('${esc(s)}')">해제</button></div>`).join('')||'<p class=note>아직 지정한 학부모 대표가 없어요</p>'}<h4>보낸 알림</h4>${posts().filter(p=>p.k=='pn').map(p=>`<div class=row><span>${md(p.ts)} · ${esc(p.x.slice(0,20))}</span><button class="btn ghost sm" onclick="delPost('${p.id}')">삭제</button></div>`).join('')||'<p class=note>아직 없어요</p>'}</div>`};
 function addPR(){const s=G('prsel').value,prs=S.cfg.prs||[];if(!s)return toast('학생을 골라 주세요');if(prs.includes(s))return;FB.set('config/main',{prs:[...prs,s]},true).then(()=>toast('학부모 대표로 지정했어요'),fail('저장하지 못했어요'))}
 function delPR(s){FB.set('config/main',{prs:(S.cfg.prs||[]).filter(x=>x!=s)},true).then(()=>toast('해제했어요'),fail('저장하지 못했어요'))}
 
@@ -274,28 +302,53 @@ async function openF(id,s){const f=findF(id,s);if(!f)return;mk('F'+id);if(f.u){w
 function delF(id,s){FB.batch(s?[['del',`pf/${s}/f/${id}`],['del',`pf/${s}/d/${id}`]]:[['del','files/'+id],['del','fdata/'+id]]).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
 async function up(inp,k){const x=inp.files[0];if(!x)return;if(x.size>700*1024){inp.value='';return toast('700KB 이하 가벼운 파일만 올릴 수 있어요. 큰 파일은 링크로 등록해 주세요')}
  const base=x.name.replace(/\.[^.]+$/,''),n=(G(k=='m'?'mt':'lt').value.trim())||base,to=k=='m'?G('ml').value:'',id=FB.id();
- try{toast('올리는 중이에요…');const data=await readURL(x),meta={n,t:x.type||'file',nm:x.name,u:'',ts:Date.now()};
-  if(to)await FB.batch([['set',`pf/${to}/d/${id}`,{data}],['set',`pf/${to}/f/${id}`,{...meta,s:to}]]);else await FB.batch([['set','fdata/'+id,{data}],['set','files/'+id,{...meta,k}]]);
+ try{toast('올리는 중이에요…');const data=await readURL(x),meta={n,c:CK,t:x.type||'file',nm:x.name,u:'',ts:Date.now()};
+  if(to)await FB.batch([['set',`pf/${to}/d/${id}`,{data,c:CK}],['set',`pf/${to}/f/${id}`,{...meta,s:to}]]);else await FB.batch([['set','fdata/'+id,{data,c:CK}],['set','files/'+id,{...meta,k}]]);
   inp.value='';clr(k=='m'?'mt':'lt');toast(to?`${to} 학생에게만 올렸어요`:'올렸어요')}catch(e){inp.value='';fail('올리지 못했어요')(e)}}
 function addLk(k){const n=G(k=='m'?'mt':'lt').value.trim(),u=safeU(G(k=='m'?'mu':'lu').value),to=k=='m'?G('ml').value:'',id=FB.id();if(!n||!u)return toast('제목과 올바른 링크 주소를 모두 넣어 주세요');
- const meta={n,u,t:'link',nm:n,ts:Date.now()};(to?FB.set(`pf/${to}/f/${id}`,{...meta,s:to}):FB.set('files/'+id,{...meta,k})).then(()=>{clr(k=='m'?'mt':'lt',k=='m'?'mu':'lu');toast('링크를 등록했어요')},fail('등록하지 못했어요'))}
-V.mine=()=>{const t=T(),pub=S.files.filter(f=>f.k=='m'),priv=t?S.pfAll:S.pf;
+ const meta={n,c:CK,u,t:'link',nm:n,ts:Date.now()};(to?FB.set(`pf/${to}/f/${id}`,{...meta,s:to}):FB.set('files/'+id,{...meta,k})).then(()=>{clr(k=='m'?'mt':'lt',k=='m'?'mu':'lu');toast('링크를 등록했어요')},fail('등록하지 못했어요'))}
+V.mine=()=>{const t=T(),pub=files().filter(f=>f.k=='m'),priv=pfs();
  return (t?`<div class=card><h4>📎 학생 자료 올리기·링크 등록</h4><input id=mt placeholder="자료 제목 (예: 10월 모의고사 성적표)"><input id=mu type=url placeholder="자료 링크 주소 https://"><small>받을 학생 (개인 자료는 한 명만 고르세요)</small><select id=ml>${rOpts('','전체 학생')}</select><button class="btn sm" onclick="addLk('m')">링크로 등록</button><small>또는 가벼운 파일(이미지·PDF, 700KB 이하)을 바로 올려요. 위의 제목·받을 학생이 적용돼요.</small><input type=file accept="image/*,application/pdf" onchange="up(this,'m')"><small>큰 파일은 구글 드라이브 등에 올린 뒤 공유 링크로 등록하세요. 개인 성적표·시간표는 드라이브에서 해당 학생(또는 학부모) 구글 계정에만 공유한 뒤 링크를 등록해 주세요.</small></div>`:'')
- +`<div class=card><h4>📎 ${t?'전체 학생에게 올린 자료':'선생님이 올린 자료'}</h4>${pub.map(f=>fr(f,0)).join('')||'<p class=note>아직 올라온 자료가 없어요</p>'}</div><div class=card><h4>🔒 ${t?'학생별 개인 자료':P()?'자녀에게만 온 자료':'나에게만 온 자료'}</h4>${priv.map(f=>fr(f,1)).join('')||'<p class=note>아직 없어요</p>'}</div><p class=note>🔒 개인 자료는 ${t?'받는 학생과 그 학부모만':P()?'자녀와 보호자만':'나와 우리 보호자만'} 볼 수 있어요</p>`};
-V.lib=()=>{const t=T(),ln=[['🧾','나이스','https://www.neis.go.kr'],...(S.cfg.apps||[]).map(a=>['📱',a.n,a.u])];
+ +`<div class=card><h4>📎 ${t?'전체 학생에게 올린 자료':'선생님이 올린 자료'}</h4>${pub.map(f=>fr(f,0)).join('')||'<p class=note>아직 올라온 자료가 없어요</p>'}</div><div class=card><h4>🔒 ${t?'학생별 개인 자료':P()?'자녀에게만 온 자료':'나에게만 온 자료'}</h4>${priv.map(f=>fr(f,1)).join('')||'<p class=note>아직 없어요</p>'}</div><p class=note>🔒 개인 자료는 ${t?(HR()?'받는 학생과 그 학부모만':'받는 학생만'):P()?'자녀와 보호자만':HR()?'나와 우리 보호자만':'나만'} 볼 수 있어요</p>`};
+V.lib=()=>{const t=T(),ln=[['🧾','나이스 바로가기','https://www.neis.go.kr'],...(S.cfg.apps||[]).map(a=>['📱',a.n,a.u])];
  return (t?`<div class=card><h4>📎 양식·자료 올리기·링크 등록</h4><input id=lt placeholder="제목 (예: 현장체험학습 동의서)"><input id=lu type=url placeholder="링크 주소 https://"><button class="btn sm" onclick="addLk('l')">링크로 등록</button><small>또는 가벼운 파일(이미지·PDF, 700KB 이하)을 바로 올려요.</small><input type=file accept="image/*,application/pdf" onchange="up(this,'l')"><small>큰 파일은 드라이브·학교 홈페이지 등의 공유 링크로 등록하세요. 공용 양식만 "링크가 있는 모든 사용자"로 공유하세요.</small></div>`:'')
- +`<div class=card><h4>📄 양식·자료</h4>${S.files.filter(f=>f.k=='l').map(f=>fr(f,0)).join('')||'<p class=note>선생님이 양식을 올리면 여기에 나타나요.</p>'}</div><div class=grid2>${ln.map(l=>`<a class="btn ghost lk" href="${esc(safeU(l[2]))}" target=_blank rel=noopener><i>${l[0]}</i>${esc(l[1])}</a>`).join('')}</div>`
+ +`<div class=card><h4>📄 양식·자료</h4>${files().filter(f=>f.k=='l').map(f=>fr(f,0)).join('')||'<p class=note>선생님이 양식을 올리면 여기에 나타나요.</p>'}</div><div class=grid2>${ln.map(l=>`<a class="btn ghost lk" href="${esc(safeU(l[2]))}" target=_blank rel=noopener><i>${l[0]}</i>${esc(l[1])}</a>`).join('')}</div>`
  +(t?`<div class=card><h4>📱 학교 앱 바로가기 편집</h4>${(S.cfg.apps||[]).map((a,i)=>`<div class=row><span>${esc(a.n)}</span><button class="btn ghost sm" onclick="delApp(${i})">삭제</button></div>`).join('')}<input id=an placeholder="앱 이름"><input id=au type=url placeholder="웹 주소 https://"><button class="btn sm" onclick="addApp()">추가</button></div>`:'')};
 function addApp(){const n=G('an').value.trim(),u=safeU(G('au').value);if(!n||!u)return toast('이름과 주소를 모두 넣어 주세요');FB.set('config/main',{apps:[...(S.cfg.apps||[]),{n,u}]},true).then(()=>{clr('an','au');toast('추가했어요')},fail('저장하지 못했어요'))}
 function delApp(i){const a=(S.cfg.apps||[]).slice();a.splice(i,1);FB.set('config/main',{apps:a},true).catch(fail('저장하지 못했어요'))}
 
 // ───────── 출결 ─────────
-const attOf=s=>{const a=((S.stu[s]||{}).att)||{};return Object.fromEntries(ATK.map(k=>[k,(a[k]||[0,0,0]).slice(0,3)]))};
-const attTb=(s,ed)=>{const A=attOf(s);return `<table class=tt><tr><th></th><th>질병</th><th>미인정</th><th>인정(기타)</th><th>합계</th></tr>${ATK.map(k=>`<tr><th>${k}</th>${A[k].map((n,j)=>ed?`<td><input type=number min=0 value="${n}" style="padding:4px;margin:0;text-align:center" onchange="setAtt('${esc(s)}','${k}',${j},this.value)"></td>`:`<td>${n}</td>`).join('')}<td><b>${A[k].reduce((a,b)=>a+(+b||0),0)}</b></td></tr>`).join('')}</table>`};
+const ATC=['질병','미인정','기타','인정'];
+const attOf=s=>{const a=((S.stu[s]||{}).att)||{};return Object.fromEntries(ATK.map(k=>{const v=(a[k]||[]).slice(0,4);while(v.length<4)v.push(0);return [k,v.map(n=>+n||0)]}))};
+const attTb=(s,ed)=>{const A=attOf(s),inc=gy().inc;return `<table class=tt><tr><th></th>${ATC.map((h,j)=>`<th>${h}${inc.includes(j)?'*':''}</th>`).join('')}<th>합계</th></tr>${ATK.map(k=>`<tr><th>${k}</th>${A[k].map((n,j)=>ed?`<td><input type=number min=0 value="${n}" style="padding:4px;margin:0;text-align:center" onchange="setAtt('${esc(s)}','${k}',${j},this.value)"></td>`:`<td>${n}</td>`).join('')}<td><b>${A[k].reduce((a,b)=>a+b,0)}</b></td></tr>`).join('')}</table><small>* 표시 칸만 생교위 계산에 들어가요</small>`};
+// 생교위(생활교육위원회) 규칙: 설정 → config/main.gy
+const GYD={th:[5,10,15,20,25,30,35,40,45,50,55,60],conv:5,inc:[1],warn:2,ddk:['복장','전자기기 사용','기타 불손 행위'],ddn:3};
+const gy=()=>{const g={...GYD,...(S.cfg.gy||{})};g.th=(g.th||[]).map(Number).filter(n=>n>0).sort((a,b)=>a-b);g.inc=g.inc||[];g.conv=Math.max(1,+g.conv||5);g.ddn=Math.max(1,+g.ddn||3);g.ddk=(g.ddk&&g.ddk.length)?g.ddk:GYD.ddk;return g};
+function gyAtt(s){const g=gy(),A=attOf(s),sum=k=>g.inc.reduce((a,j)=>a+(A[k][j]||0),0),ab=sum('결석'),etc=sum('지각')+sum('조퇴')+sum('결과'),conv=ab+Math.floor(etc/g.conv),hit=g.th.filter(n=>conv>=n),next=g.th.find(n=>n>conv);
+ return {ab,etc,conv,hit,next,left:next==null?null:next-conv,rest:g.conv-etc%g.conv,lv:hit.length&&conv==hit[hit.length-1]?3:next!=null&&next-conv<=g.warn?2:hit.length?1:0}}
+const ddOf=s=>((S.stu[s]||{}).dd)||{},ddLog=s=>((S.stu[s]||{}).ddl)||[];
+function gyDd(s){const g=gy(),d=ddOf(s),tot=g.ddk.reduce((a,k)=>a+(+d[k]||0),0),times=Math.floor(tot/g.ddn),left=g.ddn-tot%g.ddn;return {tot,times,left,lv:tot&&tot%g.ddn==0?3:left==1?2:times?1:0}}
+const gyBadge=(lv,txt)=>`<div class=warn style="${lv==3?'background:#fde2df;border-left-color:#d2493c':lv==2?'':'background:#e7f4ea;border-left-color:#2f7d4a'}">${txt}</div>`;
+function gyCard(s,t){const a=gyAtt(s),d=gyDd(s),g=gy(),who=t?'이 학생':P()?'자녀':'나';
+ const at=a.lv==3?`🚨 <b>생교위 회부</b> — 환산 결석 ${a.conv}일로 회부 기준 ${a.hit[a.hit.length-1]}일에 닿았어요 (${a.hit.length}회차).`
+  :a.lv==2?`⚠️ <b>생교위 조심</b> — 환산 결석 ${a.conv}일. 앞으로 ${a.left}일 더 결석하면 생교위에 회부돼요 (기준 ${a.next}일).`
+  :a.lv==1?`📌 환산 결석 ${a.conv}일 · 이미 ${a.hit.length}회 회부 기준을 넘었어요.${a.next!=null?` 다음 회부 기준 ${a.next}일까지 ${a.left}일 남았어요.`:''}`
+  :`✅ 환산 결석 ${a.conv}일 · ${a.next!=null?`생교위 회부 기준 ${a.next}일까지 ${a.left}일 남았어요.`:'괜찮아요.'}`;
+ const dt=d.lv==3?`🚨 <b>생교위 회부</b> — 디딤돌 ${d.tot}장 (${g.ddn}장마다 회부, ${d.times}회차)`
+  :d.lv==2?`⚠️ <b>생교위 조심</b> — 디딤돌 ${d.tot}장. 1장 더 받으면 생교위에 회부돼요.`
+  :`${d.tot?'📌':'✅'} 디딤돌 ${d.tot}장 · ${g.ddn}장이 되면 생교위에 회부돼요 (${d.left}장 남음)`;
+ const dd=ddOf(s),log=ddLog(s);
+ return `<div class=card><h4>🚦 생활교육위원회(생교위) 알림 · ${who}</h4>${gyBadge(a.lv,at)}<small>결석 ${a.ab}일 + 지각·조퇴·결과 ${a.etc}회(${g.conv}회 = 결석 1일) → 환산 결석 ${a.conv}일${a.etc%g.conv?` · 지각·조퇴·결과 ${a.rest}회 더하면 결석 1일이 더해져요`:''}</small>
+ <h4 style="margin-top:12px">🪨 디딤돌</h4>${gyBadge(d.lv,dt)}${g.ddk.map(k=>`<div class=row><span>${esc(k)}</span><span>${t?`<button class="btn ghost sm" onclick="ddAdd('${esc(s)}',this.dataset.k,-1)" data-k="${esc(k)}">−</button> `:''}<b>${+dd[k]||0}장</b>${t?` <button class="btn sm" onclick="ddAdd('${esc(s)}',this.dataset.k,1)" data-k="${esc(k)}">＋</button>`:''}</span></div>`).join('')}
+ ${log.length?`<details><summary><small style="display:inline">받은 날짜 보기 (${log.length})</small></summary>${log.slice().reverse().map(x=>`<div class=row><small>${md(x.ts)} · ${esc(x.k)}</small></div>`).join('')}</details>`:''}</div>`}
+function ddAdd(s,k,n){const dd={...ddOf(s)},log=ddLog(s).slice(),cur=+dd[k]||0;if(n<0&&!cur)return;dd[k]=cur+n;if(n>0)log.push({k,ts:Date.now()});else{const i=log.map(x=>x.k).lastIndexOf(k);if(i>=0)log.splice(i,1)}
+ FB.set('stu/'+s,{dd,ddl:log},true).then(()=>{const d=gyDd(s);toast(n>0?(d.lv==3?`디딤돌 ${d.tot}장 · 생교위 회부 기준이에요`:'디딤돌을 기록했어요'):'디딤돌 하나를 지웠어요')},fail('저장하지 못했어요'))}
+const gyList=()=>{const L=roster().map(r=>({r,a:gyAtt(r.s),d:gyDd(r.s)})).filter(x=>x.a.lv>=2||x.d.lv>=2||x.a.hit.length||x.d.times).sort((x,y)=>Math.max(y.a.lv,y.d.lv)-Math.max(x.a.lv,x.d.lv));
+ return `<div class=card><h4>🚦 생교위 현황 (우리 반)</h4>${L.map(x=>`<button class=rw onclick="attS='${esc(x.r.s)}';draw(true)"><span><b>${esc(x.r.s)}</b> ${esc(x.r.lbl)}<small>환산 결석 ${x.a.conv}일 · 디딤돌 ${x.d.tot}장</small></span><span>${x.a.lv==3||x.d.lv==3?'<span class=un>🚨 회부</span>':x.a.lv==2||x.d.lv==2?'<span class=un style="background:#e8913a">⚠️ 조심</span>':'<span class=un style="background:#888">지난 회부</span>'}</span></button>`).join('')||'<p class=note>✅ 생교위 회부·조심 학생이 없어요</p>'}<small>회부 조건은 설정에서 바꿔요.</small></div>`};
 V.att=()=>{const c=S.cfg,t=T(),R=roster(),s=t?(attS&&R.some(r=>r.s==attS)?attS:(R[0]&&R[0].s)||''):myS();
- return `<div class=card><small>집계 기간</small><h4>📅 ${esc(c.ap1||'')} ~ ${esc(c.ap2||'')}</h4><div class=row><span>📚 수업일수 합계</span>${t?`<span><input type=number min=0 value="${+c.cls||0}" style="width:90px;padding:4px;margin:0;text-align:center" onchange="setCls(this.value)"> 일</span>`:`<b>${+c.cls||0}일</b>`}</div>
+ return (t?gyList():'')+`<div class=card><small>집계 기간</small><h4>📅 ${esc(c.ap1||'')} ~ ${esc(c.ap2||'')}</h4><div class=row><span>📚 수업일수 합계</span>${t?`<span><input type=number min=0 value="${+c.cls||0}" style="width:90px;padding:4px;margin:0;text-align:center" onchange="setCls(this.value)"> 일</span>`:`<b>${+c.cls||0}일</b>`}</div>
  ${t?`<small>학생 선택</small><select onchange="attS=this.value;draw(true)">${R.map(r=>`<option value="${esc(r.s)}" ${r.s==s?'selected':''}>${esc(r.s)} ${esc(r.lbl)}</option>`).join('')}</select>`:''}
- ${s?`<h4>${esc(s)} ${t?esc((R.find(r=>r.s==s)||{}).lbl||''):P()?'자녀':''} 출결</h4>`+attTb(s,t):'<p class=note>'+(t?'설정에서 명렬표를 넣거나 학생이 가입하면 학생별로 입력할 수 있어요.':'출결 정보가 아직 없어요')+'</p>'}</div><p class=note>${t?'숫자를 고치면 바로 저장돼요. 기간은 설정에서 바꿔요. 학생·학부모는 자기 출결만 볼 수 있어요.':'🔒 '+(P()?'자녀':'본인')+' 출결만 보여요'}</p>`};
+ ${s?`<h4>${esc(s)} ${t?esc((R.find(r=>r.s==s)||{}).lbl||''):P()?'자녀':''} 출결</h4>`+attTb(s,t):'<p class=note>'+(t?'설정에서 명렬표를 넣거나 학생이 가입하면 학생별로 입력할 수 있어요.':'출결 정보가 아직 없어요')+'</p>'}</div>${s?gyCard(s,t):''}<p class=note>${t?'숫자를 고치면 바로 저장돼요. 디딤돌은 ＋/− 로 기록해요. 학생·학부모는 자기 것만 볼 수 있어요.':'🔒 '+(P()?'자녀':'본인')+' 출결·디딤돌만 보여요'}</p>`};
 function setAtt(s,k,j,v){const a=attOf(s)[k];a[j]=Math.max(0,parseInt(v)||0);FB.set('stu/'+s,{att:{[k]:a}},true).then(()=>toast('저장했어요'),fail('저장하지 못했어요'))}
 function setCls(v){FB.set('config/main',{cls:Math.max(0,parseInt(v)||0)},true).then(()=>toast('저장했어요'),fail('저장하지 못했어요'))}
 
@@ -310,7 +363,7 @@ function csPub(){const c=csD();if(!c.a||!c.b)return toast('신청 가능 기간�
 function csStop(){FB.set('config/consult',{csp:{on:0}},true).then(()=>toast('게시를 중단했어요'),fail('바꾸지 못했어요'))}
 const APPH=()=>{const bk=S.cons.booked||{};return `<div class=card><h4>📋 상담 신청 현황 <small style="display:inline">(복수 신청 중 1개 지정)</small></h4>${S.apps.map(a=>`<div style="border-top:1px dashed var(--line);padding:8px 0"><b>${esc(a.n)}</b> ${a.pick?`<span class=un style="background:#4a9a5c">확정 ${esc(a.pick)}</span>`:'<span class=un>미지정</span>'}${a.x?`<p class=pw style="margin:2px 0"><small>📝 ${esc(a.x)}</small></p>`:''}${(a.ks||[]).map(k=>{const tk=bk[k]&&bk[k]!=a.id;return `<label class=opt style="${tk?'opacity:.5':''}"><input type=radio name="pk_${a.id}" value="${esc(k)}" ${a.pick==k?'checked':''} ${tk?'disabled':''}>${esc(k)}${tk?' (다른 신청자 확정)':''}</label>`}).join('')}<div class=send><button class="btn sm" onclick="pickAp(this,'${a.id}')">${a.pick?'다시 지정':'이 시간으로 지정'}</button>${a.pick?`<button class="btn ghost sm" onclick="unpickAp('${a.id}')">지정 취소</button>`:''}<button class="btn ghost sm" onclick="delA('${a.id}')">신청 삭제</button></div></div>`).join('')||'<small>아직 신청이 없어요</small>'}<small>지정하면 신청한 학생·학부모에게 메시지가 가요.</small></div>`};
 async function pickAp(b,id){const a=S.apps.find(x=>x.id==id),r=document.querySelector(`input[name="pk_${id}"]:checked`),k=r&&r.value,bk={...(S.cons.booked||{})};if(!a||!k)return toast('지정할 시간을 하나 골라 주세요');if(bk[k]&&bk[k]!=id)return toast('이미 다른 신청자가 확정된 시간이에요');
- if(a.pick)delete bk[a.pick];bk[k]=id;await lock(b,()=>FB.batch([['upd','apps/'+id,{pick:k}],['set','config/consult',{booked:bk},false,'field'],['set','messages/'+FB.id(),{owner:a.u,from:'t',n:S.cfg.tn||'담임',x:`상담 일정이 ${k} ${a.m=='t'?'전화':'방문'} 상담으로 확정되었어요.`,ts:Date.now(),r:false}]]).then(()=>toast('상담 일정을 지정했어요 · 신청자에게 메시지가 가요'),fail('지정하지 못했어요')))}
+ if(a.pick)delete bk[a.pick];bk[k]=id;await lock(b,()=>FB.batch([['upd','apps/'+id,{pick:k}],['set','config/consult',{booked:bk},false,'field'],['set','messages/'+FB.id(),{owner:a.u,c:'hr',from:'t',n:S.cfg.tn||'담임',x:`상담 일정이 ${k} ${a.m=='t'?'전화':'방문'} 상담으로 확정되었어요.`,ts:Date.now(),r:false}]]).then(()=>toast('상담 일정을 지정했어요 · 신청자에게 메시지가 가요'),fail('지정하지 못했어요')))}
 function unpickAp(id){const a=S.apps.find(x=>x.id==id),bk={...(S.cons.booked||{})};if(!a||!a.pick)return;delete bk[a.pick];FB.batch([['upd','apps/'+id,{pick:null}],['set','config/consult',{booked:bk},false,'field']]).then(()=>toast('지정을 취소했어요'),fail('바꾸지 못했어요'))}
 function delA(id){const a=S.apps.find(x=>x.id==id),ops=[['del','apps/'+id]];if(!a)return;if(a.pick){const bk={...(S.cons.booked||{})};delete bk[a.pick];ops.push(['set','config/consult',{booked:bk},false,'field'])}FB.batch(ops).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
 const conT=()=>{const c=csD(),cp=S.cons.csp,pub=cp&&cp.on,st=pub?(csKey(c)==csKey(cp)?'✅ 게시 중 · 수정한 내용이 없어요':'⚠️ 수정한 내용이 아직 게시되지 않았어요 · "최종 게시"를 눌러야 반영돼요'):'⏸ 게시 전 · 학생·학부모에게는 "아직 신청 기간이 아니에요"로 보여요';
@@ -331,35 +384,35 @@ V.con=()=>T()?conT():conS();
 
 // ───────── 메시지 ─────────
 const bub=(m,own)=>`<div class="msg ${m.from=='t'?'me':''}"><small>${md(m.ts)}</small>${esc(m.x)}${own?`<small>${m.r?'✓ 읽음'+(m.rt?' · '+md(m.rt):''):'● 안 읽음'}</small>`:''}</div>`;
-V.msg=()=>{if(T())return V.stu();const id=PV()?'':uid(),L=S.msgs.filter(m=>m.owner==id),g=L.filter(m=>m.from=='t'),s=L.filter(m=>m.from=='u'),Tb=P()?['선생님이 보낸 글','제가 보냈던 글','✏️ 문의하기']:['선생님이 보낸 글','내가 보냈던 글','✏️ 쓰기'],bx=(a,o)=>a.length?a.slice().reverse().map(m=>bub(m,o)).join(''):'<p class=note>아직 없어요</p>';
+V.msg=()=>{if(T())return V.stu();const id=PV()?'':uid(),L=msgs().filter(m=>m.owner==id),g=L.filter(m=>m.from=='t'),s=L.filter(m=>m.from=='u'),Tb=P()?['선생님이 보낸 글','제가 보냈던 글','✏️ 문의하기']:['선생님이 보낸 글','내가 보냈던 글','✏️ 쓰기'],bx=(a,o)=>a.length?a.slice().reverse().map(m=>bub(m,o)).join(''):'<p class=note>아직 없어요</p>';
  return chips(Tb,(c,i)=>i==mt,(c,i)=>`mt=${i};draw(true)`)+(mt==2?`<div class=card><textarea id=mx rows=5 placeholder="${P()?'담임선생님께 전하실 말씀을 적어 주세요':'선생님께 하고 싶은 말을 적어 보세요'}"></textarea><button class="btn blk" onclick="sendM(this)">보내기</button></div>`:`<div class=card>${mt?bx(s,1):bx(g,0)}</div>`)};
-async function sendM(b){if(pv())return;const x=G('mx').value.trim();if(!x)return;const pr=S.prof;await lock(b,()=>FB.add('messages',{owner:uid(),from:'u',n:`${pr.s} ${pr.n}${pr.r=='parent'?' 학부모':''}`,x,ts:Date.now(),r:false}).then(()=>{clr('mx');mt=1;draw(true);toast('선생님께 보냈어요')},fail('보내지 못했어요')))}
+async function sendM(b){if(pv())return;const x=G('mx').value.trim();if(!x)return;const pr=S.prof;await lock(b,()=>FB.add('messages',{owner:uid(),c:CK,from:'u',n:`${pr.s} ${pr.n}${pr.r=='parent'?' 학부모':''}`,x,ts:Date.now(),r:false}).then(()=>{clr('mx');mt=1;draw(true);toast('선생님께 보냈어요')},fail('보내지 못했어요')))}
 
 // ───────── 선물 ─────────
-V.gift=()=>{if(!T()){const L=PV()?[]:S.gifts;return L.map(g=>rc('G'+g.id,'🎁 선물이 도착했어요 · '+md(g.ts),`<div class=card style="text-align:center"><small>${md(g.ts)}</small><h3>🎁 ${esc(g.t)}</h3>${g.img?(g.img.startsWith('data:')?`<img src="${safeImg(g.img)}" style="max-width:100%;border-radius:12px" alt="">`:`<a class="btn" href="${esc(safeU(g.img))}" target=_blank rel=noopener>🎟️ 쿠폰 열기</a>`):''}${g.c?`<p><b>${esc(g.c)}</b></p>`:''}<p class=pw>${esc(g.m)}</p></div>`)).join('')||'<div class=card style="text-align:center">🎁<br>아직 받은 선물이 없어요</div>'}
- return `<div class=card><h4>🎁 선물 보내기</h4><input id=gt placeholder="쿠폰 이름"><input id=gc placeholder="바코드·쿠폰 번호 (선택)"><textarea id=gm rows=2 placeholder="한마디 (선택)"></textarea><input type=file accept="image/*" onchange="gImg(this)"><small>쿠폰·바코드 이미지를 바로 올리거나(자동으로 줄여요), 아래에 이미지 링크를 붙여 넣어요. 번호만 보내도 돼요.</small><input id=gl type=url placeholder="쿠폰 이미지 링크 (선택)"><select id=gs>${rOpts('','받을 학생 선택')}</select><button class="btn blk" onclick="sendG(this)">선물 보내기</button></div><div class=card><h4>보낸 선물</h4>${S.allGifts.map(x=>`<div class=row><span>${md(x.ts)} · ${esc(x.s)} · ${esc(x.t)}</span><button class="btn ghost sm" onclick="delG('${esc(x.s)}','${x.id}')">회수</button></div>`).join('')||'<p class=note>아직 없어요</p>'}</div>`};
+V.gift=()=>{if(!T()){const L=PV()?[]:gifts();return L.map(g=>rc('G'+g.id,'🎁 선물이 도착했어요 · '+md(g.ts),`<div class=card style="text-align:center"><small>${md(g.ts)}</small><h3>🎁 ${esc(g.t)}</h3>${g.img?(g.img.startsWith('data:')?`<img src="${safeImg(g.img)}" style="max-width:100%;border-radius:12px" alt="">`:`<a class="btn" href="${esc(safeU(g.img))}" target=_blank rel=noopener>🎟️ 쿠폰 열기</a>`):''}${g.cd?`<p><b>${esc(g.cd)}</b></p>`:''}<p class=pw>${esc(g.m)}</p></div>`)).join('')||'<div class=card style="text-align:center">🎁<br>아직 받은 선물이 없어요</div>'}
+ return `<div class=card><h4>🎁 선물 보내기</h4><input id=gt placeholder="쿠폰 이름"><textarea id=gm rows=2 placeholder="한마디 (선택)"></textarea><input type=file accept="image/*" onchange="gImg(this)"><small>쿠폰·바코드 이미지를 바로 올리거나(자동으로 줄여요), 아래에 이미지 링크를 붙여 넣어요.</small><input id=gl type=url placeholder="쿠폰 이미지 링크 (선택)"><select id=gs>${rOpts('','받을 학생 선택')}</select><button class="btn blk" onclick="sendG(this)">선물 보내기</button></div><div class=card><h4>보낸 선물</h4>${gifts().map(x=>`<div class=row><span>${md(x.ts)} · ${esc(x.s)} · ${esc(x.t)}</span><button class="btn ghost sm" onclick="delG('${esc(x.s)}','${x.id}')">회수</button></div>`).join('')||'<p class=note>아직 없어요</p>'}</div>`};
 function gImg(f){const x=f.files[0];if(x)shrink(x,640,.75).then(d=>{GI=d;toast('이미지를 불러왔어요')},()=>toast('이미지를 읽지 못했어요'))}
 async function sendG(b){const t=G('gt').value.trim(),s=G('gs').value;if(!t)return toast('쿠폰 이름을 적어 주세요');if(!s)return toast('받을 학생을 골라 주세요');const img=safeU(G('gl').value)||GI;
- await lock(b,()=>FB.set(`gift/${s}/g/${FB.id()}`,{s,t,c:G('gc').value.trim(),m:G('gm').value.trim(),img,ts:Date.now()}).then(()=>{GI='';clr('gt','gc','gm','gl');document.querySelectorAll('#app input[type=file]').forEach(e=>e.value='');toast('선물을 보냈어요')},fail('보내지 못했어요')))}
+ await lock(b,()=>FB.set(`gift/${s}/g/${FB.id()}`,{s,c:CK,t,m:G('gm').value.trim(),img,ts:Date.now()}).then(()=>{GI='';clr('gt','gm','gl');document.querySelectorAll('#app input[type=file]').forEach(e=>e.value='');toast('선물을 보냈어요')},fail('보내지 못했어요')))}
 function delG(s,id){FB.del(`gift/${s}/g/${id}`).then(()=>toast('회수했어요'),fail('회수하지 못했어요'))}
 
 // ───────── 학생 관리 ─────────
-V.stu=()=>`<div class=card><h4>🗂️ 학번순 학생 목록</h4><small>학생·학부모 자료가 학번별로 모여요</small>${roster().map(x=>`<button class=rw onclick="sdS='${esc(x.s)}';go('sd')"><span><b>${esc(x.s)}</b> ${esc(x.lbl)} ${x.acc.map(u=>u.r=='parent'?'👪':'🎒').join('')}</span>${x.un?`<span class=un>새 글 ${x.un}</span>`:'<span>›</span>'}</button>`).join('')||'<p class=note>설정에서 명렬표를 넣거나 학생이 가입하면 여기에 보여요</p>'}</div>`+accCard();
+V.stu=()=>`<div class=card><h4>🗂️ 학번순 학생 목록</h4><small>학생·학부모 자료가 학번별로 모여요</small>${roster().map(x=>`<button class=rw onclick="sdS='${esc(x.s)}';go('sd')"><span><b>${esc(x.s)}</b> ${esc(x.lbl)} ${x.acc.map(u=>u.r=='parent'?'👪':'🎒').join('')}</span>${x.un?`<span class=un>새 글 ${x.un}</span>`:'<span>›</span>'}</button>`).join('')||'<p class=note>설정에서 명렬표를 넣거나 학생이 가입하면 여기에 보여요</p>'}</div>`+tplEd()+accCard();
 const accForm=u=>`<div class=card style="margin:6px 0"><small>학번</small><input id=ea_s inputmode=numeric value="${esc(u.s)}"><small>이름 (가운데 글자는 0으로 가려 저장돼요)</small><input id=ea_n value="${esc(u.n)}">${u.r=='parent'?`<small>학생과의 관계</small><select id=ea_l>${REL.map(x=>`<option ${u.rel==x?'selected':''}>${x}</option>`).join('')}</select>`:''}<small style="word-break:break-all">구글 계정: ${esc(u.email)} (계정을 바꾸려면 초기화한 뒤 새 계정으로 다시 가입하게 하세요)</small><div class=send><button class="btn sm" onclick="saveU('${u.id}')">저장</button><button class="btn ghost sm" onclick="EA='';draw(true)">취소</button></div></div>`;
-const accCard=()=>{const A=S.users.slice().sort((a,b)=>a.s>b.s?1:-1);return `<div class=card><h4>📧 최초 구글 계정·학번·이름 관리</h4><small>가입할 때 처음 쓴 구글 계정이에요. 학번·이름·관계는 고칠 수 있고, 잘못 가입했다면 초기화하면 다시 가입할 수 있어요.</small>${A.map(u=>EA==u.id?accForm(u):`<div class=row><span>${esc(u.s)} ${uLbl(u)}<small style="word-break:break-all">${esc(u.email)} · 가입 ${md(u.at)}</small></span><span><button class="btn ghost sm" onclick="EA='${u.id}';draw(true)">수정</button> <button class="btn ghost sm" onclick="resetU('${u.id}')">${RA==u.id?'한 번 더 눌러 초기화':'초기화'}</button></span></div>`).join('')||'<p class=note>아직 가입한 학생·학부모가 없어요</p>'}</div>`};
+const accCard=()=>{const A=S.users.filter(u=>inCls(u)||(HR()&&!clsOfS(u.s,u.r).length)).sort((a,b)=>a.s>b.s?1:-1);return `<div class=card><h4>📧 최초 구글 계정·학번·이름 관리</h4><small>가입할 때 처음 쓴 구글 계정이에요. 학번·이름·관계는 고칠 수 있고, 잘못 가입했다면 초기화하면 다시 가입할 수 있어요.</small>${A.map(u=>EA==u.id?accForm(u):`<div class=row><span>${esc(u.s)} ${uLbl(u)}${clsOfS(u.s,u.r).length?'':' <span class=un>반 목록에 없는 학번</span>'}<small style="word-break:break-all">${esc(u.email)} · 가입 ${md(u.at)}</small></span><span><button class="btn ghost sm" onclick="EA='${u.id}';draw(true)">수정</button> <button class="btn ghost sm" onclick="resetU('${u.id}')">${RA==u.id?'한 번 더 눌러 초기화':'초기화'}</button></span></div>`).join('')||'<p class=note>아직 가입한 학생·학부모가 없어요</p>'}</div>`};
 async function saveU(id){const u=S.users.find(x=>x.id==id),s=G('ea_s').value.trim(),n0=G('ea_n').value.trim(),rel=u.r=='parent'?G('ea_l').value:(u.rel||'');if(!/^\d{4,6}$/.test(s))return toast('학번을 숫자로 입력해 주세요');if(n0.length<2)return toast('이름을 2글자 이상 입력해 주세요');
- const ops=[['upd','users/'+id,{n:mask(n0),s,rel}]];if(u.r=='student'&&s!=u.s){ops.push(['del','studentIds/'+u.s]);ops.push(['set','studentIds/'+s,{uid:id}])}
+ const ops=[['upd','users/'+id,{n:mask(n0),s,p:pOf(s),rel}]];if(u.r=='student'&&s!=u.s){ops.push(['del','studentIds/'+u.s]);ops.push(['set','studentIds/'+s,{uid:id}])}
  try{await FB.batch(ops);EA='';draw(true);toast('저장했어요')}catch(e){fail('저장하지 못했어요. 이미 등록된 학번인지 확인해 주세요')(e)}}
 async function resetU(id){if(RA!=id){RA=id;draw(true);return toast('한 번 더 누르면 초기화돼요')}const u=S.users.find(x=>x.id==id);RA='';const ops=[['del','users/'+id]];if(u&&u.r=='student')ops.push(['del','studentIds/'+u.s]);FB.batch(ops).then(()=>toast('초기화했어요 · 다시 가입할 수 있어요'),fail('초기화하지 못했어요'))}
 V.sd=()=>{const g=roster().find(x=>x.s==sdS);if(!g)return '<div class=card>목록에서 학생을 골라 주세요.</div>';const s=g.s;
  return `<h3>🗂️ ${esc(s)} ${esc(g.lbl)}</h3>`+(g.acc.length?g.acc.map(u=>sdAcc(u)).join(''):'<div class=card><p class=note>아직 가입한 계정이 없어요</p></div>')
- +medC(s)+`<div class=card><h4>✅ 출결 <small style="display:inline">(고치려면 출결 편집에서)</small></h4>${attTb(s,0)}</div>`
- +`<div class=card><h4>🔒 이 학생에게만 올린 자료</h4>${S.pfAll.filter(f=>f.s==s).map(f=>fr(f,1)).join('')||'<p class=note>없어요</p>'}</div><div class=card><h4>🎁 보낸 선물</h4>${S.allGifts.filter(x=>x.s==s).map(x=>`<div class=row><span>${md(x.ts)} · ${esc(x.t)}</span></div>`).join('')||'<p class=note>없어요</p>'}</div>`+noteC(s)};
-const sdAcc=u=>{const p=u.r=='parent',L=S.msgs.filter(m=>m.owner==u.id),ap=S.apps.filter(a=>a.u==u.id),g=S.dl.filter(d=>d.k=='g');
+ +(HR()?gyCard(s,1)+medC(s)+`<div class=card><h4>✅ 출결 <small style="display:inline">(고치려면 출결 편집에서)</small></h4>${attTb(s,0)}</div>`:'')
+ +`<div class=card><h4>🔒 이 학생에게만 올린 자료</h4>${pfs().filter(f=>f.s==s).map(f=>fr(f,1)).join('')||'<p class=note>없어요</p>'}</div><div class=card><h4>🎁 보낸 선물</h4>${gifts().filter(x=>x.s==s).map(x=>`<div class=row><span>${md(x.ts)} · ${esc(x.t)}</span></div>`).join('')||'<p class=note>없어요</p>'}</div>`+(HR()?noteC(s):'')};
+const sdAcc=u=>{const p=u.r=='parent',L=msgs().filter(m=>m.owner==u.id),ap=HR()?S.apps.filter(a=>a.u==u.id):null,g=HR()?S.dl.filter(d=>d.k=='g'):[];
  return `<div class=card><h4>${p?'👪':'🎒'} ${uLbl(u)}</h4><small style="word-break:break-all">📧 최초 구글 계정: ${esc(u.email)}</small>${g.length?'<small>서류 제출 여부</small>'+g.map(d=>{const r=S.dr.find(x=>x.d==d.id&&x.u==u.id);return `<div class=row><span>${esc(d.t)}</span><b>${r?EM[r.i]+' '+(p?DOP:DO)[r.i]:'— 아직 응답 없음'}</b></div>`}).join(''):''}
- <small>상담 신청</small>${ap.map(a=>`<div class=row>${a.pick?'✅ '+esc(a.pick):'⏳ '+(a.ks||[]).map(esc).join(', ')}</div>`).join('')||'<div class=row>신청 없음</div>'}
- <small>메시지</small><div>${L.map(m=>bub(m,m.from=='t')).join('')||'<p class=note>주고받은 메시지가 없어요</p>'}</div><textarea id="rx_${u.id}" rows=3 placeholder="${p?'학부모님께':'학생에게'} 보낼 내용 (요점만 써도 돼요)"></textarea><div class=send><button class="btn ghost sm" onclick="ai(this,'${u.id}','fix')">✨ AI 다듬기</button><button class="btn ghost sm" onclick="ai(this,'${u.id}','gen')">✨ AI로 작성</button><button class="btn sm" onclick="tsend(this,'${u.id}')">보내기</button></div>${AIN}</div>`};
-async function tsend(b,id){const ta=G('rx_'+id),x=ta.value.trim();if(!x)return toast('보낼 내용을 적어 주세요');await lock(b,()=>FB.add('messages',{owner:id,from:'t',n:S.cfg.tn||'담임',x,ts:Date.now(),r:false}).then(()=>{ta.value='';toast('보냈어요')},fail('보내지 못했어요')))}
+ ${ap?`<small>상담 신청</small>`+(ap.map(a=>`<div class=row>${a.pick?'✅ '+esc(a.pick):'⏳ '+(a.ks||[]).map(esc).join(', ')}</div>`).join('')||'<div class=row>신청 없음</div>'):''}
+ <small>메시지</small><div>${L.map(m=>bub(m,m.from=='t')).join('')||'<p class=note>주고받은 메시지가 없어요</p>'}</div><textarea id="rx_${u.id}" rows=3 placeholder="${p?'학부모님께':'학생에게'} 보낼 내용 (요점만 써도 돼요)"></textarea>${tplPick(u.id)}<div class=send><button class="btn ghost sm" onclick="ai(this,'${u.id}','fix')">✨ AI 다듬기</button><button class="btn ghost sm" onclick="ai(this,'${u.id}','gen')">✨ AI로 작성</button><button class="btn sm" onclick="tsend(this,'${u.id}')">보내기</button></div>${AIN}</div>`};
+async function tsend(b,id){const ta=G('rx_'+id),x=ta.value.trim();if(!x)return toast('보낼 내용을 적어 주세요');await lock(b,()=>FB.add('messages',{owner:id,c:CK,from:'t',n:S.cfg.tn||'담임',x,ts:Date.now(),r:false}).then(()=>{ta.value='';toast('보냈어요')},fail('보내지 못했어요')))}
 async function ai(b,id,mode){const ta=G('rx_'+id),t=ta.value.trim(),u=S.users.find(x=>x.id==id),p=u&&u.r=='parent';if(!t)return toast(mode=='fix'?'다듬을 문장을 먼저 써 주세요':'전할 내용을 간단히 적어 주세요');
  await lock(b,async()=>{toast('AI가 작성 중이에요…');try{const r=await aiCall('text',`당신은 한국 고등학교 담임교사의 메시지 작성 도우미입니다. 받는 사람은 ${p?'학부모님':'학생'}입니다. ${mode=='fix'?'아래 초안을 정중하게 다듬되 사실과 의미는 바꾸지 마세요.':'아래 요점으로 메시지를 작성하되 요점에 없는 사실은 지어내지 마세요.'} ${p?'정중한 존댓말을 쓰세요.':'따뜻하고 분명한 어조로 쓰세요.'} 실명은 쓰지 마세요. 인사말과 맺음말을 넣고 6문장 이내로, 메시지 본문만 출력하세요.\n\n${t}`);if(r){ta.value=r.trim();toast('확인하고 고친 뒤 보내세요')}else toast('AI 답이 비어 있어요')}catch(e){toast('AI 응답에 실패했어요: '+e.message)}})}
 const medC=s=>{const M=S.dl.filter(d=>d.k=='m'),mm=((S.stu[s]||{}).mm)||{};return M.length?`<div class=card><h4>🩺 질병 서류 상태</h4>${M.map(d=>`<small>${esc(d.t)}</small>${[1,2].map(b=>`<div class=row><span>${b==1?'온라인 서류':'병원 종이 서류'}</span><b>${(mm[d.id]||0)&b?'❌ 미제출':'✅ 제출 완료'}</b></div>`).join('')}`).join('')}</div>`:''};
@@ -396,19 +449,73 @@ V.intake=()=>{const ks=[...new Set([...Object.keys(S.notes).filter(s=>S.notes[s]
 // ───────── 설정 ─────────
 V.adm=()=>{const c={...S.cfg,dom:S.pub.dom||S.cfg.dom||''},m=(S.roster&&S.roster.m)||{};
  return `<div class=card><h4>⚙️ 초기·연간 설정</h4><small>학년이 바뀌면 새로 입력하세요. <b>학생 구글 계정 형식을 저장해야 학생이 가입할 수 있어요.</b></small>${FS.map(([k,l,t])=>`<small>${l}</small><input id=f_${k} type=${t} value="${esc(c[k]||'')}">`).join('')}${FT.map(([k,l])=>`<small>${l}</small><textarea id=f_${k} rows=3>${esc(c[k]||'')}</textarea>`).join('')}
- <small>학급 명렬표 (한 줄에 "학번 이름") — 넣으면 명렬표와 같은 학번·이름만 가입할 수 있어요. 비워 두면 누구나 가입해요.</small><textarea id=f_ros rows=6 placeholder="30101 홍길동">${esc(Object.entries(m).sort().map(([s,n])=>s+' '+n).join('\n'))}</textarea><small>이름은 가운데 글자를 0으로 가려 저장돼요.</small><button class="btn blk" onclick="saveS(this)">설정 저장</button></div>
+ <h4 style="margin-top:14px">🏫 반 나누기</h4><small>학생이 어느 반인지는 학번 앞자리로 정해져요. 예) 학번 30515 → 앞자리 305 = 3학년 5반</small>
+ <small>담임반 학번 앞자리</small><input id=f_hrp inputmode=numeric placeholder="예: 305" value="${esc(S.pub.hr||hrGuess())}">
+ <small>수업반 학번 앞자리 (한 줄에 하나, 뒤에 이름을 붙여도 돼요. 예: "301" 또는 "301 문학A") — 수업반은 학생만 가입하고 학부모와는 연결되지 않아요. 담임반과 같은 반을 넣으면 그 반 학생은 담임반과 수업반을 따로 봐요.</small><textarea id=f_subj rows=4 placeholder="301\n302\n305">${esc(SUBJ().map(k=>k+((S.pub.subjN||{})[k]?' '+S.pub.subjN[k]:'')).join('\n'))}</textarea>
+ <small>학급 명렬표 (한 줄에 "학번 이름") — 넣으면 명렬표와 같은 학번·이름만 가입할 수 있어요. 비워 두면 누구나 가입해요.</small><textarea id=f_ros rows=6 placeholder="30101 홍길동">${esc(Object.entries(m).sort().map(([s,n])=>s+' '+n).join('\n'))}</textarea><small>이름은 가운데 글자를 0으로 가려 저장돼요.</small><button class="btn blk" onclick="saveS(this)">설정 저장</button></div>${gyEd()}
  <div class=card><h4>🖼️ 담임 사진</h4><input id=pl type=url placeholder="사진 링크 주소 https://" value="${esc(/^https?:/.test(S.cfg.photo||'')?S.cfg.photo:'')}"><button class="btn sm" onclick="setPh()">적용</button><small>링크를 붙여 넣고 적용하거나, 아래에서 사진을 바로 올려요(자동으로 작게 줄여요). 링크를 비우고 적용하면 기본 이미지로 돌아가요.</small><input type=file accept="image/*" onchange="pic(this)"></div>
  <div class=card><h4>🤖 AI 연결 점검</h4><small>제미나이 키와 모델이 살아 있는지 확인해요(아주 짧은 호출 몇 번).</small><button class="btn sm" onclick="aiCheck(this)">점검하기</button><p id=aic class=note></p></div>
  <div class=card><h4>👩‍🏫 교사 계정</h4><p class=note style="word-break:break-all">${esc(S.u.email)}</p><small>담임 계정은 앱에서 바꿀 수 없어요. 바꾸려면 파이어베이스 콘솔에서 config/owner 문서를 지운 뒤 새 계정으로 "교사로 지정"을 누르세요.</small></div>`};
 async function saveS(b){const v={};[...FS,...FT].forEach(([k])=>v[k]=G('f_'+k).value.trim());v.dom=v.dom.replace(/^@/,'').toLowerCase();const m={};
  G('f_ros').value.split('\n').map(l=>l.trim().split(/[\s,\t]+/)).filter(a=>/^\d{4,6}$/.test(a[0])&&a[1]).forEach(a=>m[a[0]]=mask(a.slice(1).join('')));
- await lock(b,()=>FB.batch([['set','config/main',v,true],['set','config/pub',{dom:v.dom,sch:v.sch}],['set','config/roster',{m}]]).then(()=>{G('f_ros').value=Object.entries(m).sort().map(([s,n])=>s+' '+n).join('\n');toast('설정을 저장했어요')},fail('저장하지 못했어요')))}
+ const gk=(String(v.gr).replace(/\D/g,'')&&String(v.cl).replace(/\D/g,''))?String(v.gr).replace(/\D/g,'')+String(v.cl).replace(/\D/g,'').padStart(2,'0'):'';
+ const hr=(G('f_hrp').value.replace(/\D/g,'')||gk),subj=[],subjN={};if(!/^\d{2,4}$/.test(hr))return toast('담임반 학번 앞자리를 숫자로 넣어 주세요 (예: 305)');
+ for(const l of G('f_subj').value.split('\n').map(x=>x.trim()).filter(Boolean)){const [k,...nn]=l.split(/\s+/);if(!/^\d+$/.test(k)||k.length!=hr.length)return toast(`수업반 "${l}"의 앞자리는 담임반처럼 숫자 ${hr.length}자리여야 해요`);if(!subj.includes(k))subj.push(k);if(nn.length)subjN[k]=nn.join(' ').slice(0,20)}
+ await lock(b,()=>FB.batch([['set','config/main',v,true],['set','config/pub',{dom:v.dom,sch:v.sch,hr,subj,subjN}],['set','config/roster',{m}]]).then(()=>{G('f_ros').value=Object.entries(m).sort().map(([s,n])=>s+' '+n).join('\n');toast('설정을 저장했어요')},fail('저장하지 못했어요')))}
+const hrGuess=()=>{const g=String(S.cfg.gr||'').replace(/\D/g,''),k=String(S.cfg.cl||'').replace(/\D/g,'');return g&&k?g+k.padStart(2,'0'):''};
 function setPh(){const u=safeU(G('pl').value);FB.set('config/main',{photo:u},true).then(()=>toast(u?'사진을 바꿨어요':'기본 이미지로 돌아갔어요'),fail('저장하지 못했어요'))}
 function pic(f){const x=f.files[0];if(x)shrink(x,360,.8).then(d=>FB.set('config/main',{photo:d},true)).then(()=>toast('사진을 바꿨어요'),fail('사진을 바꾸지 못했어요'))}
 async function aiCheck(b){const o=G('aic');await lock(b,async()=>{o.textContent='점검 중이에요… (30초쯤 걸릴 수 있어요)';try{const j=await (await fetch('/api/ai?check=1')).json();o.innerHTML=!j.keySet?'❌ 버셀 환경 변수 GEMINI_API_KEY 가 비어 있어요':j.check.map(c=>`${c.ok?'✅':'❌'} ${esc(c.model)}${c.ok?'':' · '+esc(c.status||'')+' '+esc(c.error||'')}`).join('<br>')}catch(e){o.textContent='❌ 서버 함수에 닿지 못했어요(버셀 주소에서만 점검할 수 있어요)'}})}
 
+// ───────── 생교위 조건 설정 ─────────
+const gyEd=()=>{const g=gy();return `<div class=card><h4>🚦 생교위 회부 조건 <small style="display:inline">(해마다 학교 규칙에 맞게)</small></h4>
+ <small>환산 결석 회부 기준 (일, 쉼표로 구분)</small><input id=gy_th value="${g.th.join(', ')}">
+ <small>지각·조퇴·결과 몇 번을 결석 1일로 칠까요?</small><input id=gy_conv type=number min=1 value="${g.conv}">
+ <small>생교위 계산에 넣을 칸 (체크한 칸만 셈)</small>${ATC.map((h,j)=>`<label class=opt><input type=checkbox id=gy_i${j} ${g.inc.includes(j)?'checked':''}>${h}</label>`).join('')}
+ <small>"생교위 조심" 알림: 다음 회부 기준까지 남은 환산 결석이 며칠 이하일 때</small><input id=gy_warn type=number min=0 value="${g.warn}">
+ <small>디딤돌 종류 (쉼표로 구분)</small><input id=gy_ddk value="${esc(g.ddk.join(', '))}">
+ <small>디딤돌 몇 장마다 생교위 회부</small><input id=gy_ddn type=number min=1 value="${g.ddn}">
+ <button class="btn blk" onclick="saveGy(this)">생교위 조건 저장</button></div>`};
+async function saveGy(b){const th=G('gy_th').value.split(/[,\s]+/).map(Number).filter(n=>n>0),g={th:[...new Set(th)].sort((a,b)=>a-b),conv:Math.max(1,parseInt(G('gy_conv').value)||5),inc:ATC.map((_,j)=>j).filter(j=>G('gy_i'+j).checked),warn:Math.max(0,parseInt(G('gy_warn').value)||0),ddk:G('gy_ddk').value.split(',').map(x=>x.trim()).filter(Boolean).slice(0,10),ddn:Math.max(1,parseInt(G('gy_ddn').value)||3)};
+ if(!g.th.length)return toast('회부 기준 일수를 하나 이상 넣어 주세요');if(!g.inc.length)return toast('계산에 넣을 칸을 하나 이상 골라 주세요');
+ await lock(b,()=>FB.set('config/main',{gy:g},true).then(()=>toast('생교위 조건을 저장했어요'),fail('저장하지 못했어요')))}
+
+// ───────── 디딤돌 안내 문장 모음(교사만) ─────────
+const TPLD=[{k:'복장',t:'안녕하세요. ○○ 학생이 오늘 복장 규정(교복·명찰)을 지키지 않아 디딤돌 1장을 받았습니다. 내일부터 바른 복장으로 등교할 수 있도록 가정에서도 함께 살펴봐 주시면 감사하겠습니다.'},
+ {k:'복장',t:'○○아, 오늘 복장 때문에 디딤돌 1장이 기록됐어. 내일은 교복 바르게 입고 오자! 선생님이 응원할게.'},
+ {k:'전자기기 사용',t:'안녕하세요. ○○ 학생이 수업 시간에 휴대전화를 사용하여 디딤돌 1장을 받았습니다. 휴대전화는 조회 때 제출하는 것이 원칙이니 가정에서도 한 번 더 이야기 나누어 주시면 감사하겠습니다.'},
+ {k:'전자기기 사용',t:'○○아, 수업 중 전자기기 사용으로 디딤돌 1장이 기록됐어. 다음부터는 조회 때 꼭 제출하자.'},
+ {k:'기타 불손 행위',t:'안녕하세요. ○○ 학생이 오늘 바르지 않은 언행으로 디딤돌 1장을 받았습니다. 학생과 충분히 이야기를 나누었으며, 가정에서도 관심 가져 주시기 바랍니다.'},
+ {k:'생교위 안내',t:'안녕하세요. ○○ 학생의 디딤돌이 기준 장수에 이르러 학교 규정에 따라 생활교육위원회에 회부될 예정입니다. 자세한 일정은 다시 안내드리겠습니다.'}];
+const tpls=()=>(S.tpl&&S.tpl.L)||TPLD;
+const tplKinds=()=>[...new Set([...gy().ddk,'생교위 안내','기타',...tpls().map(x=>x.k)])];
+let TE=-1;
+const tplEd=()=>{const L=tpls(),K=tplKinds();return `<div class=card><h4>📋 디딤돌 안내 문장 모음 <small style="display:inline">(교사만 봐요)</small></h4><small>자주 보내는 문장을 모아 두고 복사하거나, 학생별 메시지 칸에서 바로 넣어 써요. ○○ 자리는 보내기 전에 고쳐 주세요.</small>
+ ${K.filter(k=>L.some(x=>x.k==k)).map(k=>`<h4 style="margin-top:10px">🪨 ${esc(k)}</h4>`+L.map((x,i)=>x.k!=k?'':TE==i?`<div class=card style="margin:6px 0"><select id=tp_k>${K.map(o=>`<option ${o==x.k?'selected':''}>${esc(o)}</option>`).join('')}</select><textarea id=tp_t rows=4>${esc(x.t)}</textarea><div class=send><button class="btn sm" onclick="saveTpl(${i})">저장</button><button class="btn ghost sm" onclick="TE=-1;draw(true)">취소</button></div></div>`
+  :`<div class=row><span class=pw style="flex:1;min-width:200px">${esc(x.t)}</span><span><button class="btn sm" onclick="cpTpl(${i})">📋 복사</button> <button class="btn ghost sm" onclick="TE=${i};draw(true)">고치기</button> <button class="btn ghost sm" onclick="delTpl(${i})">삭제</button></span></div>`).join('')).join('')}
+ <h4 style="margin-top:12px">＋ 새 문장</h4><select id=tn_k>${K.map(o=>`<option>${esc(o)}</option>`).join('')}</select><textarea id=tn_t rows=3 placeholder="예: ○○아, 오늘 …"></textarea><button class="btn sm" onclick="addTpl(this)">추가</button></div>`};
+const putTpl=L=>FB.set('config/tpl',{L});
+function cpTpl(i){const t=tpls()[i].t;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('복사했어요. 메시지 칸에 붙여 넣으세요'),()=>toast('복사하지 못했어요. 글을 길게 눌러 복사해 주세요'))}
+function saveTpl(i){const L=tpls().slice(),t=G('tp_t').value.trim();if(!t)return toast('문장을 적어 주세요');L[i]={k:G('tp_k').value,t};putTpl(L).then(()=>{TE=-1;toast('저장했어요')},fail('저장하지 못했어요'))}
+function delTpl(i){const L=tpls().slice();L.splice(i,1);putTpl(L).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
+async function addTpl(b){const t=G('tn_t').value.trim();if(!t)return toast('문장을 적어 주세요');await lock(b,()=>putTpl([...tpls(),{k:G('tn_k').value,t}]).then(()=>{clr('tn_t');toast('추가했어요')},fail('저장하지 못했어요')))}
+function useTpl(id,i){if(i==='')return;const ta=G('rx_'+id),t=tpls()[+i].t;ta.value=(ta.value.trim()?ta.value.trim()+'\n':'')+t;ta.focus();toast('넣었어요. ○○ 자리를 고친 뒤 보내세요')}
+const tplPick=id=>`<select onchange="useTpl('${id}',this.value);this.value=''" style="margin-top:6px"><option value="">📋 디딤돌 안내 문장 넣기…</option>${tpls().map((x,i)=>`<option value="${i}">[${esc(x.k)}] ${esc(x.t.slice(0,28))}…</option>`).join('')}</select>`;
+
+// ───────── 학급 사진 ─────────
+const phs=()=>S.photos.filter(inK);
+V.pho=()=>{const t=T(),L=phs();return (t?`<div class=card><h4>📷 학급 사진 올리기 <small style="display:inline">(${esc(cName(CK))})</small></h4><input id=phc placeholder="사진 설명 (선택, 예: 체육대회)"><input type=file accept="image/*" multiple onchange="upPh(this)"><small>여러 장을 한 번에 골라도 돼요. 자동으로 줄여서 올려요. 이 반 학생${HR()?'·학부모':''}만 볼 수 있어요.</small><p id=phst class=note></p></div>`:'')
+ +`<div class=card><h4>📷 ${HR()?'우리 반':'우리 수업반'} 사진 <small style="display:inline">${L.length}장</small></h4><div class=pg>${L.map(p=>`<figure>${isNew('P'+p.id)?'<span class=nb>N</span>':''}<img src="${safeImg(p.th)}" alt="${esc(p.cap||'학급 사진')}" loading=lazy onclick="showPh('${p.id}')"><figcaption>${md(p.ts)} ${esc(p.cap||'')}${t?` <button class="btn ghost sm" onclick="delPh('${p.id}')">삭제</button>`:''}</figcaption></figure>`).join('')||'<p class=note>아직 사진이 없어요</p>'}</div><small>사진을 누르면 크게 볼 수 있어요.</small></div>`};
+async function upPh(inp){const fs=[...inp.files];if(!fs.length)return;const cap=G('phc').value.trim(),st=G('phst');let ok=0;
+ for(const f of fs){if(!/^image\//.test(f.type)){continue}try{st.textContent=`올리는 중… (${ok+1}/${fs.length})`;const th=await shrink(f,360,.7);let full=await shrink(f,1600,.8);if(full.length>900000)full=await shrink(f,1200,.7);if(full.length>900000)full=await shrink(f,900,.6);
+  const id=FB.id();await FB.batch([['set','pdata/'+id,{c:CK,data:full}],['set','photos/'+id,{c:CK,th,cap,ts:Date.now()}]]);ok++}catch(e){console.warn(e);toast('사진 하나를 올리지 못했어요')}}
+ inp.value='';clr('phc');if(st)st.textContent='';toast(`사진 ${ok}장을 올렸어요`)}
+async function showPh(id){mk('P'+id);const p=S.photos.find(x=>x.id==id),M=G('modal');M.innerHTML=`<div class=modal onclick="G('modal').innerHTML=''"><div class=card style="text-align:center;max-width:900px"><p>불러오는 중…</p></div></div>`;
+ try{const d=await FB.get('pdata/'+id);M.innerHTML=`<div class=modal onclick="G('modal').innerHTML=''"><div class=card style="text-align:center;max-width:900px;padding:8px"><img src="${safeImg(d.data)}" style="max-width:100%;max-height:75vh;border-radius:10px" alt=""><p>${esc((p&&p.cap)||'')} <small style="display:inline">${p?md(p.ts):''}</small></p><a class="btn sm" href="${safeImg(d.data)}" download="학급사진_${id}.jpg" onclick="event.stopPropagation()">⬇️ 내려받기</a> <button class="btn ghost sm">닫기</button></div></div>`}catch(e){M.innerHTML='';toast('사진을 불러오지 못했어요')}}
+function delPh(id){FB.batch([['del','photos/'+id],['del','pdata/'+id]]).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
+
 // ───────── 시작 ─────────
-async function onUser(u){stop();S={...S,u,prof:null,admin:false,owner:null,ready:!u,cfg:{},pub:{},cons:{},sv:null,roster:{m:{}},posts:[],msgs:[],reads:{},users:[],dl:[],dr:[],stu:{},notes:{},votes:[],apps:[],files:[],pf:[],pfAll:[],gifts:[],allGifts:[]};draw();if(!u)return;
+async function onUser(u){stop();S={...S,u,prof:null,admin:false,owner:null,ready:!u,cfg:{},pub:{},cons:{},cc:{},pk:{},fk:{},phk:{},tpl:null,photos:[],roster:{m:{}},posts:[],msgs:[],reads:{},users:[],dl:[],dr:[],stu:{},notes:{},votes:[],apps:[],files:[],pf:[],pfAll:[],gifts:[],allGifts:[]};draw();if(!u)return;
  try{const [o,p,pb]=await Promise.all([FB.get('config/owner'),FB.get('users/'+u.uid),FB.get('config/pub')]);S.owner=o;S.admin=!!o&&o.uid==u.uid;S.prof=p;S.pub=pb||{}}catch(e){console.warn(e);toast('자료를 불러오지 못했어요. 보안 규칙을 게시했는지 확인해 주세요')}
  S.ready=true;if(S.admin||S.prof){listen();view='home';H=['home'];hi=0;if(S.admin&&!S.pub.dom){view='adm';H=['home','adm'];hi=1;setTimeout(()=>toast('먼저 학교·반·학생 계정 형식을 설정해 주세요'),400)}}draw();scrollTo(0,0)}
 function start(){if(!FB.ready)return draw();if(FB.redirect)FB.redirect().catch(e=>toast('로그인하지 못했어요: '+(e.code||e.message)));FB.onAuth(onUser)}
