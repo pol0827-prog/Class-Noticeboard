@@ -1,0 +1,463 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>재이미나는 학급의 스마트한 알림장</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{--bgimg:url("bg.jpg");--ink:#3b2a1a;--sub:#7a6450;--card:#fffaf0;--line:#ecd9b0;--veil:rgba(255,243,210,.84);--page:#fde9b8;--wood:#a8672f;--board:#2f5a46;--chalk:#f6f3e8;--acc:#f2a33a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#f7ecd8;--sub:#cdb89a;--card:#2c2217;--line:#4a3a26;--veil:rgba(28,20,11,.88);--page:#1c140b}}
+:root[data-theme="dark"]{--ink:#f7ecd8;--sub:#cdb89a;--card:#2c2217;--line:#4a3a26;--veil:rgba(28,20,11,.88);--page:#1c140b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:15px/1.55 'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(var(--veil),var(--veil)),var(--bgimg) center/cover}
+h3,h4,.btn,.chip,.tile,.slot,.big{font-family:'Jua','Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-weight:400}
+h3{margin:0 0 6px;font-size:19px}h4{margin:4px 0;font-size:17px}p{margin:4px 0}small,.note{color:var(--sub);font-size:12.5px}small{display:block}
+#hd{position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.bar{display:flex;align-items:center;gap:8px;background:var(--wood);color:#fff6df;padding:8px 12px;border-bottom:3px solid #7a4a20}
+.bar b{flex:1;font:19px 'Jua',sans-serif}.bar button{background:none;border:0;color:inherit;font:inherit;cursor:pointer;padding:4px 6px}.bar #who{font-size:12px}
+.lo{border:1px solid #fff6df88!important;border-radius:99px;font-size:13px!important}
+#al button{display:block;width:100%;background:#d2493c;color:#fff;border:0;padding:8px 12px;font:15px 'Jua',sans-serif;cursor:pointer}
+.hero{aspect-ratio:1408/768;max-width:760px;margin:0 auto;background:var(--bgimg) center/cover;border-radius:0 0 26px 26px;border-bottom:6px solid var(--wood)}
+.wrap{max-width:760px;margin:0 auto;padding:6px 14px 96px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 3px 0 rgba(120,80,30,.18)}
+.board{background:var(--board);color:var(--chalk);border:6px solid var(--wood);border-radius:14px;padding:10px 16px;margin:12px 0}.board ul{margin:0;padding-left:18px}.board li{padding:2px 0}
+.tc{display:flex;gap:12px;align-items:center}.av{width:72px;height:72px;flex:none;border-radius:50%;border:3px solid var(--wood);background:var(--bgimg) -332px -152px/563px auto}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.grid2 .card{margin:0}
+.tile{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 2px;background:var(--card);border:2px solid var(--line);border-radius:16px;box-shadow:0 3px 0 rgba(120,80,30,.18);color:var(--ink);font-size:13px;cursor:pointer}.tile i{font-style:normal;font-size:27px}
+.nb{position:absolute;top:3px;right:6px;background:#d2493c;color:#fff;border-radius:99px;font:700 12px/1 sans-serif;padding:3px 7px}
+.btn{background:var(--acc);border:2px solid var(--wood);border-radius:14px;padding:9px 14px;font-size:16px;color:#3b2a1a;box-shadow:0 3px 0 var(--wood);cursor:pointer;text-decoration:none;display:inline-block;text-align:center}.btn:active{transform:translateY(2px);box-shadow:none}.btn:disabled{opacity:.55;cursor:wait}
+.btn.ghost{background:var(--card);color:var(--ink)}.btn.sm{padding:4px 10px;font-size:14px}.blk{display:block;width:100%;margin:8px 0}.lk{display:flex;flex-direction:column;align-items:center}.lk i{font-style:normal;font-size:24px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 4px}.chips.wr{flex-wrap:wrap}.chip{flex:none;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:4px 12px;font-size:14px;cursor:pointer}.chip.on{background:var(--acc);border-color:var(--wood);color:#3b2a1a}
+input,textarea,select{width:100%;margin:5px 0;padding:10px;font:16px inherit;font-family:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:12px}input[type=radio],input[type=checkbox]{width:auto;margin:0 8px 0 0}
+.opt{display:flex;align-items:center;padding:7px 0;border-top:1px dashed var(--line)}.row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;padding:6px 0;border-top:1px dashed var(--line)}
+.tt{width:100%;border-collapse:separate;border-spacing:3px;text-align:center;font-size:13px}.tt th{color:var(--sub);font-weight:400}.tt td{border-radius:6px;padding:5px 0}.tt .chip{font-size:12px;padding:3px 8px;white-space:normal;line-height:1.3}
+.big{font-size:30px}.err{color:#d2493c;min-height:20px;font-size:13px}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.slot{display:flex;flex-direction:column;align-items:center;padding:8px 2px;font-size:16px;background:var(--card);color:var(--ink);border:2px solid var(--wood);border-radius:12px;cursor:pointer}.slot small{font:11px sans-serif}.slot.full{opacity:.5;background:var(--line);cursor:default}.slot.sel{outline:3px solid #4a90d9}
+.bar2{position:relative;display:flex;justify-content:space-between;background:var(--line);border-radius:10px;margin:6px 0;padding:6px 10px;overflow:hidden}.bar2 i{position:absolute;left:0;top:0;bottom:0;background:var(--acc);opacity:.7}.bar2 span,.bar2 b{position:relative}
+.msg{max-width:82%;background:var(--line);padding:8px 12px;border-radius:14px 14px 14px 4px;margin:6px 0;white-space:pre-wrap}.msg.me{margin-left:auto;background:var(--acc);color:#3b2a1a;border-radius:14px 14px 4px 14px}.send{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.send input{margin:0;flex:1}
+.modal{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55);display:flex;align-items:center;padding:16px}.modal .card{max-height:90%;overflow:auto;margin:auto;max-width:460px}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:#3b2a1a;color:#fff6df;padding:8px 16px;border-radius:99px;opacity:0;transition:.25s;z-index:30;pointer-events:none;max-width:92%;text-align:center}#toast.on{opacity:1;transform:translate(-50%,0)}
+.qt{background:#fff0c2;border:2px dashed var(--wood);border-radius:16px;padding:10px 14px;margin:12px 0;color:#3b2a1a;text-align:center}.qt h4{font-size:18px;margin:2px 0}.qt small{color:#7a6450}
+.hw summary{cursor:pointer;margin-top:6px;color:var(--wood);font-weight:700}.hw div{margin-top:4px}.ntc{border-color:var(--acc);border-width:3px}.ntc ul{margin:4px 0;padding-left:20px}.ntc li{padding:2px 0}
+.pw{white-space:pre-wrap}.warn{background:#fff0c2;border-left:5px solid var(--acc);border-radius:10px;padding:8px 10px;margin-top:8px;color:#3b2a1a}
+#nav{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:center;gap:8px;padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));background:var(--wood);border-top:3px solid #7a4a20}
+#nav button{position:relative;flex:1;max-width:130px;background:#fff6df26;border:0;color:#fff6df;border-radius:12px;padding:5px 0;font:14px/1.25 'Jua',sans-serif;cursor:pointer}.bd{position:absolute;top:-5px;right:10px;background:#d2493c;border-radius:99px;font:11px sans-serif;padding:0 6px}
+.rw{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;border-top:1px dashed var(--line);padding:11px 0;color:var(--ink);font:inherit;text-align:left;cursor:pointer}.un{background:#d2493c;color:#fff;border-radius:99px;padding:0 8px;font-size:12px}
+.nw{display:block;width:100%;text-align:left;border:2px dashed var(--wood);background:var(--card);color:var(--ink);font:inherit;border-radius:14px;padding:12px;margin:10px 0;cursor:pointer}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}.two .card{margin:0;padding:10px}.two summary{font:15px 'Jua',sans-serif;cursor:pointer}
+.ai{font-size:11.5px;color:var(--sub);margin-top:4px}
+:focus-visible{outline:3px solid #4a90d9;outline-offset:2px}
+@media(max-width:360px){.two{grid-template-columns:1fr}.grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:800px){.hero{margin-top:14px;border-radius:26px}.tile{font-size:15px;padding:16px 2px}}
+@media print{@page{size:A4;margin:12mm}#hd,#nav,.hero,button,#toast,.chips{display:none!important}body::before{display:none}.card{box-shadow:none}}
+</style></head><body>
+<header id="hd"><div class="bar"><b id="ttl">스마트 알림장</b><span id="who"></span><button id="pr" class="lo" onclick="print()" aria-label="인쇄">🖨️</button><button id="lo" class="lo" onclick="logout()">로그아웃</button></div><div id="al"></div></header>
+<div id="app"></div><div id="modal"></div><div id="toast"></div>
+<nav id="nav" style="display:none"><button onclick="bk()">◀<br>뒤로</button><button onclick="fw()">▶<br>앞으로</button><button onclick="go('home')">🏠<br>홈</button><button onclick="go('msg')">✉️<br>메시지<span class="bd" id="bd" style="display:none"></span></button></nav>
+
+<script>
+// ───────── 화면 코드 (파이어베이스 연결은 맨 아래 module 스크립트의 window.FB 를 씀) ─────────
+const G=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mask=n=>{n=String(n||'').replace(/\s/g,'');return n.length<2?n:n.length<3?n[0]+'0':n.slice(0,-2)+'0'+n.slice(-1)};
+const md=t=>{const d=new Date(t||Date.now());return (d.getMonth()+1)+'/'+d.getDate()};
+const RL={student:'학생',parent:'학부모',teacher:'교사'},REL=['어머니','아버지','조부모','기타 보호자'];
+const DO=['가방에 넣음','확인했으나 아직 가방에 넣지 않음','확인조차 아직 못했으나 바로 하겠음','서류 분실되어 내일 달라고 하겠음'],DOP=['자녀 가방에 넣어 보냄','확인했으나 아직 가방에 넣지 못함','확인조차 아직 못했으나 바로 하겠음','서류 분실되어 내일 다시 받겠음'],EM=['🎒','👀','😅','🆘'];
+const CT0=['1교시','2교시','3교시','4교시','점심시간','5교시','6교시','7교시','종례 후'];
+const LDK=['회장','부회장','공지사항 안내 리더'],LDN={'회장':'회장이','부회장':'부회장이','공지사항 안내 리더':'공지사항 안내 리더가'};
+const ATK=['결석','지각','조퇴','결과'];
+const FS=[['sch','학교명','text'],['yr','학년도','text'],['gr','학년','text'],['cl','반','text'],['dom','학생 구글 계정 형식 (@ 뒤 도메인, 예: school.hs.kr)','text'],['tn','담임 이름','text'],['tel1','담임 교무실 직통전화','tel'],['tel2','행정실 전화','tel'],['tel3','담임 핸드폰 안심번호','tel'],['ap1','누적 출결 시작일','date'],['ap2','누적 출결 종료일','date']];
+const FT=[['intro','인사말'],['motto','급훈'],['staff','학급 교사 정보 (교과·담당 선생님)'],['note','전화 시 유의사항'],['us','이것만은 기억하고 지켜줘요 · 학생용'],['up','이것만은 기억하고 지켜줘요 · 학부모용']];
+const QS=[['시작이 반이다','속담 · 일단 시작하면 절반은 한 거예요'],['티끌 모아 태산','속담 · 작은 노력도 쌓이면 큰 힘이 돼요'],['우공이산(愚公移山)','사자성어 · 꾸준히 하면 산도 옮길 수 있어요'],['천 리 길도 한 걸음부터','속담 · 멀어 보여도 첫걸음이 시작이에요'],['실패는 성공의 어머니','속담 · 실패에서 배우면 다음이 쉬워져요'],['절차탁마(切磋琢磨)','사자성어 · 갈고닦으며 함께 성장해요'],['배우고 때때로 익히면 또한 기쁘지 아니한가','공자 · 복습이 공부를 내 것으로 만들어요'],['오늘 할 수 있는 일을 내일로 미루지 마라','벤저민 프랭클린 · 지금 하는 한 가지가 시험 때 힘이 돼요'],['고생 끝에 낙이 온다','속담 · 힘든 시험 기간도 지나가요'],['칠전팔기(七顚八起)','사자성어 · 일곱 번 넘어져도 여덟 번 일어나요'],['가는 말이 고와야 오는 말이 곱다','속담 · 친구에게 건네는 말이 관계를 만들어요'],['백지장도 맞들면 낫다','속담 · 모둠 활동은 함께할 때 가벼워져요']];
+const QP=[['세 살 버릇 여든까지 간다','속담 · 일상의 작은 습관을 함께 다져 주세요'],['급할수록 돌아가라','속담 · 입시 시기에는 조급함보다 대화가 먼저예요'],['말 한마디에 천 냥 빚도 갚는다','속담 · 따뜻한 한마디가 아이에게 큰 힘이 돼요'],['교학상장(敎學相長)','사자성어 · 가르치고 배우며 부모도 아이도 함께 자라요'],['호미로 막을 것을 가래로 막는다','속담 · 작은 고민은 일찍 나눌수록 가벼워요'],['가랑비에 옷 젖는 줄 모른다','속담 · 매일의 작은 관심이 쌓여요'],['우보천리(牛步千里)','사자성어 · 느려도 꾸준히 가면 멀리 가요'],['콩 심은 데 콩 나고 팥 심은 데 팥 난다','속담 · 들인 정성만큼 거두어요'],['돌다리도 두들겨 보고 건너라','속담 · 진로는 충분히 알아보고 정해요'],['아이 하나를 키우려면 온 마을이 필요하다','아프리카 속담 · 학교와 가정이 함께해요']];
+const AIN='<p class=ai>✨ AI는 구글 제미나이 무료 사용분이에요. 보낸 글이 구글 서비스 개선에 쓰일 수 있으니 이름·학번·성적은 넣지 마세요. 결과는 꼭 확인하고 고쳐서 쓰세요.</p>';
+
+let S={u:null,ready:false,owner:null,admin:false,prof:null,vm:'teacher',role:'student',cfg:{},pub:{},cons:{},sv:null,roster:{m:{}},posts:[],msgs:[],reads:{},users:[],dl:[],dr:[],stu:{},notes:{},votes:[],apps:[],files:[],pf:[],pfAll:[],gifts:[],allGifts:[]};
+let view='home',H=['home'],hi=0,un=[],mt=0,cd=0,SEL=[],sdS='',EA='',RA='',GI='',IF={},attS='',done=new Set();
+
+// ───────── 공통 도구 ─────────
+function toast(m){const t=G('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2600)}
+const T=()=>S.admin&&S.vm=='teacher',PV=()=>S.admin&&S.vm!='teacher',P=()=>PV()?S.vm=='parent':!!(S.prof&&S.prof.r=='parent');
+const myS=()=>PV()?'':(S.prof&&S.prof.s||''),uid=()=>S.u&&S.u.uid,nm=()=>PV()?'홍0동':S.prof.n;
+const pv=()=>S.admin&&(toast('교사·미리보기 화면에서는 쓸 수 없어요'),true);
+const isNew=id=>!S.admin&&!S.reads[id];
+const okU=u=>/^https?:\/\//i.test(u)?u:'https://'+u;
+const safeU=x=>{if(!x)return '';try{const u=new URL(okU(String(x).trim()));if(!/^https?:$/.test(u.protocol))return '';return u.href.replace(/['"()<>]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase())}catch(e){return ''}};
+const safeImg=x=>/^data:image\/(png|jpe?g|gif|webp);base64,[A-Za-z0-9+/=]+$/.test(x||'')?x:safeU(x);
+const chips=(a,on,fn)=>`<div class=chips>${a.map((c,i)=>`<button class="chip ${on(c,i)?'on':''}" onclick="${fn(c,i)}">${c}</button>`).join('')}</div>`;
+const fail=m=>e=>{console.warn(e);toast(m+(e&&e.code?' ('+e.code.replace('firestore/','')+')':''))};
+const kj=t=>'공지 안내\n'+t.replace(/([.!?。])\s+/g,'$1\n').split('\n').map(x=>x.trim().replace(/[.。]$/,'')).filter(Boolean).map(x=>'- '+x).join('\n');
+const fmt=t=>{let o='',l=0;String(t||'').split('\n').map(x=>x.trim()).filter(Boolean).forEach(x=>{if(/^[-•]\s*/.test(x)){if(!l){o+='<ul>';l=1}o+=`<li>${esc(x.replace(/^[-•]\s*/,''))}</li>`}else{if(l){o+='</ul>';l=0}o+=`<h4>${esc(x)}</h4>`}});return o+(l?'</ul>':'')};
+const days=(a,b)=>{const o=[];if(!a||!b)return o;for(let d=new Date(a+'T00:00'),e=new Date(b+'T00:00');d<=e&&o.length<31;d.setDate(d.getDate()+1))if(d.getDay()%6)o.push((d.getMonth()+1)+'/'+d.getDate());return o};
+const readURL=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=()=>no(r.error);r.readAsDataURL(f)});
+const shrink=(f,m,q)=>new Promise((ok,no)=>{const i=new Image,u=URL.createObjectURL(f);i.onload=()=>{const r=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*r;c.height=i.height*r;c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',q))};i.onerror=no;i.src=u});
+async function aiCall(kind,prompt){const tk=await FB.token();const r=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tk},body:JSON.stringify({kind,prompt})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||('HTTP '+r.status));return j.text||''}
+const lock=async(btn,fn)=>{if(btn){if(btn.disabled)return;btn.disabled=true}try{await fn()}finally{if(btn&&btn.isConnected)btn.disabled=false}};
+
+// ───────── 자료 불러오기(실시간) ─────────
+function stop(){un.forEach(f=>{try{f()}catch(e){}});un=[]}
+const lerr=e=>{console.warn(e);if(!lerr.on){lerr.on=1;toast('불러오지 못한 자료가 있어요. 보안 규칙을 게시했는지 확인해 주세요');setTimeout(()=>lerr.on=0,8000)}};
+function listen(){stop();const t=S.admin,id=uid(),s=S.prof&&S.prof.s,W=(p,cb)=>un.push(FB.wDoc(p,cb,lerr)),L=(p,o,cb)=>un.push(FB.wCol(p,o,cb,lerr));
+ W('config/main',d=>{S.cfg=d||{};rd()});W('config/pub',d=>{S.pub=d||{};rd()});W('config/consult',d=>{S.cons=d||{};rd()});W('config/survey',d=>{S.sv=d;rd()});
+ W('reads/'+id,d=>{S.reads=d||{};rd()});
+ L('posts',{},l=>{S.posts=l.sort((a,b)=>b.ts-a.ts);rd()});
+ L('messages',t?{}:{where:['owner','==',id]},l=>{S.msgs=l.sort((a,b)=>a.ts-b.ts);rd()});
+ L('dlist',{},l=>{S.dl=l.sort((a,b)=>a.ts-b.ts);rd()});
+ L('dresp',t?{}:{where:['u','==',id]},l=>{S.dr=l;rd()});
+ L('votes',{},l=>{S.votes=l;rd()});
+ L('apps',t?{}:{where:['u','==',id]},l=>{S.apps=l.sort((a,b)=>b.ts-a.ts);rd()});
+ L('files',{},l=>{S.files=l.sort((a,b)=>b.ts-a.ts);rd()});
+ if(t){W('config/roster',d=>{S.roster=d||{m:{}};rd()});
+  L('users',{},l=>{S.users=l;rd()});
+  L('stu',{},l=>{S.stu=Object.fromEntries(l.map(x=>[x.id,x]));rd()});
+  L('note',{},l=>{S.notes=Object.fromEntries(l.map(x=>[x.id,x]));rd()});
+  L('*f',{},l=>{S.pfAll=l.sort((a,b)=>b.ts-a.ts);rd()});
+  L('*g',{},l=>{S.allGifts=l.sort((a,b)=>b.ts-a.ts);rd()});
+ }else{W('stu/'+s,d=>{S.stu={[s]:d||{}};rd()});
+  L('pf/'+s+'/f',{},l=>{S.pf=l.sort((a,b)=>b.ts-a.ts);rd()});
+  L('gift/'+s+'/g',{},l=>{S.gifts=l.sort((a,b)=>b.ts-a.ts);rd()});
+ }}
+
+// ───────── 남는 값(입력 중인 글) 지키며 다시 그리기 ─────────
+function rd(){if(rd.t)return;rd.t=setTimeout(()=>{rd.t=0;draw(true)},40)}
+function grab(a){const o={};a.querySelectorAll('input[id],textarea[id],select[id]').forEach(e=>{if(e.type!='file')o[e.id]=e.type=='checkbox'?e.checked:e.value});a.querySelectorAll('input[type=radio]:checked').forEach(e=>{if(e.name)o['@'+e.name]=e.value});return o}
+function put(a,o){for(const k in o){if(k[0]=='@'){a.querySelectorAll('input[type=radio]').forEach(r=>{if(r.name==k.slice(1)&&r.value==o[k])r.checked=true})}else{const e=G(k);if(e&&e.type!='file'){if(e.type=='checkbox')e.checked=o[k];else e.value=o[k]}}}}
+const clr=(...ids)=>ids.forEach(i=>{const e=G(i);if(e)e.value=''});
+
+// ───────── 명렬·계정 ─────────
+function roster(){const g={},m=(S.roster&&S.roster.m)||{};Object.entries(m).forEach(([s,n])=>g[s]={s,rn:n,acc:[]});S.users.forEach(u=>{(g[u.s]=g[u.s]||{s:u.s,rn:'',acc:[]}).acc.push(u)});
+ return Object.values(g).sort((a,b)=>a.s>b.s?1:-1).map(x=>{const st=x.acc.find(u=>u.r=='student');return {...x,lbl:(x.rn||(st||x.acc[0]||{}).n||'')+(x.acc.length?'':' (가입 전)'),un:x.acc.reduce((a,u)=>a+S.msgs.filter(m=>m.owner==u.id&&m.from=='u'&&!m.r).length,0)}})}
+const uLbl=u=>`${esc(u.n)} ${u.r=='parent'?'학부모'+(u.rel?'('+esc(u.rel)+')':''):'학생'}`;
+const rOpts=(sel,all)=>(all?`<option value="">${all}</option>`:'')+roster().map(r=>`<option value="${esc(r.s)}" ${sel==r.s?'selected':''}>${esc(r.s)} ${esc(r.lbl)}</option>`).join('');
+const unread=()=>S.admin?(T()?S.msgs.filter(m=>m.from=='u'&&!m.r).length:0):S.msgs.filter(m=>m.from=='t'&&!m.r).length;
+const ntcP=()=>S.posts.find(p=>p.k=='ntc');
+const myApp=()=>PV()?null:S.apps.find(a=>a.u==uid());
+const csKey=c=>JSON.stringify(c?[c.a,c.b,c.p,c.au,c.mt]:null);
+const lead=()=>S.prof&&S.prof.r=='student'&&!PV()?LDK.find(k=>S.cfg.ld&&S.cfg.ld[k]&&S.cfg.ld[k]==S.prof.s):null;
+const prep=()=>S.prof&&S.prof.r=='parent'&&!PV()&&(S.cfg.prs||[]).includes(S.prof.s);
+
+// ───────── 읽음 표시 ─────────
+function mk(id){if(S.admin)return;S.reads[id]=1;FB.set('reads/'+uid(),{[id]:true},true).catch(()=>{});rd()}
+function mkMany(ids){if(S.admin)return;const n=ids.filter(i=>i&&!S.reads[i]);if(!n.length)return;const o={};n.forEach(i=>{o[i]=true;S.reads[i]=1});FB.set('reads/'+uid(),o,true).catch(()=>{})}
+const rc=(id,t,b)=>isNew(id)?`<button class="nw" onclick="mk('${id}')">🆕 ${t} <small style="display:inline">눌러서 확인</small></button>`:b;
+function markMsgs(){let L=[];if(view=='msg'&&!S.admin&&mt==0)L=S.msgs.filter(m=>m.from=='t'&&!m.r);
+ if(view=='sd'&&T()){const g=roster().find(x=>x.s==sdS);if(g){const ids=g.acc.map(u=>u.id);L=S.msgs.filter(m=>m.from=='u'&&!m.r&&ids.includes(m.owner))}}
+ L.forEach(m=>{if(done.has(m.id))return;done.add(m.id);FB.upd('messages/'+m.id,{r:true,rt:Date.now()}).catch(()=>{})})}
+
+// ───────── 첫 화면(로그인·가입) ─────────
+const HERO='<div class=hero role=img aria-label="교실 일러스트"></div>';
+function gate(){
+ if(!window.FB||!FB.ready)return HERO+`<main class=wrap><div class=card><h3>⚙️ 연결 설정이 비어 있어요</h3><p>index.html 맨 아래 "설정 (이 부분만 고치면 됩니다)" 묶음에 파이어베이스 연결 값을 넣어 주세요.</p></div></main>`;
+ if(!S.u)return HERO+`<main class=wrap><div class=card><h3>👋 시작하기</h3><p class=note>📌 처음 사용한 구글 계정으로 접속해 주세요. 한 번 가입하면 다음부터는 버튼만 누르면 돼요.</p><button class="btn blk" onclick="login()">Google 계정으로 계속하기</button><p class=note>🎒 학생은 학교 구글 계정으로 접속해 주세요.</p></div></main>`;
+ if(!S.ready)return HERO+'<main class=wrap><div class=card style="text-align:center">⏳ 불러오는 중이에요…</div></main>';
+ const p=S.role=='parent',dom=S.pub.dom||'';
+ return HERO+`<main class=wrap>${!S.owner?`<div class=card><h3>👩‍🏫 담임 선생님이신가요?</h3><p class=note>아직 이 알림장의 담임이 정해지지 않았어요. 담임 선생님이 처음 한 번만 누르면 지금 계정(${esc(S.u.email)})이 교사 계정이 돼요. 한 번 정하면 앱에서는 바꿀 수 없어요. 학생·학부모는 누르지 마세요.</p><button class="btn blk" onclick="claim(this)">이 계정을 담임(교사)으로 지정</button></div>`:''}
+ <div class=card><h3>${p?'👪 자녀 정보 입력':'🎒 학번·이름 입력'}</h3><small>${esc(S.u.email)} 계정으로 처음 가입해요. 한 번만 입력하면 돼요.</small>
+ ${chips(['학생','학부모'],(c,i)=>(i?'parent':'student')==S.role,(c,i)=>`setR('${i?'parent':'student'}')`)}
+ <input id=rs inputmode=numeric placeholder="${p?'자녀 학번':'학번'} (예: 30101)"><input id=rn placeholder="${p?'자녀 이름':'이름'}">${p?`<select id=rr><option value="">학생과의 관계</option>${REL.map(x=>`<option>${x}</option>`).join('')}</select>`:''}
+ <div class=warn><b>📢 서비스 이용 및 개인정보 처리 안내</b><br>① 담임교사가 개인 계정(파이어베이스)으로 운영하는 학급 관리용 웹 앱이에요.<br>② 입력한 자료는 담임교사의 데이터베이스에 보관돼요.<br>③ 학생 정보·출결·자료·메시지는 해당 학년도(1년) 동안만 보관하고 학년이 끝나면 일괄 삭제해요.<br>④ 이름은 가운데 글자를 0으로 가린 상태로 저장해요. (홍길동 → 홍0동)</div>
+ <label class=opt><input type=checkbox id=agree>위 내용을 읽고 동의해요</label><p id=err class=err></p>
+ <button class="btn blk" onclick="reg(this)">가입하고 시작하기</button><button class="btn ghost blk" onclick="logout()">다른 구글 계정으로 접속</button>
+ ${!p&&dom?`<p class=note>🎒 학생은 @${esc(dom)} 계정으로만 가입할 수 있어요.</p>`:''}</div></main>`}
+function setR(k){S.role=k;draw(true)}
+function login(){FB.login().catch(e=>{if(/popup-closed|cancelled-popup/.test(e.code||''))return;toast('로그인하지 못했어요: '+(e.code||e.message))})}
+function logout(){stop();S.u=null;view='home';H=['home'];hi=0;FB.logout().catch(()=>{});draw()}
+async function claim(b){await lock(b,async()=>{try{await FB.set('config/owner',{uid:uid(),at:Date.now()});S.owner={uid:uid()};S.admin=true;S.vm='teacher';listen();view='adm';H=['home','adm'];hi=1;draw();toast('담임으로 지정했어요. 먼저 학교·반·학생 계정 형식을 설정해 주세요')}catch(e){fail('지정하지 못했어요. 이미 담임이 정해졌을 수 있어요')(e)}})}
+async function reg(b){const er=m=>G('err').textContent=m,p=S.role=='parent',s=G('rs').value.trim(),n0=G('rn').value.trim(),rel=p?G('rr').value:'',dom=(S.pub.dom||'').toLowerCase(),email=(S.u.email||'').toLowerCase();
+ if(!/^\d{4,6}$/.test(s))return er(p?'자녀 학번을 숫자로 입력해 주세요.':'학번을 숫자로 입력해 주세요.');if(n0.length<2)return er('이름을 2글자 이상 입력해 주세요.');if(p&&!rel)return er('학생과의 관계를 골라 주세요.');if(!G('agree').checked)return er('안내를 읽고 동의에 체크해 주세요.');
+ if(!p){if(!dom)return er('선생님이 아직 학생 계정 형식을 설정하지 않았어요. 잠시 뒤에 다시 해 주세요.');if(!email.endsWith('@'+dom))return er('학생은 학교에서 발급한 구글 계정(@'+dom+')으로만 가입할 수 있어요. "다른 구글 계정으로 접속"을 눌러 주세요.')}
+ const prof={email:S.u.rawEmail||S.u.email,n:mask(n0),s,r:p?'parent':'student',rel,at:Date.now()},ops=[['set','users/'+uid(),prof]];if(!p)ops.unshift(['set','studentIds/'+s,{uid:uid()}]);
+ await lock(b,async()=>{try{await FB.batch(ops);S.prof=prof;listen();view='home';H=['home'];hi=0;draw();toast('가입했어요. 환영해요!')}catch(e){console.warn(e);er(p?'가입하지 못했어요. 학번과 자녀 이름이 선생님의 명렬표와 같은지 확인해 주세요.':'가입하지 못했어요. 이미 등록된 학번인지, 학번·이름이 선생님의 명렬표와 같은지 확인해 주세요.')}})}
+
+// ───────── 화면 그리기 ─────────
+const TT={home:'스마트 알림장',notice:'알림장',mine:'내 자료',att:'누적 출결 현황',lib:'자료실',con:'상담 예약',msg:'메시지',gift:'선생님이 보내는 선물',stu:'학생 관리',sd:'학생별 자료',intake:'기초자료·상담 정리',adm:'교사 설정'},TONLY=['stu','sd','intake','adm'];
+function draw(keep){const a=G('app'),saved=keep?grab(a):null,y=scrollY,fid=document.activeElement&&document.activeElement.id,L=!S.u||!S.ready||!(S.admin||S.prof);
+ G('nav').style.display=L?'none':'flex';G('lo').style.display=S.u?'':'none';G('pr').style.display=L?'none':'';
+ if(L){a.innerHTML=gate();G('ttl').textContent='스마트 알림장';G('who').textContent='';G('al').innerHTML=''}
+ else{if(TONLY.includes(view)&&!T())view='home';
+  const sw=S.admin?chips(['교사 모드','학생 화면','학부모 화면'],(c,i)=>['teacher','student','parent'][i]==S.vm,(c,i)=>`setVm('${['teacher','student','parent'][i]}')`):'';
+  let h='';try{h=(V[view]||V.home)()}catch(e){console.error(e);h='<div class=card>화면을 그리지 못했어요. 새로고침해 주세요.</div>'}
+  a.innerHTML=(view=='home'?HERO:'')+`<main class=wrap>${sw}${h}</main>`;
+  G('ttl').textContent=view=='mine'&&P()?'자녀 자료':TT[view]||'스마트 알림장';
+  G('who').textContent=S.admin?`${S.cfg.tn||'담임'} · 교사${PV()?` (${RL[S.vm]} 화면)`:''}`:`${S.prof.n} · ${RL[S.prof.r]}`;
+  const n=unread(),fN=S.prof&&S.prof.r=='student'&&!S.admin?S.posts.filter(p=>p.k=='fn'&&isNew(p.id)).length:0;
+  G('al').innerHTML=(n&&view!='msg'&&view!='sd'?`<button onclick="go('msg')">📨 ${S.admin?'학생·학부모가 보낸':'선생님이 보낸'} 새 메시지 ${n}건 · 눌러서 읽어 보세요</button>`:'')+(fN&&view!='notice'?`<button style="background:#3b7dd8" onclick="go('notice')">📣 학급 친구들에게서 온 알림 ${fN}건 · 눌러서 보세요</button>`:'');
+  G('bd').textContent=n||'';G('bd').style.display=n?'':'none';
+  markMsgs();seen()}
+ if(saved){put(a,saved);scrollTo(0,y);const f=fid&&G(fid);if(f&&f!==document.activeElement)try{f.focus({preventScroll:true})}catch(e){}}}
+function seen(){if(S.admin)return;if(view=='con'){const c=S.cons.csp,my=myApp();mkMany([c&&c.on?'cs'+csKey(c):'',my&&my.pick?'cp'+my.pick:''])}}
+const go=v=>{H=H.slice(0,hi+1);H.push(v);hi++;view=v;draw();scrollTo(0,0)},bk=()=>{if(hi>0){view=H[--hi];draw();scrollTo(0,0)}},fw=()=>{if(hi<H.length-1){view=H[++hi];draw();scrollTo(0,0)}};
+function setVm(k){S.vm=k;SEL=[];go('home')}
+
+// ───────── 새 글 숫자 ─────────
+function bcnt(v){if(T())return v=='msg'||v=='stu'?unread():v=='con'?S.apps.filter(a=>!a.pick).length:0;if(PV())return 0;
+ if(v=='notice')return nItems().filter(x=>isNew(x.id)).length;
+ if(v=='mine')return S.files.filter(f=>f.k=='m'&&isNew('F'+f.id)).length+S.pf.filter(f=>isNew('F'+f.id)).length;
+ if(v=='lib')return S.files.filter(f=>f.k=='l'&&isNew('F'+f.id)).length;
+ if(v=='gift')return S.gifts.filter(g=>isNew('G'+g.id)).length;
+ if(v=='con'){const c=S.cons.csp,my=myApp();return (c&&c.on&&!my&&isNew('cs'+csKey(c))?1:0)+(my&&my.pick&&isNew('cp'+my.pick)?1:0)}
+ if(v=='msg')return unread();return 0}
+
+// ───────── 홈 ─────────
+const qb=()=>{const p=P(),L=p?QP:QS,d=Math.floor((new Date()-new Date(new Date().getFullYear(),0,0))/864e5),q=L[d%L.length],a=q[1].split(' · '),t=/속담/.test(a[0])?'속담':a[0]=='사자성어'?'사자성어':'명언 · '+a[0];return `<div class=qt><small>오늘의 한마디 (${t})${p?' · 학부모님께':''}</small><h4>“${q[0]}”</h4><small>${a[1]||''}</small></div>`};
+function brd(){const L=[],n=ntcP(),c=S.cons.csp,my=myApp();
+ if(T()){const u=unread(),na=S.apps.filter(a=>!a.pick).length;if(u)L.push(`✉️ 읽지 않은 메시지 ${u}건`);if(na)L.push(`💬 시간 지정을 기다리는 상담 신청 ${na}건`);if(!S.pub.dom)L.push('⚙️ 설정에서 학생 구글 계정 형식을 먼저 저장해 주세요');}
+ if(n)L.push('📢 공지사항: '+esc(n.t.split('\n')[0]));if(c&&c.on&&!T())L.push('💬 상담 신청이 열렸어요');if(my&&my.pick)L.push('✅ 상담 확정 · '+esc(my.pick));if(S.sv&&S.sv.on==1&&!T())L.push('🗳️ 설문조사에 참여해 주세요');if(S.dl.length&&!T())L.push('📝 서류 제출 여부를 확인해 주세요');
+ if(!L.length)L.push('새 알림이 없어요');return `<div class=board><h3>📋 오늘의 알림</h3><ul>${L.map(x=>`<li>${x}</li>`).join('')}</ul></div>`}
+const V={};
+V.home=()=>{const t=T(),c=S.cfg,g=t?`${esc(c.tn||'담임')} 선생님`:P()?`${esc(nm())} 학부모님`:`${esc(nm())} 학생`,ph=safeImg(c.photo);
+ const tl=t?[['notice','📌','알림장 편집'],['mine','🗓️','학생 자료 편집'],['att','✅','출결 편집'],['lib','📚','자료실 편집'],['con','💬','상담 일정'],['msg','✉️','메시지'],['gift','🎁','선물 보내기'],['intake','📥','기초자료·상담 정리'],['stu','🗂️','학생 관리'],['adm','⚙️','설정']]:[['notice','📌','알림장'],['mine','🗓️',P()?'자녀 자료':'내 자료'],['att','✅','누적 출결'],['lib','📚','자료실'],['con','💬','상담 예약'],['msg','✉️','메시지'],['gift','🎁','선생님 선물']];
+ return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div><h3>${g}</h3><small>${esc(c.sch||'학교명 미설정')} ${esc(c.gr||'')}학년 ${esc(c.cl||'')}반 · ${esc(c.yr||'')}학년도</small><p><b>담임 ${esc(c.tn||'')} 선생님</b></p>${c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${c.intro?`<p class=pw>${esc(c.intro)}</p>`:''}</div></div>`+brd()
+ +`<div class=two><details class="card hw"><summary>📖 이것만은 기억하고 지켜줘요</summary><div class=pw>${esc(P()?c.up:c.us)||'선생님이 아직 입력하지 않았어요.'}</div></details><details class="card hw"><summary>📞 연락처</summary>${[['교무실 직통','tel1'],['행정실','tel2'],['담임 안심번호','tel3']].map(([l,k])=>`<div class=row><small>${l}</small>${c[k]?`<a class="btn sm" href="tel:${esc(String(c[k]).replace(/[^\d+]/g,''))}">${esc(c[k])}</a>`:'<small>등록 전</small>'}</div>`).join('')}${c.staff?`<div class=row><small class=pw>📚 ${esc(c.staff)}</small></div>`:''}${c.note?`<div class="warn pw">📌 전화 시 유의사항\n${esc(c.note)}</div>`:''}</details></div>`
+ +`<div class=grid style="margin-top:12px">${tl.map(x=>{const n=bcnt(x[0]);return `<button class=tile onclick="go('${x[0]}')"><i>${x[1]}</i>${x[2]}${n?`<span class=nb>${n}</span>`:''}</button>`}).join('')}</div>`};
+
+// ───────── 알림장 ─────────
+function nItems(){const L=[],n=ntcP(),p=P();
+ if(n)L.push({id:n.id,t:'📢 공지사항',b:`<div class="card ntc"><h3>📢 공지사항 <small style="display:inline">${md(n.ts)}</small></h3>${fmt(n.t)}</div>`});
+ const ds=DBs();if(ds)L.push({id:'docs_'+S.dl.map(d=>d.id.slice(0,5)).join(''),t:'📝 서류 제출 여부 확인',b:ds});
+ const sb=SBs();if(sb)L.push({id:'sv_'+S.sv.sid,t:'🗳️ 설문조사',b:sb});
+ S.posts.filter(x=>x.k=='post'||(x.k=='fn'&&!p)||(x.k=='pn'&&p)).forEach(x=>{const h=x.k=='post'?'📌 '+esc(x.t):x.k=='fn'?`📣 ${LDN[x.w]||'임원이'} 우리에게`:'📣 학부모 대표가 학부모님들께';L.push({id:x.id,t:h,b:`<div class=card><small>${md(x.ts)}</small><h4>${h}</h4><p class=pw>${esc(x.k=='post'?x.b:x.x)}</p></div>`})});
+ return L}
+V.notice=()=>{if(T())return qb()+ntcEd()+postEd()+DBt()+SBt()+FNt()+PRt();
+ const l=lead(),f=l?`<div class=card><h3>📣 학급 친구들에게 알림 <small style="display:inline">(${l})</small></h3><textarea id=fx rows=3 placeholder="친구들에게 전할 내용"></textarea><button class="btn blk" onclick="postF(this,'${l}')">알림 올리기</button></div>`:'';
+ const pr=prep()?`<div class=card><h3>📣 학부모님들께 알림 <small style="display:inline">(학부모 대표)</small></h3><textarea id=px rows=3 placeholder="학부모님들께 전할 내용"></textarea><button class="btn blk" onclick="postP(this)">알림 올리기</button></div>`:'';
+ return qb()+f+pr+(nItems().map(x=>rc(x.id,x.t,x.b)).join('')||'<div class=card style="text-align:center">아직 새 소식이 없어요</div>')};
+const ntcEd=()=>{const n=ntcP();return (n?`<div class="card ntc"><h3>📢 지금 올라간 공지사항 <small style="display:inline">${md(n.ts)}</small></h3>${fmt(n.t)}</div>`:'')+`<div class=card><h4>✏️ 공지사항 쓰기</h4><textarea id=nti rows=5 placeholder="전할 내용을 편하게 줄글로 적어 주세요">${esc(n?n.t:'')}</textarea><div class=send><button class="btn ghost sm" onclick="kjAI(this)">✨ 개조식으로 정리</button><button class="btn sm" onclick="postN(this)">올리기</button>${n?'<button class="btn ghost sm" onclick="delN()">내리기</button>':''}</div><small>정리한 뒤 고쳐서 올리세요. 올리면 학생·학부모 알림장 맨 위에 보여요. 공지사항은 늘 하나만 걸려요.</small>${AIN}</div>`};
+const postEd=()=>`<div class=card><h4>📌 알림 글 올리기·편집</h4><input id=nh placeholder="제목"><textarea id=nb rows=3 placeholder="내용"></textarea><button class="btn sm" onclick="addNT(this)">올리기</button>${S.posts.filter(p=>p.k=='post').map(p=>`<div class=row><span>${md(p.ts)} · ${esc(p.t)}</span><button class="btn ghost sm" onclick="delPost('${p.id}')">삭제</button></div>`).join('')}</div>`;
+async function kjAI(b){const ta=G('nti'),t=ta.value.trim();if(!t)return toast('공지 내용을 먼저 적어 주세요');await lock(b,async()=>{toast('정리하는 중이에요…');let o='';try{o=(await aiCall('text',`다음은 고등학교 담임교사가 줄글로 쓴 학급 공지입니다. 학생과 학부모가 한눈에 읽도록 개조식으로 정리하세요. 첫 줄은 공지 제목, 이후 항목은 줄마다 "- "로 시작하고 "~함", "~바람", "~제출"처럼 간결한 종결로 쓰세요. 날짜·시간·장소·준비물·제출처는 항목을 나누세요. 원문에 없는 정보는 추가하지 말고 공지 본문만 출력하세요.\n\n${t}`)).trim()}catch(e){console.warn(e)}ta.value=o||kj(t);toast(o?'확인하고 고친 뒤 올려 주세요':'AI 없이 문장 단위로 정리했어요')})}
+async function postN(b){let t=G('nti').value.trim();if(!t)return toast('내용을 적어 주세요');if(!/^[-•]\s/m.test(t))t=kj(t);const ops=S.posts.filter(p=>p.k=='ntc').map(p=>['del','posts/'+p.id]);ops.push(['set','posts/'+FB.id(),{k:'ntc',t,ts:Date.now()}]);await lock(b,()=>FB.batch(ops).then(()=>toast('공지사항을 올렸어요'),fail('올리지 못했어요')))}
+function delN(){FB.batch(S.posts.filter(p=>p.k=='ntc').map(p=>['del','posts/'+p.id])).then(()=>{clr('nti');toast('공지사항을 내렸어요')},fail('내리지 못했어요'))}
+async function addNT(b){const h=G('nh').value.trim();if(!h)return toast('제목을 적어 주세요');await lock(b,()=>FB.add('posts',{k:'post',t:h,b:G('nb').value.trim(),ts:Date.now()}).then(()=>{clr('nh','nb');toast('올렸어요 · 학생·학부모 메뉴에 새 글 숫자가 떠요')},fail('올리지 못했어요')))}
+function delPost(id){FB.del('posts/'+id).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
+async function postF(b,w){const x=G('fx').value.trim();if(!x)return toast('내용을 적어 주세요');await lock(b,()=>FB.add('posts',{k:'fn',w,x,by:uid(),ts:Date.now()}).then(id=>{mk(id);clr('fx');toast('모든 학생에게 알림을 보냈어요')},fail('보내지 못했어요')))}
+async function postP(b){const x=G('px').value.trim();if(!x)return toast('내용을 적어 주세요');await lock(b,()=>FB.add('posts',{k:'pn',x,by:uid(),ts:Date.now()}).then(id=>{mk(id);clr('px');toast('모든 학부모님께 알림을 보냈어요')},fail('보내지 못했어요')))}
+
+// 서류
+const myDr=id=>{if(PV())return null;const r=S.dr.find(x=>x.d==id&&x.u==uid());return r?r.i:null};
+function DBs(){if(!S.dl.length)return '';const s=myS(),o=P()?DOP:DO,mm=((S.stu[s]||{}).mm)||{};
+ return `<div class=card><h3>📝 서류 제출 여부 확인</h3><small>${P()?'자녀 가방에 서류를 넣어 주셨는지 알려 주세요.':'서류를 어디까지 챙겼는지 골라 주세요.'}</small>`+S.dl.map(d=>d.k=='m'?`<div class=row><span>🩺 ${esc(d.t)}</span><span>${[1,2].map(b=>`<span class=un style="background:${(mm[d.id]||0)&b?'#c0392b':'#2f7d4a'}">${b==1?'온라인 서류':'병원 종이 서류'} ${(mm[d.id]||0)&b?'미제출':'제출 완료'}</span>`).join(' ')}</span></div><small>온라인으로 내거나 종이 서류를 직접 가져오면 선생님이 확인해요.</small>`
+ :`<h4>${esc(d.t)} ${d.due?`<small style="display:inline">~${esc(d.due)}</small>`:''}</h4>${o.map((x,i)=>`<label class=opt><input type=radio name="dr_${d.id}" value="${i}" ${myDr(d.id)===i?'checked':''} onchange="setDr('${d.id}',${i})">${x}</label>`).join('')}`).join('<hr>')+'</div>'}
+function setDr(d,i){if(pv())return draw();FB.set('dresp/'+d+'_'+uid(),{d,u:uid(),i,ts:Date.now()}).then(()=>toast('선생님께 전달했어요'),fail('저장하지 못했어요'))}
+const DBt=()=>{const R=roster();return `<div class=card><h4>📝 서류 요청·제출 확인</h4><small>질병 서류는 평소 모두 "제출 완료"로 보여요. 미제출인 학생만 버튼을 눌러 표시하면 그 학생·학부모 화면에 "미제출"이 뜨고 메시지도 가요. 일반 서류는 학생·학부모가 고른 상태를 학생 관리에서 볼 수 있어요.</small>${S.dl.some(d=>d.k=='m')?'':`<button class="btn blk" onclick="addDoc(this,'질병 서류 (결석계·진단서 등)','m')">🩺 질병서류 요청 한 번에 만들기</button>`}<input id=dt placeholder="일반 서류 이름"><input id=dd placeholder="마감 (예: 10/20)"><button class="btn sm" onclick="addDoc(this,G('dt').value.trim(),'g',G('dd').value.trim())">일반 서류 추가</button>
+ ${S.dl.map(d=>`<div class=row><span>${d.k=='m'?'🩺':'📝'} ${esc(d.t)}${d.k=='g'?` <small style="display:inline">응답 ${S.dr.filter(r=>r.d==d.id).length}명</small>`:''}</span><button class="btn ghost sm" onclick="delDoc('${d.id}')">삭제</button></div>${d.k=='m'?`<table class=tt>${R.map(r=>{const v=(((S.stu[r.s]||{}).mm)||{})[d.id]||0;return `<tr><td style="text-align:left">${esc(r.s)} ${esc(r.lbl)}</td>${[1,2].map(b=>`<td><button class="chip ${v&b?'on':''}" onclick="tgM('${d.id}','${esc(r.s)}',${b})">${v&b?'⚠️ ':''}${b==1?'온라인 서류':'병원 종이 서류'} 미제출${v&b?' (눌러서 해제)':' 표시'}</button></td>`).join('')}</tr>`}).join('')||'<tr><td>명렬표를 설정에 넣으면 학생 목록이 보여요</td></tr>'}</table>`:''}`).join('')}</div>`};
+async function addDoc(b,t,k,due=''){if(!t)return toast('서류 이름을 적어 주세요');await lock(b,()=>FB.add('dlist',{t,k,due,ts:Date.now()}).then(()=>{clr('dt','dd');toast('서류를 추가했어요')},fail('추가하지 못했어요')))}
+function delDoc(id){FB.batch([['del','dlist/'+id],...S.dr.filter(r=>r.d==id).map(r=>['del','dresp/'+r.id])]).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
+function tgM(d,s,b){const cur=(((S.stu[s]||{}).mm)||{})[d]||0,nv=cur^b,on=!!(nv&b),doc=S.dl.find(x=>x.id==d),ops=[['set','stu/'+s,{mm:{[d]:nv}},true]];
+ if(on)S.users.filter(u=>u.s==s).forEach(u=>ops.push(['set','messages/'+FB.id(),{owner:u.id,from:'t',n:S.cfg.tn||'담임',x:`[${doc?doc.t:'질병 서류'}] ${b==1?'온라인 서류':'병원 종이 서류'} 미제출 상태예요. 확인 후 제출해 주세요.`,ts:Date.now(),r:false}]));
+ FB.batch(ops).then(()=>toast(on?'미제출로 표시하고 메시지를 보냈어요':'제출 완료로 바꿨어요'),fail('바꾸지 못했어요'))}
+
+// 설문
+const svV=()=>S.sv||{q:'',o:[],on:0,pub:1,sid:0};
+const svCnt=v=>{const L=S.votes.filter(x=>x.sid==v.sid);return (v.o||[]).map((_,i)=>L.filter(x=>x.i===i).length)};
+const bars=v=>{const c=svCnt(v),t=c.reduce((a,b)=>a+b,0)||1;return (v.o||[]).map((o,i)=>`<div class=bar2><i style="width:${Math.round(c[i]/t*100)}%"></i><span>${esc(o)}</span><b>${c[i]}명 · ${Math.round(c[i]/t*100)}%</b></div>`).join('')};
+const svStat=()=>{const v=svV(),um=Object.fromEntries(S.users.map(u=>[u.id,u])),by={student:new Set(),parent:new Set()};S.votes.filter(x=>x.sid==v.sid).forEach(x=>{const u=um[x.u];if(u&&by[u.r])by[u.r].add(u.s)});const rs=roster(),N=rs.length,miss=rs.filter(r=>!by.student.has(r.s)&&!by.parent.has(r.s));
+ return `<small>참여 현황 (가정당 학생·학부모 각 1명 기준)</small><div class=row><span>🎒 학생</span><b>${by.student.size} / ${N}명</b></div><div class=row><span>👪 학부모</span><b>${by.parent.size} / ${N}명</b></div>${miss.length?`<details><summary><small style="display:inline">학생·학부모 모두 미참여 ${miss.length}가정 보기</small></summary>${miss.map(r=>`<div class=row><span>${esc(r.s)} ${esc(r.lbl)}</span></div>`).join('')}</details>`:'<small>✅ 모든 가정이 참여했어요</small>'}<small>결과</small>`};
+const SBt=()=>{const v=svV();return `<div class=card><h4>🗳️ 설문조사 만들기·편집 ${v.on==1?'<span class=un>진행 중</span>':v.on==2?'<span class=un style="background:#888">종료</span>':''}</h4><input id=svq placeholder="질문" value="${esc(v.q)}"><textarea id=svo rows=4 placeholder="선택지 (한 줄에 하나)">${esc((v.o||[]).join('\n'))}</textarea><label class=opt><input type=checkbox id=svp ${v.pub?'checked':''}>응답 후 학생·학부모에게 통계 공개</label><div class=send><button class="btn sm" onclick="svOn(1)">${v.on==1?'고친 내용 저장':'게시'}</button>${v.on==1?'<button class="btn ghost sm" onclick="svOn(2)">종료</button>':''}<button class="btn ghost sm" onclick="svNew()">새로 만들기</button></div>${v.sid?svStat()+bars(v):''}<small>게시하면 학생·학부모 알림장에 떠요. 종료하면 사라져요.</small></div>`};
+function svOn(x){const v=svV(),q=G('svq').value.trim(),o=G('svo').value.split('\n').map(s=>s.trim()).filter(Boolean),d={q,o,pub:G('svp').checked?1:0,on:x};if(x==1&&(!q||o.length<2))return toast('질문과 선택지 2개 이상이 필요해요');if(x==1&&v.on!=1)d.sid=Date.now();
+ FB.set('config/survey',d,true).then(()=>toast(x==1?(v.on==1?'저장했어요':'설문을 게시했어요'):'설문을 종료했어요'),fail('저장하지 못했어요'))}
+function svNew(){FB.set('config/survey',{q:'',o:[],on:0,pub:1,sid:0}).then(()=>{clr('svq','svo');toast('새 설문을 만들 수 있어요')},fail('바꾸지 못했어요'))}
+function SBs(){const v=S.sv;if(!v||v.on!=1)return '';const mine=PV()?null:S.votes.find(x=>x.sid==v.sid&&x.u==uid());
+ return `<div class=card><h3>🗳️ 설문조사</h3><h4>${esc(v.q)}</h4>`+(!mine?(v.o||[]).map((o,i)=>`<button class="btn ghost blk" onclick="vt(${i})">${esc(o)}</button>`).join(''):v.pub?bars(v):'<p>🙌 의견이 제출되었습니다</p>')+'</div>'}
+function vt(i){if(pv())return;const v=S.sv;FB.set('votes/'+v.sid+'_'+uid(),{sid:v.sid,u:uid(),i,ts:Date.now()}).then(()=>toast('제출했어요'),fail('제출하지 못했어요'))}
+
+// 임원·학부모 대표
+const FNt=()=>{const R=roster().filter(r=>!r.acc.length||r.acc.some(u=>u.r=='student')),ld=S.cfg.ld||{};return `<div class=card><h4>📣 임원 알림 관리</h4><small>임원으로 지정된 학생은 알림장에서 학급 친구들에게 알림을 보낼 수 있어요(학부모에게는 안 보여요).</small>${LDK.map((k,i)=>{const s=ld[k],r=R.find(x=>x.s==s);return `<div style="border-top:1px dashed var(--line);padding:6px 0"><b>${k}</b>${s?`<div class=row><span>🎒 ${esc(s)} ${r?esc(r.lbl):''}</span><button class="btn ghost sm" onclick="setLd('${k}','')">해제</button></div>`:`<div class=send><select id=ldsel${i}>${rOpts('','학생 선택')}</select><button class="btn sm" onclick="G('ldsel${i}').value?setLd('${k}',G('ldsel${i}').value):toast('학생을 골라 주세요')">지정</button></div>`}</div>`}).join('')}<h4>보낸 알림</h4>${S.posts.filter(p=>p.k=='fn').map(p=>`<div class=row><span>${md(p.ts)} · ${LDN[p.w]||''} · ${esc(p.x.slice(0,18))}</span><button class="btn ghost sm" onclick="delPost('${p.id}')">삭제</button></div>`).join('')||'<p class=note>아직 없어요</p>'}</div>`};
+function setLd(k,s){if(s===undefined)return;const ld={...(S.cfg.ld||{}),[k]:s};FB.set('config/main',{ld,ldS:Object.values(ld).filter(Boolean)},true).then(()=>toast(s?k+'(으)로 지정했어요':'해제했어요'),fail('저장하지 못했어요'))}
+const PRt=()=>{const prs=S.cfg.prs||[];return `<div class=card><h4>👪 학부모 대표 알림 관리</h4><small>지정한 학부모 대표는 알림장에서 학부모님들께 알림을 보낼 수 있어요. (자녀 학번 기준)</small><div class=send><select id=prsel>${rOpts('','학생 선택')}</select><button class="btn sm" onclick="addPR()">지정</button></div>${prs.map(s=>`<div class=row><span>👪 ${esc(s)} 학생 학부모</span><button class="btn ghost sm" onclick="delPR('${esc(s)}')">해제</button></div>`).join('')||'<p class=note>아직 지정한 학부모 대표가 없어요</p>'}<h4>보낸 알림</h4>${S.posts.filter(p=>p.k=='pn').map(p=>`<div class=row><span>${md(p.ts)} · ${esc(p.x.slice(0,20))}</span><button class="btn ghost sm" onclick="delPost('${p.id}')">삭제</button></div>`).join('')||'<p class=note>아직 없어요</p>'}</div>`};
+function addPR(){const s=G('prsel').value,prs=S.cfg.prs||[];if(!s)return toast('학생을 골라 주세요');if(prs.includes(s))return;FB.set('config/main',{prs:[...prs,s]},true).then(()=>toast('학부모 대표로 지정했어요'),fail('저장하지 못했어요'))}
+function delPR(s){FB.set('config/main',{prs:(S.cfg.prs||[]).filter(x=>x!=s)},true).then(()=>toast('해제했어요'),fail('저장하지 못했어요'))}
+
+// ───────── 자료(내 자료·자료실) ─────────
+const fr=(f,priv)=>{const row=`<div class=row><span>${f.t=='link'?'🔗':'📄'} ${esc(f.n)}${T()&&priv?` <small style="display:inline">→ ${esc(f.s)}</small>`:''}<small>${md(f.ts)}</small></span><span><button class="btn ghost sm" onclick="openF('${f.id}','${priv?esc(f.s):''}')">⬇️ 열기</button>${T()?` <button class="btn ghost sm" onclick="delF('${f.id}','${priv?esc(f.s):''}')">삭제</button>`:''}</span></div>`;return S.admin?row:rc('F'+f.id,esc(f.n),row)};
+const findF=(id,s)=>(s?(S.admin?S.pfAll:S.pf):S.files).find(f=>f.id==id);
+async function openF(id,s){const f=findF(id,s);if(!f)return;mk('F'+id);if(f.u){window.open(f.u,'_blank','noopener');return}
+ const w=window.open('','_blank');try{const d=await FB.get(s?`pf/${s}/d/${id}`:`fdata/${id}`);if(!d||!d.data)throw 0;const u=URL.createObjectURL(await (await fetch(d.data)).blob());if(w)w.location=u;else location.href=u}catch(e){if(w)w.close();toast('파일을 열지 못했어요')}}
+function delF(id,s){FB.batch(s?[['del',`pf/${s}/f/${id}`],['del',`pf/${s}/d/${id}`]]:[['del','files/'+id],['del','fdata/'+id]]).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
+async function up(inp,k){const x=inp.files[0];if(!x)return;if(x.size>700*1024){inp.value='';return toast('700KB 이하 가벼운 파일만 올릴 수 있어요. 큰 파일은 링크로 등록해 주세요')}
+ const base=x.name.replace(/\.[^.]+$/,''),n=(G(k=='m'?'mt':'lt').value.trim())||base,to=k=='m'?G('ml').value:'',id=FB.id();
+ try{toast('올리는 중이에요…');const data=await readURL(x),meta={n,t:x.type||'file',nm:x.name,u:'',ts:Date.now()};
+  if(to)await FB.batch([['set',`pf/${to}/d/${id}`,{data}],['set',`pf/${to}/f/${id}`,{...meta,s:to}]]);else await FB.batch([['set','fdata/'+id,{data}],['set','files/'+id,{...meta,k}]]);
+  inp.value='';clr(k=='m'?'mt':'lt');toast(to?`${to} 학생에게만 올렸어요`:'올렸어요')}catch(e){inp.value='';fail('올리지 못했어요')(e)}}
+function addLk(k){const n=G(k=='m'?'mt':'lt').value.trim(),u=safeU(G(k=='m'?'mu':'lu').value),to=k=='m'?G('ml').value:'',id=FB.id();if(!n||!u)return toast('제목과 올바른 링크 주소를 모두 넣어 주세요');
+ const meta={n,u,t:'link',nm:n,ts:Date.now()};(to?FB.set(`pf/${to}/f/${id}`,{...meta,s:to}):FB.set('files/'+id,{...meta,k})).then(()=>{clr(k=='m'?'mt':'lt',k=='m'?'mu':'lu');toast('링크를 등록했어요')},fail('등록하지 못했어요'))}
+V.mine=()=>{const t=T(),pub=S.files.filter(f=>f.k=='m'),priv=t?S.pfAll:S.pf;
+ return (t?`<div class=card><h4>📎 학생 자료 올리기·링크 등록</h4><input id=mt placeholder="자료 제목 (예: 10월 모의고사 성적표)"><input id=mu type=url placeholder="자료 링크 주소 https://"><small>받을 학생 (개인 자료는 한 명만 고르세요)</small><select id=ml>${rOpts('','전체 학생')}</select><button class="btn sm" onclick="addLk('m')">링크로 등록</button><small>또는 가벼운 파일(이미지·PDF, 700KB 이하)을 바로 올려요. 위의 제목·받을 학생이 적용돼요.</small><input type=file accept="image/*,application/pdf" onchange="up(this,'m')"><small>큰 파일은 구글 드라이브 등에 올린 뒤 공유 링크로 등록하세요. 개인 성적표·시간표는 드라이브에서 해당 학생(또는 학부모) 구글 계정에만 공유한 뒤 링크를 등록해 주세요.</small></div>`:'')
+ +`<div class=card><h4>📎 ${t?'전체 학생에게 올린 자료':'선생님이 올린 자료'}</h4>${pub.map(f=>fr(f,0)).join('')||'<p class=note>아직 올라온 자료가 없어요</p>'}</div><div class=card><h4>🔒 ${t?'학생별 개인 자료':P()?'자녀에게만 온 자료':'나에게만 온 자료'}</h4>${priv.map(f=>fr(f,1)).join('')||'<p class=note>아직 없어요</p>'}</div><p class=note>🔒 개인 자료는 ${t?'받는 학생과 그 학부모만':P()?'자녀와 보호자만':'나와 우리 보호자만'} 볼 수 있어요</p>`};
+V.lib=()=>{const t=T(),ln=[['🧾','나이스','https://www.neis.go.kr'],...(S.cfg.apps||[]).map(a=>['📱',a.n,a.u])];
+ return (t?`<div class=card><h4>📎 양식·자료 올리기·링크 등록</h4><input id=lt placeholder="제목 (예: 현장체험학습 동의서)"><input id=lu type=url placeholder="링크 주소 https://"><button class="btn sm" onclick="addLk('l')">링크로 등록</button><small>또는 가벼운 파일(이미지·PDF, 700KB 이하)을 바로 올려요.</small><input type=file accept="image/*,application/pdf" onchange="up(this,'l')"><small>큰 파일은 드라이브·학교 홈페이지 등의 공유 링크로 등록하세요. 공용 양식만 "링크가 있는 모든 사용자"로 공유하세요.</small></div>`:'')
+ +`<div class=card><h4>📄 양식·자료</h4>${S.files.filter(f=>f.k=='l').map(f=>fr(f,0)).join('')||'<p class=note>선생님이 양식을 올리면 여기에 나타나요.</p>'}</div><div class=grid2>${ln.map(l=>`<a class="btn ghost lk" href="${esc(safeU(l[2]))}" target=_blank rel=noopener><i>${l[0]}</i>${esc(l[1])}</a>`).join('')}</div>`
+ +(t?`<div class=card><h4>📱 학교 앱 바로가기 편집</h4>${(S.cfg.apps||[]).map((a,i)=>`<div class=row><span>${esc(a.n)}</span><button class="btn ghost sm" onclick="delApp(${i})">삭제</button></div>`).join('')}<input id=an placeholder="앱 이름"><input id=au type=url placeholder="웹 주소 https://"><button class="btn sm" onclick="addApp()">추가</button></div>`:'')};
+function addApp(){const n=G('an').value.trim(),u=safeU(G('au').value);if(!n||!u)return toast('이름과 주소를 모두 넣어 주세요');FB.set('config/main',{apps:[...(S.cfg.apps||[]),{n,u}]},true).then(()=>{clr('an','au');toast('추가했어요')},fail('저장하지 못했어요'))}
+function delApp(i){const a=(S.cfg.apps||[]).slice();a.splice(i,1);FB.set('config/main',{apps:a},true).catch(fail('저장하지 못했어요'))}
+
+// ───────── 출결 ─────────
+const attOf=s=>{const a=((S.stu[s]||{}).att)||{};return Object.fromEntries(ATK.map(k=>[k,(a[k]||[0,0,0]).slice(0,3)]))};
+const attTb=(s,ed)=>{const A=attOf(s);return `<table class=tt><tr><th></th><th>질병</th><th>미인정</th><th>인정(기타)</th><th>합계</th></tr>${ATK.map(k=>`<tr><th>${k}</th>${A[k].map((n,j)=>ed?`<td><input type=number min=0 value="${n}" style="padding:4px;margin:0;text-align:center" onchange="setAtt('${esc(s)}','${k}',${j},this.value)"></td>`:`<td>${n}</td>`).join('')}<td><b>${A[k].reduce((a,b)=>a+(+b||0),0)}</b></td></tr>`).join('')}</table>`};
+V.att=()=>{const c=S.cfg,t=T(),R=roster(),s=t?(attS&&R.some(r=>r.s==attS)?attS:(R[0]&&R[0].s)||''):myS();
+ return `<div class=card><small>집계 기간</small><h4>📅 ${esc(c.ap1||'')} ~ ${esc(c.ap2||'')}</h4><div class=row><span>📚 수업일수 합계</span>${t?`<span><input type=number min=0 value="${+c.cls||0}" style="width:90px;padding:4px;margin:0;text-align:center" onchange="setCls(this.value)"> 일</span>`:`<b>${+c.cls||0}일</b>`}</div>
+ ${t?`<small>학생 선택</small><select onchange="attS=this.value;draw(true)">${R.map(r=>`<option value="${esc(r.s)}" ${r.s==s?'selected':''}>${esc(r.s)} ${esc(r.lbl)}</option>`).join('')}</select>`:''}
+ ${s?`<h4>${esc(s)} ${t?esc((R.find(r=>r.s==s)||{}).lbl||''):P()?'자녀':''} 출결</h4>`+attTb(s,t):'<p class=note>'+(t?'설정에서 명렬표를 넣거나 학생이 가입하면 학생별로 입력할 수 있어요.':'출결 정보가 아직 없어요')+'</p>'}</div><p class=note>${t?'숫자를 고치면 바로 저장돼요. 기간은 설정에서 바꿔요. 학생·학부모는 자기 출결만 볼 수 있어요.':'🔒 '+(P()?'자녀':'본인')+' 출결만 보여요'}</p>`};
+function setAtt(s,k,j,v){const a=attOf(s)[k];a[j]=Math.max(0,parseInt(v)||0);FB.set('stu/'+s,{att:{[k]:a}},true).then(()=>toast('저장했어요'),fail('저장하지 못했어요'))}
+function setCls(v){FB.set('config/main',{cls:Math.max(0,parseInt(v)||0)},true).then(()=>toast('저장했어요'),fail('저장하지 못했어요'))}
+
+// ───────── 상담 ─────────
+const csD=()=>({a:'',b:'',p:[],au:{s:1,p:1},mt:{t:1,v:1},cts:[],...(S.cons.cs||{})});
+const CTL=()=>CT0.concat((S.cons.cs&&S.cons.cs.cts)||[]);
+function saveCs(f){const c=JSON.parse(JSON.stringify(csD()));f(c);c.p=CTL().concat(c.cts||[]).filter((x,i,a)=>a.indexOf(x)==i&&c.p.includes(x));FB.set('config/consult',{cs:c},true).catch(fail('저장하지 못했어요'))}
+const csTg=(g,k)=>saveCs(c=>{c[g]={...c[g],[k]:c[g][k]?0:1}}),tgP=x=>saveCs(c=>{c.p=c.p.includes(x)?c.p.filter(y=>y!=x):[...c.p,x]}),qp=m=>saveCs(c=>{c.p=m=='all'?CTL():m=='per'?CTL().filter(x=>/교시$/.test(x)):[]});
+function addCt(){const v=G('ctn').value.replace(/['"<>\\]/g,'').trim();if(!v||CTL().includes(v))return;clr('ctn');saveCs(c=>{c.cts=[...(c.cts||[]),v];c.p=[...c.p,v]})}
+function csPub(){const c=csD();if(!c.a||!c.b)return toast('신청 가능 기간을 먼저 정해 주세요');if(!c.p.length)return toast('가능한 교시·시간을 하나 이상 골라 주세요');if(!c.mt.t&&!c.mt.v)return toast('상담 방법을 하나 이상 골라 주세요');if(!c.au.s&&!c.au.p)return toast('신청 대상을 골라 주세요');
+ FB.set('config/consult',{csp:{a:c.a,b:c.b,p:c.p,au:c.au,mt:c.mt,on:1}},true).then(()=>toast('상담 일정을 최종 게시했어요'),fail('게시하지 못했어요'))}
+function csStop(){FB.set('config/consult',{csp:{on:0}},true).then(()=>toast('게시를 중단했어요'),fail('바꾸지 못했어요'))}
+const APPH=()=>{const bk=S.cons.booked||{};return `<div class=card><h4>📋 상담 신청 현황 <small style="display:inline">(복수 신청 중 1개 지정)</small></h4>${S.apps.map(a=>`<div style="border-top:1px dashed var(--line);padding:8px 0"><b>${esc(a.n)}</b> ${a.pick?`<span class=un style="background:#4a9a5c">확정 ${esc(a.pick)}</span>`:'<span class=un>미지정</span>'}${a.x?`<p class=pw style="margin:2px 0"><small>📝 ${esc(a.x)}</small></p>`:''}${(a.ks||[]).map(k=>{const tk=bk[k]&&bk[k]!=a.id;return `<label class=opt style="${tk?'opacity:.5':''}"><input type=radio name="pk_${a.id}" value="${esc(k)}" ${a.pick==k?'checked':''} ${tk?'disabled':''}>${esc(k)}${tk?' (다른 신청자 확정)':''}</label>`}).join('')}<div class=send><button class="btn sm" onclick="pickAp(this,'${a.id}')">${a.pick?'다시 지정':'이 시간으로 지정'}</button>${a.pick?`<button class="btn ghost sm" onclick="unpickAp('${a.id}')">지정 취소</button>`:''}<button class="btn ghost sm" onclick="delA('${a.id}')">신청 삭제</button></div></div>`).join('')||'<small>아직 신청이 없어요</small>'}<small>지정하면 신청한 학생·학부모에게 메시지가 가요.</small></div>`};
+async function pickAp(b,id){const a=S.apps.find(x=>x.id==id),r=document.querySelector(`input[name="pk_${id}"]:checked`),k=r&&r.value,bk={...(S.cons.booked||{})};if(!a||!k)return toast('지정할 시간을 하나 골라 주세요');if(bk[k]&&bk[k]!=id)return toast('이미 다른 신청자가 확정된 시간이에요');
+ if(a.pick)delete bk[a.pick];bk[k]=id;await lock(b,()=>FB.batch([['upd','apps/'+id,{pick:k}],['set','config/consult',{booked:bk},false,'field'],['set','messages/'+FB.id(),{owner:a.u,from:'t',n:S.cfg.tn||'담임',x:`상담 일정이 ${k} ${a.m=='t'?'전화':'방문'} 상담으로 확정되었어요.`,ts:Date.now(),r:false}]]).then(()=>toast('상담 일정을 지정했어요 · 신청자에게 메시지가 가요'),fail('지정하지 못했어요')))}
+function unpickAp(id){const a=S.apps.find(x=>x.id==id),bk={...(S.cons.booked||{})};if(!a||!a.pick)return;delete bk[a.pick];FB.batch([['upd','apps/'+id,{pick:null}],['set','config/consult',{booked:bk},false,'field']]).then(()=>toast('지정을 취소했어요'),fail('바꾸지 못했어요'))}
+function delA(id){const a=S.apps.find(x=>x.id==id),ops=[['del','apps/'+id]];if(!a)return;if(a.pick){const bk={...(S.cons.booked||{})};delete bk[a.pick];ops.push(['set','config/consult',{booked:bk},false,'field'])}FB.batch(ops).then(()=>toast('삭제했어요'),fail('삭제하지 못했어요'))}
+const conT=()=>{const c=csD(),cp=S.cons.csp,pub=cp&&cp.on,st=pub?(csKey(c)==csKey(cp)?'✅ 게시 중 · 수정한 내용이 없어요':'⚠️ 수정한 내용이 아직 게시되지 않았어요 · "최종 게시"를 눌러야 반영돼요'):'⏸ 게시 전 · 학생·학부모에게는 "아직 신청 기간이 아니에요"로 보여요';
+ return `<div class=card><h4>💬 상담 일정 만들기</h4><small>① 신청 가능 기간</small><div class=send><input type=date value="${esc(c.a)}" onchange="saveCs(x=>x.a=this.value)"><input type=date value="${esc(c.b)}" onchange="saveCs(x=>x.b=this.value)"></div><small>② 가능한 교시·시간 (눌러서 선택 · 기간 중 평일마다 신청 가능)</small><div class="chips wr"><button class=chip onclick="qp('all')">전체 선택</button><button class=chip onclick="qp('per')">교시만</button><button class=chip onclick="qp('none')">선택 해제</button></div><div class="chips wr">${CTL().map(x=>`<button class="chip ${c.p.includes(x)?'on':''}" data-k="${esc(x)}" onclick="tgP(this.dataset.k)">${esc(x)}</button>`).join('')}</div><div class=send><input id=ctn placeholder="시간 직접 추가 (예: 16:30)"><button class="btn ghost sm" onclick="addCt()">추가</button></div>
+ <small>③ 상담 방법 (신청할 때 고르게 해요)</small><div class=chips><button class="chip ${c.mt.t?'on':''}" onclick="csTg('mt','t')">📞 전화 상담</button><button class="chip ${c.mt.v?'on':''}" onclick="csTg('mt','v')">🏫 방문 상담</button></div><small>④ 신청 대상</small><div class=chips><button class="chip ${c.au.s?'on':''}" onclick="csTg('au','s')">학생</button><button class="chip ${c.au.p?'on':''}" onclick="csTg('au','p')">학부모 (직장 유무도 물어봐요)</button></div><p class=note>${st}</p><button class="btn blk" onclick="csPub()">✅ 최종 게시</button>${pub?'<button class="btn ghost blk" onclick="csStop()">게시 중단</button>':''}</div>`+APPH()};
+const cform=()=>{const c=S.cons.csp,M=[['t','📞 전화 상담'],['v','🏫 방문 상담']].filter(x=>c.mt&&c.mt[x[0]]);return `<div class=card><h4>📝 상담 신청 <small style="display:inline">(${SEL.length}개 선택)</small></h4><p>${SEL.map(k=>`<span class=un style="background:#a8672f">${esc(k)}</span>`).join(' ')}</p><small>여러 시간을 골라도 돼요. 선생님이 그중 1개를 지정해 알려 드려요.</small><small>상담 방법</small>${M.map(x=>`<label class=opt><input type=radio name=cm value=${x[0]} ${M.length==1?'checked':''}>${x[1]}</label>`).join('')}${P()?`<small>직장에 다니시나요?</small><label class=opt><input type=radio name=cw value=y>직장에 다니고 있어요</label><label class=opt><input type=radio name=cw value=n>직장에 다니지 않아요</label>`:''}<small>기타 상담 관련 일정이나 요청 사항</small><textarea id=cx rows=3 placeholder="예: 가능한 다른 시간, 상담받고 싶은 주제"></textarea><button class="btn blk" onclick="submitA(this)">신청하기</button></div>`};
+function selSlot(k){if(pv())return;SEL=SEL.includes(k)?SEL.filter(x=>x!=k):[...SEL,k];draw(true)}
+async function submitA(b){if(pv())return;const bk=S.cons.booked||{},ks=SEL.filter(k=>!bk[k]);if(!ks.length)return toast('선택한 시간이 모두 마감됐어요');const m=(document.querySelector('input[name=cm]:checked')||{}).value,w=(document.querySelector('input[name=cw]:checked')||{}).value,x=G('cx').value.trim(),p=P(),pr=S.prof;
+ if(!m)return toast('상담 방법을 골라 주세요');if(p&&!w)return toast('직장 유무를 골라 주세요');
+ const n=`${pr.s} ${pr.n}${p?' 학부모'+(pr.rel?'('+pr.rel+')':''):''} · ${m=='t'?'📞전화':'🏫방문'}${p?' · '+(w=='y'?'직장 있음':'직장 없음'):''}`;
+ await lock(b,()=>FB.add('apps',{u:uid(),r:pr.r,s:pr.s,m,w:w||'',x,ks,pick:null,n,ts:Date.now()}).then(()=>{SEL=[];toast('상담 신청이 접수됐어요')},fail('신청하지 못했어요')))}
+function cancelA(id){FB.del('apps/'+id).then(()=>toast('신청을 취소했어요'),fail('취소하지 못했어요'))}
+const conS=()=>{const c=S.cons.csp;if(!c||!c.on)return `<div class=card style="text-align:center">⏳<br><b>아직 상담 신청 기간이 아니에요</b><br><small>선생님이 일정을 게시하면 여기에서 신청할 수 있어요</small></div>`;if(!(c.au||{})[P()?'p':'s'])return `<div class=card style="text-align:center">이번 상담은 ${P()?'학생':'학부모'} 대상이에요</div>`;
+ const my=myApp();if(my)return `<div class=card><h4>${my.pick?'✅ 상담 일정이 확정됐어요':'⏳ 상담 신청이 접수됐어요'}</h4>${my.pick?`<p style="font-size:20px"><b>${esc(my.pick)}</b> · ${my.m=='t'?'📞 전화 상담':'🏫 방문 상담'}</p>`:`<p>선생님이 신청한 시간 중 1개를 지정하면 알려 드려요.</p><p>${(my.ks||[]).map(k=>`<span class=un style="background:#a8672f">${esc(k)}</span>`).join(' ')}</p>`}<p><small>${esc(my.n)}</small></p>${my.x?`<p class=pw><small>📝 ${esc(my.x)}</small></p>`:''}${my.pick?'<small>시간을 바꾸려면 선생님께 메시지를 보내 주세요.</small>':`<button class="btn ghost sm" onclick="cancelA('${my.id}')">신청 취소</button>`}</div>`;
+ const ds=days(c.a,c.b),bk=S.cons.booked||{};if(!ds.length)return '<div class=card>신청 가능한 날짜가 없어요</div>';if(cd>=ds.length)cd=0;
+ return chips(ds,(x,i)=>i==cd,(x,i)=>`cd=${i};draw(true)`)+`<div class=slots>${(c.p||[]).map(t=>{const k=ds[cd]+' '+t,b=bk[k],on=SEL.includes(k);return `<button class="slot ${b?'full':''} ${on?'sel':''}" data-k="${esc(k)}" ${b?'disabled':''} onclick="selSlot(this.dataset.k)">${esc(t)}<small>${b?'마감':on?'선택됨':'신청'}</small></button>`}).join('')}</div>${SEL.length?cform():''}<p class=note>👆 여러 시간을 눌러 복수 신청할 수 있어요 · 신청 기간 ${esc(c.a)} ~ ${esc(c.b)} · ${[c.mt&&c.mt.t?'📞전화':'',c.mt&&c.mt.v?'🏫방문':''].filter(Boolean).join(' / ')}</p>`};
+V.con=()=>T()?conT():conS();
+
+// ───────── 메시지 ─────────
+const bub=(m,own)=>`<div class="msg ${m.from=='t'?'me':''}"><small>${md(m.ts)}</small>${esc(m.x)}${own?`<small>${m.r?'✓ 읽음'+(m.rt?' · '+md(m.rt):''):'● 안 읽음'}</small>`:''}</div>`;
+V.msg=()=>{if(T())return V.stu();const id=PV()?'':uid(),L=S.msgs.filter(m=>m.owner==id),g=L.filter(m=>m.from=='t'),s=L.filter(m=>m.from=='u'),Tb=P()?['선생님이 보낸 글','제가 보냈던 글','✏️ 문의하기']:['선생님이 보낸 글','내가 보냈던 글','✏️ 쓰기'],bx=(a,o)=>a.length?a.slice().reverse().map(m=>bub(m,o)).join(''):'<p class=note>아직 없어요</p>';
+ return chips(Tb,(c,i)=>i==mt,(c,i)=>`mt=${i};draw(true)`)+(mt==2?`<div class=card><textarea id=mx rows=5 placeholder="${P()?'담임선생님께 전하실 말씀을 적어 주세요':'선생님께 하고 싶은 말을 적어 보세요'}"></textarea><button class="btn blk" onclick="sendM(this)">보내기</button></div>`:`<div class=card>${mt?bx(s,1):bx(g,0)}</div>`)};
+async function sendM(b){if(pv())return;const x=G('mx').value.trim();if(!x)return;const pr=S.prof;await lock(b,()=>FB.add('messages',{owner:uid(),from:'u',n:`${pr.s} ${pr.n}${pr.r=='parent'?' 학부모':''}`,x,ts:Date.now(),r:false}).then(()=>{clr('mx');mt=1;draw(true);toast('선생님께 보냈어요')},fail('보내지 못했어요')))}
+
+// ───────── 선물 ─────────
+V.gift=()=>{if(!T()){const L=PV()?[]:S.gifts;return L.map(g=>rc('G'+g.id,'🎁 선물이 도착했어요 · '+md(g.ts),`<div class=card style="text-align:center"><small>${md(g.ts)}</small><h3>🎁 ${esc(g.t)}</h3>${g.img?(g.img.startsWith('data:')?`<img src="${safeImg(g.img)}" style="max-width:100%;border-radius:12px" alt="">`:`<a class="btn" href="${esc(safeU(g.img))}" target=_blank rel=noopener>🎟️ 쿠폰 열기</a>`):''}${g.c?`<p><b>${esc(g.c)}</b></p>`:''}<p class=pw>${esc(g.m)}</p></div>`)).join('')||'<div class=card style="text-align:center">🎁<br>아직 받은 선물이 없어요</div>'}
+ return `<div class=card><h4>🎁 선물 보내기</h4><input id=gt placeholder="쿠폰 이름"><input id=gc placeholder="바코드·쿠폰 번호 (선택)"><textarea id=gm rows=2 placeholder="한마디 (선택)"></textarea><input type=file accept="image/*" onchange="gImg(this)"><small>쿠폰·바코드 이미지를 바로 올리거나(자동으로 줄여요), 아래에 이미지 링크를 붙여 넣어요. 번호만 보내도 돼요.</small><input id=gl type=url placeholder="쿠폰 이미지 링크 (선택)"><select id=gs>${rOpts('','받을 학생 선택')}</select><button class="btn blk" onclick="sendG(this)">선물 보내기</button></div><div class=card><h4>보낸 선물</h4>${S.allGifts.map(x=>`<div class=row><span>${md(x.ts)} · ${esc(x.s)} · ${esc(x.t)}</span><button class="btn ghost sm" onclick="delG('${esc(x.s)}','${x.id}')">회수</button></div>`).join('')||'<p class=note>아직 없어요</p>'}</div>`};
+function gImg(f){const x=f.files[0];if(x)shrink(x,640,.75).then(d=>{GI=d;toast('이미지를 불러왔어요')},()=>toast('이미지를 읽지 못했어요'))}
+async function sendG(b){const t=G('gt').value.trim(),s=G('gs').value;if(!t)return toast('쿠폰 이름을 적어 주세요');if(!s)return toast('받을 학생을 골라 주세요');const img=safeU(G('gl').value)||GI;
+ await lock(b,()=>FB.set(`gift/${s}/g/${FB.id()}`,{s,t,c:G('gc').value.trim(),m:G('gm').value.trim(),img,ts:Date.now()}).then(()=>{GI='';clr('gt','gc','gm','gl');document.querySelectorAll('#app input[type=file]').forEach(e=>e.value='');toast('선물을 보냈어요')},fail('보내지 못했어요')))}
+function delG(s,id){FB.del(`gift/${s}/g/${id}`).then(()=>toast('회수했어요'),fail('회수하지 못했어요'))}
+
+// ───────── 학생 관리 ─────────
+V.stu=()=>`<div class=card><h4>🗂️ 학번순 학생 목록</h4><small>학생·학부모 자료가 학번별로 모여요</small>${roster().map(x=>`<button class=rw onclick="sdS='${esc(x.s)}';go('sd')"><span><b>${esc(x.s)}</b> ${esc(x.lbl)} ${x.acc.map(u=>u.r=='parent'?'👪':'🎒').join('')}</span>${x.un?`<span class=un>새 글 ${x.un}</span>`:'<span>›</span>'}</button>`).join('')||'<p class=note>설정에서 명렬표를 넣거나 학생이 가입하면 여기에 보여요</p>'}</div>`+accCard();
+const accForm=u=>`<div class=card style="margin:6px 0"><small>학번</small><input id=ea_s inputmode=numeric value="${esc(u.s)}"><small>이름 (가운데 글자는 0으로 가려 저장돼요)</small><input id=ea_n value="${esc(u.n)}">${u.r=='parent'?`<small>학생과의 관계</small><select id=ea_l>${REL.map(x=>`<option ${u.rel==x?'selected':''}>${x}</option>`).join('')}</select>`:''}<small style="word-break:break-all">구글 계정: ${esc(u.email)} (계정을 바꾸려면 초기화한 뒤 새 계정으로 다시 가입하게 하세요)</small><div class=send><button class="btn sm" onclick="saveU('${u.id}')">저장</button><button class="btn ghost sm" onclick="EA='';draw(true)">취소</button></div></div>`;
+const accCard=()=>{const A=S.users.slice().sort((a,b)=>a.s>b.s?1:-1);return `<div class=card><h4>📧 최초 구글 계정·학번·이름 관리</h4><small>가입할 때 처음 쓴 구글 계정이에요. 학번·이름·관계는 고칠 수 있고, 잘못 가입했다면 초기화하면 다시 가입할 수 있어요.</small>${A.map(u=>EA==u.id?accForm(u):`<div class=row><span>${esc(u.s)} ${uLbl(u)}<small style="word-break:break-all">${esc(u.email)} · 가입 ${md(u.at)}</small></span><span><button class="btn ghost sm" onclick="EA='${u.id}';draw(true)">수정</button> <button class="btn ghost sm" onclick="resetU('${u.id}')">${RA==u.id?'한 번 더 눌러 초기화':'초기화'}</button></span></div>`).join('')||'<p class=note>아직 가입한 학생·학부모가 없어요</p>'}</div>`};
+async function saveU(id){const u=S.users.find(x=>x.id==id),s=G('ea_s').value.trim(),n0=G('ea_n').value.trim(),rel=u.r=='parent'?G('ea_l').value:(u.rel||'');if(!/^\d{4,6}$/.test(s))return toast('학번을 숫자로 입력해 주세요');if(n0.length<2)return toast('이름을 2글자 이상 입력해 주세요');
+ const ops=[['upd','users/'+id,{n:mask(n0),s,rel}]];if(u.r=='student'&&s!=u.s){ops.push(['del','studentIds/'+u.s]);ops.push(['set','studentIds/'+s,{uid:id}])}
+ try{await FB.batch(ops);EA='';draw(true);toast('저장했어요')}catch(e){fail('저장하지 못했어요. 이미 등록된 학번인지 확인해 주세요')(e)}}
+async function resetU(id){if(RA!=id){RA=id;draw(true);return toast('한 번 더 누르면 초기화돼요')}const u=S.users.find(x=>x.id==id);RA='';const ops=[['del','users/'+id]];if(u&&u.r=='student')ops.push(['del','studentIds/'+u.s]);FB.batch(ops).then(()=>toast('초기화했어요 · 다시 가입할 수 있어요'),fail('초기화하지 못했어요'))}
+V.sd=()=>{const g=roster().find(x=>x.s==sdS);if(!g)return '<div class=card>목록에서 학생을 골라 주세요.</div>';const s=g.s;
+ return `<h3>🗂️ ${esc(s)} ${esc(g.lbl)}</h3>`+(g.acc.length?g.acc.map(u=>sdAcc(u)).join(''):'<div class=card><p class=note>아직 가입한 계정이 없어요</p></div>')
+ +medC(s)+`<div class=card><h4>✅ 출결 <small style="display:inline">(고치려면 출결 편집에서)</small></h4>${attTb(s,0)}</div>`
+ +`<div class=card><h4>🔒 이 학생에게만 올린 자료</h4>${S.pfAll.filter(f=>f.s==s).map(f=>fr(f,1)).join('')||'<p class=note>없어요</p>'}</div><div class=card><h4>🎁 보낸 선물</h4>${S.allGifts.filter(x=>x.s==s).map(x=>`<div class=row><span>${md(x.ts)} · ${esc(x.t)}</span></div>`).join('')||'<p class=note>없어요</p>'}</div>`+noteC(s)};
+const sdAcc=u=>{const p=u.r=='parent',L=S.msgs.filter(m=>m.owner==u.id),ap=S.apps.filter(a=>a.u==u.id),g=S.dl.filter(d=>d.k=='g');
+ return `<div class=card><h4>${p?'👪':'🎒'} ${uLbl(u)}</h4><small style="word-break:break-all">📧 최초 구글 계정: ${esc(u.email)}</small>${g.length?'<small>서류 제출 여부</small>'+g.map(d=>{const r=S.dr.find(x=>x.d==d.id&&x.u==u.id);return `<div class=row><span>${esc(d.t)}</span><b>${r?EM[r.i]+' '+(p?DOP:DO)[r.i]:'— 아직 응답 없음'}</b></div>`}).join(''):''}
+ <small>상담 신청</small>${ap.map(a=>`<div class=row>${a.pick?'✅ '+esc(a.pick):'⏳ '+(a.ks||[]).map(esc).join(', ')}</div>`).join('')||'<div class=row>신청 없음</div>'}
+ <small>메시지</small><div>${L.map(m=>bub(m,m.from=='t')).join('')||'<p class=note>주고받은 메시지가 없어요</p>'}</div><textarea id="rx_${u.id}" rows=3 placeholder="${p?'학부모님께':'학생에게'} 보낼 내용 (요점만 써도 돼요)"></textarea><div class=send><button class="btn ghost sm" onclick="ai(this,'${u.id}','fix')">✨ AI 다듬기</button><button class="btn ghost sm" onclick="ai(this,'${u.id}','gen')">✨ AI로 작성</button><button class="btn sm" onclick="tsend(this,'${u.id}')">보내기</button></div>${AIN}</div>`};
+async function tsend(b,id){const ta=G('rx_'+id),x=ta.value.trim();if(!x)return toast('보낼 내용을 적어 주세요');await lock(b,()=>FB.add('messages',{owner:id,from:'t',n:S.cfg.tn||'담임',x,ts:Date.now(),r:false}).then(()=>{ta.value='';toast('보냈어요')},fail('보내지 못했어요')))}
+async function ai(b,id,mode){const ta=G('rx_'+id),t=ta.value.trim(),u=S.users.find(x=>x.id==id),p=u&&u.r=='parent';if(!t)return toast(mode=='fix'?'다듬을 문장을 먼저 써 주세요':'전할 내용을 간단히 적어 주세요');
+ await lock(b,async()=>{toast('AI가 작성 중이에요…');try{const r=await aiCall('text',`당신은 한국 고등학교 담임교사의 메시지 작성 도우미입니다. 받는 사람은 ${p?'학부모님':'학생'}입니다. ${mode=='fix'?'아래 초안을 정중하게 다듬되 사실과 의미는 바꾸지 마세요.':'아래 요점으로 메시지를 작성하되 요점에 없는 사실은 지어내지 마세요.'} ${p?'정중한 존댓말을 쓰세요.':'따뜻하고 분명한 어조로 쓰세요.'} 실명은 쓰지 마세요. 인사말과 맺음말을 넣고 6문장 이내로, 메시지 본문만 출력하세요.\n\n${t}`);if(r){ta.value=r.trim();toast('확인하고 고친 뒤 보내세요')}else toast('AI 답이 비어 있어요')}catch(e){toast('AI 응답에 실패했어요: '+e.message)}})}
+const medC=s=>{const M=S.dl.filter(d=>d.k=='m'),mm=((S.stu[s]||{}).mm)||{};return M.length?`<div class=card><h4>🩺 질병 서류 상태</h4>${M.map(d=>`<small>${esc(d.t)}</small>${[1,2].map(b=>`<div class=row><span>${b==1?'온라인 서류':'병원 종이 서류'}</span><b>${(mm[d.id]||0)&b?'❌ 미제출':'✅ 제출 완료'}</b></div>`).join('')}`).join('')}</div>`:''};
+const noteC=s=>{const n=S.notes[s]||{},c=n.cn||[];return `<div class=card><h4>📋 학기초 기초자료 <small style="display:inline">(교사만 봐요)</small></h4><textarea id="bit_${esc(s)}" rows=6 placeholder="기초자료·상담 정리에서 AI로 정리하거나 직접 적어요">${esc(n.bi||'')}</textarea><div class=send><button class="btn sm" onclick="saveBi('${esc(s)}')">저장</button></div></div>${c.length?`<div class=card><h4>💬 상담 내역 (${c.length}건)</h4>${c.map((x,i)=>`<small>${esc(x.d)}</small>${fmt(x.t)}<button class="btn ghost sm" onclick="delCn('${esc(s)}',${i})">삭제</button><hr>`).join('')}</div>`:''}`};
+function saveBi(s){FB.set('note/'+s,{bi:G('bit_'+s).value},true).then(()=>toast('저장했어요'),fail('저장하지 못했어요'))}
+function delCn(s,i){const c=((S.notes[s]||{}).cn||[]).slice();c.splice(i,1);FB.set('note/'+s,{cn:c},true).catch(fail('삭제하지 못했어요'))}
+
+// ───────── 기초자료·상담 정리(AI) ─────────
+const LIBS={x:['https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',()=>window.XLSX],p:['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',()=>window.pdfjsLib]};
+const lib=k=>new Promise((ok,no)=>{const [u,g]=LIBS[k];if(g())return ok(g());const s=document.createElement('script');s.src=u;s.onload=()=>ok(g());s.onerror=()=>no(new Error('lib'));document.head.appendChild(s)});
+const DROPCOL=/이름|성명|연락처|전화|휴대|핸드폰|주소|생년|주민|이메일|메일/;
+async function readF(f){const n=f.name.toLowerCase();
+ if(/\.(xlsx|xls|csv)$/.test(n)){const X=await lib('x'),wb=X.read(await f.arrayBuffer());return wb.SheetNames.map(s=>{const R=X.utils.sheet_to_json(wb.Sheets[s],{header:1,defval:''}).filter(r=>r.some(c=>c!=='')),h=(R[0]||[]).map(String);return R.slice(1).map(r=>h.map((x,i)=>r[i]===''||r[i]==null||DROPCOL.test(x)?'':`${x}:${r[i]}`).filter(Boolean).join(' | ')).join('\n')}).join('\n')}
+ if(/\.pdf$/.test(n)){const L=await lib('p');L.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const d=await L.getDocument({data:await f.arrayBuffer()}).promise;let o='';for(let i=1;i<=Math.min(d.numPages,60);i++){const c=await(await d.getPage(i)).getTextContent();o+=c.items.map(x=>x.str).join(' ')+'\n'}return o}
+ return f.text()}
+// AI에 보내기 전에 학번은 "학생01" 같은 가짜 번호로, 이름·전화번호·주민번호는 가림
+function anon(t){const known=new Set(roster().map(r=>r.s)),fwd={},rev={};let i=0;
+ t=t.replace(/\d{6}\s*-\s*\d{7}/g,'(가림)').replace(/(01[016789]|0\d{1,2})[-. ]?\d{3,4}[-. ]?\d{4}/g,'(번호 가림)').replace(/(이름|성명|학생명)(\s*[:：]?\s*)([가-힣]{2,4})/g,'$1$2(가림)');
+ t=t.replace(/(?<!\d)(\d{4,6})(?!\d)/g,m=>{if(!(known.has(m)||m.length==5))return m;if(!fwd[m]){const k='학생'+String(++i).padStart(2,'0');fwd[m]=k;rev[k]=m}return fwd[m]});return {t,rev}}
+const PR=(kind,one)=>`너는 한국 고등학교 담임교사의 학급 관리 도우미야. 아래는 ${kind=='base'?'학기초 학생 기초조사 자료':'학생 상담 기록'}(엑셀·PDF에서 읽은 텍스트)다. 학생은 "학생01"처럼 가짜 번호로 표시돼 있다. ${one?'모든 내용은 한 학생의 것이다.':'가짜 번호별로 나눠서'} 개조식으로 정리해라. 각 줄은 "- 항목: 내용" 형태로 쓰고, ${kind=='base'?'진로희망·관심사·특기·건강 및 유의사항·가정에서 바라는 점·기타 순서로':'상담 주제·주요 내용·학생 의견과 정서·후속 조치·다음 상담 제안 순서로'} 정리해라. 자료에 있는 내용만 쓰고 추측하거나 지어내지 마라. 자료에 없는 항목은 생략해라. 사람 이름·연락처·주소는 쓰지 마라. 오직 JSON으로만 답해라: {"items":[{"id":"학생01","정리":"- 진로희망: ...\\n- ..."}]}. ${one?'id 는 "" 로 둬라.':'번호를 알 수 없는 내용은 id 를 "" 로 둬라.'}`;
+async function runI(b,kind){const k=kind=='base'?'1':'2',f=IF[k];let t=G('ip'+k).value.trim();if(!t&&!f)return toast('파일을 고르거나 내용을 붙여넣어 주세요');const sel=kind=='consult'?G('is').value:'';
+ await lock(b,async()=>{try{toast('자료를 읽는 중이에요…');if(f)t=await readF(f);const A=anon(t),L=A.t.split('\n').filter(x=>x.trim()),ch=[];for(let i=0;i<L.length;i+=25)ch.push(L.slice(i,i+25).join('\n'));
+  const acc={};let miss=0;
+  for(let i=0;i<ch.length;i++){toast(`AI가 정리 중이에요 (${i+1}/${ch.length})`);const r=await aiCall('json',PR(kind,!!sel)+'\n\n'+ch[i]),m=r.match(/[\[{][\s\S]*[\]}]/);if(!m)continue;let j;try{j=JSON.parse(m[0])}catch(e){continue}const items=Array.isArray(j)?j:(j.items||[]);
+   items.forEach(x=>{const s=sel||A.rev[String(x.id||'').trim()]||'';if(!/^\d{4,6}$/.test(s)){miss++;return}(acc[s]=acc[s]||[]).push(String(x['정리']||'').trim())})}
+  const ks=Object.keys(acc);if(!ks.length)return toast('정리된 내용이 없어요. 학번이 들어 있는지 확인해 주세요');
+  const ops=ks.map(s=>{const tx=acc[s].filter(Boolean).join('\n'),n=S.notes[s]||{};return kind=='base'?['set','note/'+s,{bi:(n.bi?n.bi+'\n':'')+tx},true]:['set','note/'+s,{cn:[...(n.cn||[]),{d:md(),t:tx}]},true]});
+  await FB.batch(ops);IF[k]=null;clr('ip'+k);document.querySelectorAll('#app input[type=file]').forEach(e=>e.value='');toast(`${ks.length}명 정리 완료${miss?` · 학번 없는 ${miss}건 제외`:''}`)}catch(e){console.warn(e);toast('정리하지 못했어요: '+(e.message||'파일 형식이나 내용을 확인해 주세요'))}})}
+V.intake=()=>{const ks=[...new Set([...Object.keys(S.notes).filter(s=>S.notes[s].bi||(S.notes[s].cn||[]).length)])].sort();
+ return `<div class=card><h4>📥 학기초 기초자료 정리</h4><small>엑셀(.xlsx/.csv)·PDF·텍스트를 올리면 학번별로 정리해 학생 관리에 쌓아요. 이름·연락처·주소 열은 빼고, 학번은 가짜 번호로 바꾼 뒤 AI에 보내요. 원본 파일은 저장하지 않아요. 글자가 없는 스캔 PDF는 읽을 수 없어요.</small><input type=file accept=".xlsx,.xls,.csv,.pdf,.txt" onchange="IF['1']=this.files[0]"><textarea id=ip1 rows=3 placeholder="또는 내용을 붙여넣기"></textarea><button class="btn blk" onclick="runI(this,'base')">✨ AI로 정리하기</button></div>
+ <div class=card><h4>💬 상담 내역 정리</h4><select id=is>${rOpts('','파일 안의 학번으로 자동 분류')}</select><input type=file accept=".xlsx,.xls,.csv,.pdf,.txt" onchange="IF['2']=this.files[0]"><textarea id=ip2 rows=4 placeholder="상담 메모를 붙여넣기 (한 학생이면 위에서 학생을 고르세요)"></textarea><button class="btn blk" onclick="runI(this,'consult')">✨ AI로 정리하기</button>${AIN}</div>
+ <div class=card><h4>🗂️ 정리된 자료</h4>${ks.map(s=>`<button class=rw onclick="sdS='${esc(s)}';go('sd')"><span><b>${esc(s)}</b> ${S.notes[s].bi?'기초자료 ':''}${(S.notes[s].cn||[]).length?'상담 '+S.notes[s].cn.length+'건':''}</span><span>보기 ›</span></button>`).join('')||'<p class=note>아직 정리된 자료가 없어요</p>'}<small>정리된 내용은 학생 관리의 해당 학생 화면에서 고칠 수 있어요. 교사만 볼 수 있어요.</small></div>`};
+
+// ───────── 설정 ─────────
+V.adm=()=>{const c={...S.cfg,dom:S.pub.dom||S.cfg.dom||''},m=(S.roster&&S.roster.m)||{};
+ return `<div class=card><h4>⚙️ 초기·연간 설정</h4><small>학년이 바뀌면 새로 입력하세요. <b>학생 구글 계정 형식을 저장해야 학생이 가입할 수 있어요.</b></small>${FS.map(([k,l,t])=>`<small>${l}</small><input id=f_${k} type=${t} value="${esc(c[k]||'')}">`).join('')}${FT.map(([k,l])=>`<small>${l}</small><textarea id=f_${k} rows=3>${esc(c[k]||'')}</textarea>`).join('')}
+ <small>학급 명렬표 (한 줄에 "학번 이름") — 넣으면 명렬표와 같은 학번·이름만 가입할 수 있어요. 비워 두면 누구나 가입해요.</small><textarea id=f_ros rows=6 placeholder="30101 홍길동">${esc(Object.entries(m).sort().map(([s,n])=>s+' '+n).join('\n'))}</textarea><small>이름은 가운데 글자를 0으로 가려 저장돼요.</small><button class="btn blk" onclick="saveS(this)">설정 저장</button></div>
+ <div class=card><h4>🖼️ 담임 사진</h4><input id=pl type=url placeholder="사진 링크 주소 https://" value="${esc(/^https?:/.test(S.cfg.photo||'')?S.cfg.photo:'')}"><button class="btn sm" onclick="setPh()">적용</button><small>링크를 붙여 넣고 적용하거나, 아래에서 사진을 바로 올려요(자동으로 작게 줄여요). 링크를 비우고 적용하면 기본 이미지로 돌아가요.</small><input type=file accept="image/*" onchange="pic(this)"></div>
+ <div class=card><h4>🤖 AI 연결 점검</h4><small>제미나이 키와 모델이 살아 있는지 확인해요(아주 짧은 호출 몇 번).</small><button class="btn sm" onclick="aiCheck(this)">점검하기</button><p id=aic class=note></p></div>
+ <div class=card><h4>👩‍🏫 교사 계정</h4><p class=note style="word-break:break-all">${esc(S.u.email)}</p><small>담임 계정은 앱에서 바꿀 수 없어요. 바꾸려면 파이어베이스 콘솔에서 config/owner 문서를 지운 뒤 새 계정으로 "교사로 지정"을 누르세요.</small></div>`};
+async function saveS(b){const v={};[...FS,...FT].forEach(([k])=>v[k]=G('f_'+k).value.trim());v.dom=v.dom.replace(/^@/,'').toLowerCase();const m={};
+ G('f_ros').value.split('\n').map(l=>l.trim().split(/[\s,\t]+/)).filter(a=>/^\d{4,6}$/.test(a[0])&&a[1]).forEach(a=>m[a[0]]=mask(a.slice(1).join('')));
+ await lock(b,()=>FB.batch([['set','config/main',v,true],['set','config/pub',{dom:v.dom,sch:v.sch}],['set','config/roster',{m}]]).then(()=>{G('f_ros').value=Object.entries(m).sort().map(([s,n])=>s+' '+n).join('\n');toast('설정을 저장했어요')},fail('저장하지 못했어요')))}
+function setPh(){const u=safeU(G('pl').value);FB.set('config/main',{photo:u},true).then(()=>toast(u?'사진을 바꿨어요':'기본 이미지로 돌아갔어요'),fail('저장하지 못했어요'))}
+function pic(f){const x=f.files[0];if(x)shrink(x,360,.8).then(d=>FB.set('config/main',{photo:d},true)).then(()=>toast('사진을 바꿨어요'),fail('사진을 바꾸지 못했어요'))}
+async function aiCheck(b){const o=G('aic');await lock(b,async()=>{o.textContent='점검 중이에요… (30초쯤 걸릴 수 있어요)';try{const j=await (await fetch('/api/ai?check=1')).json();o.innerHTML=!j.keySet?'❌ 버셀 환경 변수 GEMINI_API_KEY 가 비어 있어요':j.check.map(c=>`${c.ok?'✅':'❌'} ${esc(c.model)}${c.ok?'':' · '+esc(c.status||'')+' '+esc(c.error||'')}`).join('<br>')}catch(e){o.textContent='❌ 서버 함수에 닿지 못했어요(버셀 주소에서만 점검할 수 있어요)'}})}
+
+// ───────── 시작 ─────────
+async function onUser(u){stop();S={...S,u,prof:null,admin:false,owner:null,ready:!u,cfg:{},pub:{},cons:{},sv:null,roster:{m:{}},posts:[],msgs:[],reads:{},users:[],dl:[],dr:[],stu:{},notes:{},votes:[],apps:[],files:[],pf:[],pfAll:[],gifts:[],allGifts:[]};draw();if(!u)return;
+ try{const [o,p,pb]=await Promise.all([FB.get('config/owner'),FB.get('users/'+u.uid),FB.get('config/pub')]);S.owner=o;S.admin=!!o&&o.uid==u.uid;S.prof=p;S.pub=pb||{}}catch(e){console.warn(e);toast('자료를 불러오지 못했어요. 보안 규칙을 게시했는지 확인해 주세요')}
+ S.ready=true;if(S.admin||S.prof){listen();view='home';H=['home'];hi=0;if(S.admin&&!S.pub.dom){view='adm';H=['home','adm'];hi=1;setTimeout(()=>toast('먼저 학교·반·학생 계정 형식을 설정해 주세요'),400)}}draw();scrollTo(0,0)}
+function start(){if(!FB.ready)return draw();if(FB.redirect)FB.redirect().catch(e=>toast('로그인하지 못했어요: '+(e.code||e.message)));FB.onAuth(onUser)}
+addEventListener('fb',start);
+draw();
+</script>
+
+<script type="module">
+/*FB-START*/
+import{initializeApp}from'https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js';
+import{getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js';
+import{initializeFirestore,getFirestore,persistentLocalCache,persistentMultipleTabManager,doc,getDoc,setDoc,addDoc,updateDoc,deleteDoc,collection,collectionGroup,query,where,onSnapshot,writeBatch}from'https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js';
+
+// ===== 설정 (이 부분만 고치면 됩니다) =====
+// 파이어베이스 콘솔 → 프로젝트 설정 → 내 앱 에 나오는 firebaseConfig 값 6개
+const firebaseConfig = {
+  apiKey: "AIzaSyBBqBI1Fg-oOD7armN5BrkaO-Mq8n-L-eg",
+  authDomain: "class-noticeboard-4b9f3.firebaseapp.com",
+  projectId: "class-noticeboard-4b9f3",
+  storageBucket: "class-noticeboard-4b9f3.firebasestorage.app",
+  messagingSenderId: "266297279593",
+  appId: "1:266297279593:web:2f657530d3b9fc32ba4ef8"
+};
+// ==========================================
+
+const ready=!/^여기에/.test(firebaseConfig.apiKey);
+if(!ready){window.FB={ready:false}}else{
+const fbApp=initializeApp(firebaseConfig),auth=getAuth(fbApp);
+let db;try{db=initializeFirestore(fbApp,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){db=getFirestore(fbApp)}
+const D=p=>doc(db,...p.split('/')),list=s=>s.docs.map(d=>({id:d.id,...d.data()}));
+const Q=(p,o)=>{const c=p[0]=='*'?collectionGroup(db,p.slice(1)):collection(db,...p.split('/'));return o&&o.where?query(c,where(...o.where)):c};
+const prov=()=>{const p=new GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});return p};
+window.FB={ready:true,
+ onAuth:cb=>onAuthStateChanged(auth,u=>cb(u&&{uid:u.uid,email:(u.email||'').toLowerCase(),rawEmail:u.email||''})),
+ async login(){try{await signInWithPopup(auth,prov())}catch(e){if(/popup-blocked|operation-not-supported/.test(e.code||''))return signInWithRedirect(auth,prov());throw e}},
+ redirect:()=>getRedirectResult(auth),
+ logout:()=>signOut(auth),
+ token:()=>auth.currentUser?auth.currentUser.getIdToken():Promise.resolve(''),
+ get:async p=>{const s=await getDoc(D(p));return s.exists()?s.data():null},
+ set:(p,d,m)=>setDoc(D(p),d,m?{merge:true}:{}),
+ add:async(p,d)=>(await addDoc(collection(db,...p.split('/')),d)).id,
+ upd:(p,d)=>updateDoc(D(p),d),
+ del:p=>deleteDoc(D(p)),
+ // ops: ['set',경로,자료,합치기] / ['set',경로,{필드:값},false,'field'] (그 필드만 통째로 바꿈) / ['upd',경로,자료] / ['del',경로]
+ batch:async ops=>{const b=writeBatch(db);ops.forEach(([k,p,d,m,f])=>k=='del'?b.delete(D(p)):k=='upd'?b.update(D(p),d):f=='field'?b.set(D(p),d,{mergeFields:Object.keys(d)}):b.set(D(p),d,m?{merge:true}:{}));await b.commit()},
+ wDoc:(p,cb,er)=>onSnapshot(D(p),s=>cb(s.exists()?s.data():null),er),
+ wCol:(p,o,cb,er)=>onSnapshot(Q(p,o),s=>cb(list(s)),er),
+ id:()=>doc(collection(db,'_')).id};
+}
+window.dispatchEvent(new Event('fb'));
+/*FB-END*/
+</script>
+</body></html>

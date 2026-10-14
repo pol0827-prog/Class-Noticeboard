@@ -1,0 +1,7 @@
+{
+  "name": "jaeimina-smart-notice",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "재이미나는 학급의 스마트한 알림장 (파이어베이스 + 버셀 + 제미나이)"
+}
