@@ -80,7 +80,7 @@ let view='home',H=['home'],hi=0,un=[],mt=0,cd=0,SEL=[],sdS='',EA='',RA='',GI='',
 // ───────── 반(담임반 'hr' · 수업반 = 학번 앞자리) ─────────
 const PL=()=>String(S.pub.hr||'').length,SUBJ=()=>S.pub.subj||[];
 const pOf=s=>PL()?String(s||'').slice(0,PL()):'';
-const cName=k=>k=='hr'?'담임반':((S.pub.subjN||{})[k]||(k.length==3?`${k[0]}학년 ${+k.slice(1)}반`:k+'반'))+' 수업';
+const cName=k=>k=='hr'?'담임반':((S.pub.subjN||{})[k]||(k.length==3?`${k[0]}-${+k.slice(1)}`:k.length==4?`${k.slice(0,2)}-${+k.slice(2)}`:k))+' 수업';
 const clsOfS=(s,r)=>{const p=pOf(s),L=[];if(!S.pub.hr||p==S.pub.hr)L.push('hr');if(r!='parent'&&SUBJ().includes(p))L.push(p);return L};
 const myCls=()=>S.admin?['hr',...SUBJ()]:S.prof?clsOfS(S.prof.s,S.prof.r):[];
 const HR=()=>CK=='hr',inK=x=>(x.c||'hr')==CK,cc=()=>S.cc[CK]||{};
@@ -238,7 +238,7 @@ function brd(){const L=[],n=ntcP(),c=S.cons.csp,my=myApp();
 const V={};
 V.home=()=>{const t=T(),c=S.cfg,g=t?`${esc(c.tn||'담임')} 선생님`:P()?`${esc(nm())} 학부모님`:`${esc(nm())} 학생`,ph=safeImg(c.photo),h=HR(),tl=TILES();
  const tel=[['교무실','tel1'],['담임 안심번호','tel3'],['행정실','tel2']].filter(([l,k])=>c[k]).map(([l,k])=>`<a class="btn ghost sm" href="tel:${esc(String(c[k]).replace(/[^\d+]/g,''))}"><small style="display:block;font-size:11px">📞 ${l}</small>${esc(c[k])}</a>`).join('');
- const rule=[h?esc(P()?c.up:c.us):'',c.note?'📞 전화 시 유의사항\n'+esc(c.note):''].filter(Boolean).join('\n\n');
+ const rule=[c.note?'📞 전화 시 유의사항\n'+esc(c.note):'',h?esc(P()?c.up:c.us):''].filter(Boolean).join('\n\n');
  const yr=String(c.yr||'').replace(/학년도$/,''),cl=clsLine(c).split(' · ')[0],st=String(c.staff||'').trim(),role=[cl?(yr?yr+'학년도 ':'')+cl+' 담임':'',st?st+(/(담당|교사)$/.test(st)?'':' 담당'):''].filter(Boolean).join(' · ');
  const intro=h?c.intro:c.sintro;
  return qb()+`<div class="card tc"><div class=av ${ph?`style="background:url('${ph}') center/cover"`:''}></div><div style="flex:1;min-width:0">${t?`<h3>${g}</h3><small>${esc(role)}</small>`:`<h3>${g}</h3><small>${h?esc(cl):esc(cName(CK))}</small><p><b>${esc(c.tn||'')} 선생님</b> <small style="display:inline">${esc(role)}</small></p>`}${h&&c.motto?`<p>🌱 ${esc(c.motto)}</p>`:''}${intro?`<p class=pw>${esc(intro)}</p>`:''}</div>${tel?`<div class=ctc>${tel}</div>`:''}</div>`+brd()
@@ -402,11 +402,17 @@ function gyCard(s,t){const a=gyAtt(s),d=gyDd(s),g=gy(),who=t?'이 학생':P()?'�
  <h4 style="margin-top:12px">🪨 디딤돌</h4>${gyBadge(d.lv,dt)}${g.ddk.map(k=>`<div class=row><span>${esc(k)}</span><span>${t?`<button class="btn ghost sm" onclick="ddAdd('${esc(s)}',this.dataset.k,-1)" data-k="${esc(k)}">−</button> `:''}<b>${+dd[k]||0}장</b>${t?` <button class="btn sm" onclick="ddAdd('${esc(s)}',this.dataset.k,1)" data-k="${esc(k)}">＋</button>`:''}</span></div>`).join('')}
  ${log.length?`<details><summary><small style="display:inline">받은 날짜 보기 (${log.length})</small></summary>${log.slice().reverse().map(x=>`<div class=row><small>${md(x.ts)} · ${esc(x.k)}</small></div>`).join('')}</details>`:''}</div>`}
 function ddAdd(s,k,n){const dd={...ddOf(s)},log=ddLog(s).slice(),cur=+dd[k]||0;if(n<0&&!cur)return;dd[k]=cur+n;if(n>0)log.push({k,ts:Date.now()});else{const i=log.map(x=>x.k).lastIndexOf(k);if(i>=0)log.splice(i,1)}
- FB.set('stu/'+s,{dd,ddl:log},true).then(()=>{const d=gyDd(s);toast(n>0?(d.lv==3?`디딤돌 ${d.tot}장 · 생교위 회부 기준이에요`:'디딤돌을 기록했어요'):'디딤돌 하나를 지웠어요')},fail('저장하지 못했어요'))}
+ return FB.set('stu/'+s,{dd,ddl:log},true).then(()=>{const d=gyDd(s);toast(n>0?(d.lv==3?`디딤돌 ${d.tot}장 · 생교위 회부 기준이에요`:'디딤돌을 기록했어요'):'디딤돌 하나를 지웠어요')},fail('저장하지 못했어요'))}
 const gyList=()=>{const L=roster().map(r=>({r,a:gyAtt(r.s),d:gyDd(r.s)})).filter(x=>x.a.lv>=2||x.d.lv>=2||x.a.hit.length||x.d.times).sort((x,y)=>Math.max(y.a.lv,y.d.lv)-Math.max(x.a.lv,x.d.lv));
  return `<div class=card><h4>🚦 생교위 현황 (우리 반)</h4>${L.map(x=>`<button class=rw onclick="attS='${esc(x.r.s)}';draw(true)"><span><b>${esc(x.r.s)}</b> ${esc(x.r.lbl)}<small>환산 결석 ${x.a.conv}일 · 디딤돌 ${x.d.tot}장</small></span><span>${x.a.lv==3||x.d.lv==3?'<span class=un>🚨 회부</span>':x.a.lv==2||x.d.lv==2?'<span class=un style="background:#e8913a">⚠️ 조심</span>':'<span class=un style="background:#888">지난 회부</span>'}</span></button>`).join('')||'<p class=note>✅ 생교위 회부·조심 학생이 없어요</p>'}<small>회부 조건은 설정에서 바꿔요.</small></div>`};
+// 디딤돌 주기: 학생 이름과 종류를 고르고 누름
+const ddGive=()=>{const g=gy(),R=roster(),L=[];R.forEach(r=>ddLog(r.s).forEach(x=>L.push({...x,s:r.s,n:r.rn||r.lbl})));L.sort((a,b)=>b.ts-a.ts);
+ return `<div class=card><h4>🪨 디딤돌 주기</h4><small>학생 이름과 종류를 고른 뒤 누르세요. 그 학생과 학부모 화면의 디딤돌 장수가 바로 올라가요.</small><select id=dd_s>${rOpts(attS||'','학생 이름 선택')}</select><div class="chips wr">${g.ddk.map(k=>`<button class="chip ${DDK==k?'on':''}" data-k="${esc(k)}" onclick="DDK=this.dataset.k;draw(true)">${esc(k)}</button>`).join('')}</div><button class="btn blk" onclick="ddGo(this)">🪨 디딤돌 주기</button>${L.length?`<details><summary><small style="display:inline">최근 준 디딤돌 ${L.length}장</small></summary>${L.slice(0,30).map(x=>`<div class=row><small>${md(x.ts)} · ${esc(x.s)} ${esc(x.n)} · ${esc(x.k)}</small></div>`).join('')}</details>`:''}</div>`};
+let DDK='';
+async function ddGo(b){const s=G('dd_s').value;if(!s)return toast('학생 이름을 골라 주세요');if(!DDK||!gy().ddk.includes(DDK))return toast('디딤돌 종류를 골라 주세요');const n=(R=>(R.find(r=>r.s==s)||{}).rn||'')(roster());
+ await lock(b,async()=>{attS=s;const g=gy(),tot=gyDd(s).tot+1;await ddAdd(s,DDK,1);toast(`${s} ${n} · ${DDK} 디딤돌 1장 (모두 ${tot}장)${tot%g.ddn==0?` · 생교위 회부 기준이에요`:``}`)})}
 V.att=()=>{const c=S.cfg,t=T(),R=roster(),s=t?(attS&&R.some(r=>r.s==attS)?attS:(R[0]&&R[0].s)||''):myS();
- return (t?gyList():'')+`<div class=card><small>집계 기간</small><h4>📅 ${esc(c.ap1||'')} ~ ${esc(c.ap2||'')}</h4><div class=row><span>📚 수업일수 합계</span>${t?`<span><input type=number min=0 value="${+c.cls||0}" style="width:90px;padding:4px;margin:0;text-align:center" onchange="setCls(this.value)"> 일</span>`:`<b>${+c.cls||0}일</b>`}</div>
+ return (t?ddGive()+gyList():'')+`<div class=card><small>집계 기간</small><h4>📅 ${esc(c.ap1||'')} ~ ${esc(c.ap2||'')}</h4><div class=row><span>📚 수업일수 합계</span>${t?`<span><input type=number min=0 value="${+c.cls||0}" style="width:90px;padding:4px;margin:0;text-align:center" onchange="setCls(this.value)"> 일</span>`:`<b>${+c.cls||0}일</b>`}</div>
  ${t?`<small>학생 선택</small><select onchange="attS=this.value;draw(true)">${R.map(r=>`<option value="${esc(r.s)}" ${r.s==s?'selected':''}>${esc(r.s)} ${esc(r.lbl)}</option>`).join('')}</select>`:''}
  ${s?`<h4>${esc(s)} ${t?esc((R.find(r=>r.s==s)||{}).lbl||''):P()?'자녀':''} 출결</h4>`+attTb(s,t):'<p class=note>'+(t?'설정에서 명렬표를 넣거나 학생이 가입하면 학생별로 입력할 수 있어요.':'출결 정보가 아직 없어요')+'</p>'}</div>${s?gyCard(s,t):''}<p class=note>${t?'숫자를 고치면 바로 저장돼요. 디딤돌은 ＋/− 로 기록해요. 학생·학부모는 자기 것만 볼 수 있어요.':'🔒 '+(P()?'자녀':'본인')+' 출결·디딤돌만 보여요'}</p>`};
 function setAtt(s,k,j,v){const a=attOf(s)[k];a[j]=Math.max(0,parseInt(v)||0);FB.set('stu/'+s,{att:{[k]:a}},true).then(()=>toast('저장했어요'),fail('저장하지 못했어요'))}
